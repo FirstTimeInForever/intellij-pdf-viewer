@@ -1,7 +1,6 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType
-import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.WeighedFileEditorProvider
