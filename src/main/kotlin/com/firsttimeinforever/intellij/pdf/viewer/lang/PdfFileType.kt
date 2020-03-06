@@ -1,6 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.lang
 
+import com.firsttimeinforever.intellij.pdf.viewer.icons.PdfViewerIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
+import com.intellij.ui.IconManager
 import javax.swing.Icon
 
 class PdfFileType private constructor(): LanguageFileType(PdfLanguage.INSTANCE) {
@@ -11,8 +13,7 @@ class PdfFileType private constructor(): LanguageFileType(PdfLanguage.INSTANCE) 
     }
 
     override fun getIcon(): Icon? {
-        // TODO: Add valid icon path
-        return null
+        return PdfViewerIcons.FILE_ICON
     }
 
     override fun getName(): String {
