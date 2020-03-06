@@ -13,6 +13,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <fileType name="PDF" extensions="pdf" language="PDF"
+            implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType" fieldName="INSTANCE"/>
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfFileEditorProvider" />
     </extensions>
 
