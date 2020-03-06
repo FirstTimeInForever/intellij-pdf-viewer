@@ -26,6 +26,6 @@ class PdfFileEditorProvider: WeighedFileEditorProvider() {
     }
 
     override fun getPolicy(): FileEditorPolicy {
-        return FileEditorPolicy.PLACE_AFTER_DEFAULT_EDITOR
+        return FileEditorPolicy.HIDE_DEFAULT_EDITOR
     }
 }
