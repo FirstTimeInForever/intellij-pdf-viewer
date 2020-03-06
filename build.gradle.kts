@@ -9,6 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://www.jetbrains.com/intellij-repository/snapshots")
 }
 
 dependencies {
@@ -18,7 +19,9 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2019.3.3"
+    // https://github.com/JetBrains/intellij-community/releases/tag/idea%2F201.6073.9
+    // Build against next EAP version
+    version = "201.6073.9-EAP-SNAPSHOT"
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
