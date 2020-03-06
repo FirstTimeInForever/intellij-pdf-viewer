@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui
 
+import com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
@@ -17,8 +18,7 @@ class PdfFileEditorProvider: WeighedFileEditorProvider() {
     }
 
     override fun accept(project: Project, file: VirtualFile): Boolean {
-        println(file.fileType)
-        return ScratchUtil.isScratch(file)
+        return file.fileType == PdfFileType.INSTANCE
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
