@@ -1,0 +1,17 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk-buster
+
+    working_directory: ~/intellij-pdf-viewer
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout
+      - run: gradle dependencies
+      - run: gradle build
+#      - run: gradle test
