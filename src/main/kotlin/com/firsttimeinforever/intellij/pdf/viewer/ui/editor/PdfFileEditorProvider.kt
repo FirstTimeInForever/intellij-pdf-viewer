@@ -21,7 +21,7 @@ class PdfFileEditorProvider: WeighedFileEditorProvider() {
     }
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        return PdfFileEditor()
+        return PdfFileEditor(file)
     }
 
     override fun getPolicy(): FileEditorPolicy {

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+</head>
+<script>
+    function loadPdf(pdfData) {
+        let data = atob(pdfData);
+        let pdflib = window['pdfjs-dist/build/pdf'];
+        pdflib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+        let loadingTask = pdflib.getDocument({data});
+        loadingTask.promise.then(pdf => {
+            console.log('PDF loaded');
+            // Fetch the first page
+            let pageNumber = 1;
+            pdf.getPage(pageNumber).then(function (page) {
+                console.log('Page loaded');
+                let viewport = page.getViewport({scale: 1});
+                // Prepare canvas using PDF page dimensions
+                let canvas = document.getElementById('the-canvas');
+                let context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                let renderTask = page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                });
+                renderTask.promise.then(function () {
+                    console.log('Page rendered');
+                });
+            });
+        }, reason => {
+            console.error(reason);
+        });
+    }
+</script>
+<body>
+<canvas width="100%" height="90%" id="the-canvas"></canvas>
+</body>
+</html>
