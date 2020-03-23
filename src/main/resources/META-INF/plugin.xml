@@ -16,6 +16,7 @@
         <fileType name="PDF" extensions="pdf" language="PDF"
             implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType" fieldName="INSTANCE"/>
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider" />
+        <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer" />
     </extensions>
 
     <actions>

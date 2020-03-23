@@ -7,6 +7,11 @@ import com.intellij.openapi.util.Key
 import java.beans.PropertyChangeListener
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.handler.CefLoadHandler
+import org.cef.handler.CefLoadHandlerAdapter
+import org.cef.network.CefRequest
 import javax.swing.JComponent
 
 class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
@@ -20,11 +25,20 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
         if (viewPanel == null) {
             throw RuntimeException("viewPannel was null")
         }
-        viewPanel.setHtml(ScriptsProvider.INDEX + wrapLoader(PdfFileLoader.load(virtualFile)))
+        with(viewPanel) {
+            loadURL(StaticServer.getInstance()?.getFileUrl("/index.html").toString())
+            jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
+                override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
+                    println("Page loaded")
+                    val targetFileUrl = StaticServer.getInstance()?.getFileUrl("/get-file/${virtualFile.path}")
+                    cefBrowser.executeJavaScript(wrapPdfLoadCall(targetFileUrl.toString()), null, 0)
+                }
+            }, cefBrowser)
+        }
     }
 
-    private fun wrapLoader(content: String): String {
-        return "<script>loadPdf(\"$content\")</script>";
+    private fun wrapPdfLoadCall(content: String): String {
+        return "loadPdfDocument(\"$content\")";
     }
 
     override fun isModified(): Boolean {
