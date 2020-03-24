@@ -1,7 +1,7 @@
 import org.jetbrains.intellij.tasks.*
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.16"
+    id("org.jetbrains.intellij") version "0.4.17"
     kotlin("jvm") version "1.3.70"
     java
 }
@@ -43,4 +43,5 @@ tasks.getByName<PatchPluginXmlTask>("patchPluginXml") {
 tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
+//    jbrVersion("jbr_jcef-11_0_6b765.15")
 }
