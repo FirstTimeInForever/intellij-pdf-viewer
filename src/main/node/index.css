@@ -1,0 +1,12 @@
+body {
+    background-color: #808080;
+    margin: 0;
+    padding: 0;
+}
+
+#viewerContainer {
+    overflow: auto;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
