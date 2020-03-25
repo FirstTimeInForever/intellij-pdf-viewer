@@ -19,13 +19,13 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    private val viewPanel: JCEFPanel? = JCEFPanelProvider.get()
+    private var viewPanel: JCEFPanel? = JCEFPanelProvider.get()
 
     init {
         if (viewPanel == null) {
             throw RuntimeException("viewPannel was null")
         }
-        with(viewPanel) {
+        with(viewPanel!!) {
             loadURL(StaticServer.getInstance()?.getFileUrl("/index.html").toString())
             jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
                 override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
@@ -61,7 +61,7 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
         if (viewPanel == null) {
             return null
         }
-        return viewPanel.component
+        return viewPanel!!.component
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
@@ -81,9 +81,9 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
 
     override fun dispose() {
-        if (viewPanel == null) {
-            return
+        if (viewPanel != null) {
+            viewPanel!!.dispose()
+            viewPanel = null
         }
-        Disposer.dispose(viewPanel)
     }
 }
