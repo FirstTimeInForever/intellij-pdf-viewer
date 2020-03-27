@@ -26,10 +26,9 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
             throw RuntimeException("viewPannel was null")
         }
         with(viewPanel!!) {
-            loadURL(StaticServer.getInstance()?.getFileUrl("/index.html").toString())
+            loadURL(StaticServer.getInstance()?.getFileUrl("/viewer.html").toString())
             jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
                 override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-                    println("Page loaded")
                     val targetFileUrl = StaticServer.getInstance()?.getFileUrl("/get-file/${virtualFile.path}")
                     cefBrowser.executeJavaScript(wrapPdfLoadCall(targetFileUrl.toString()), null, 0)
                 }
@@ -38,7 +37,7 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
     }
 
     private fun wrapPdfLoadCall(content: String): String {
-        return "loadPdfDocument(\"$content\")";
+        return "PDFViewerApplication.open(\"$content\")"
     }
 
     override fun isModified(): Boolean {
@@ -82,7 +81,7 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
 
     override fun dispose() {
         if (viewPanel != null) {
-            viewPanel!!.dispose()
+            viewPanel?.dispose()
             viewPanel = null
         }
     }

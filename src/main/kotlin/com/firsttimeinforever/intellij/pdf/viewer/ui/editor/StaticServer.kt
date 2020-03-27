@@ -2,6 +2,8 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.intellij.util.Url
 import com.intellij.util.Urls.parseEncoded
+import io.netty.buffer.ByteBufUtil
+import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.http.FullHttpRequest
 import io.netty.handler.codec.http.QueryStringDecoder
@@ -18,7 +20,7 @@ class StaticServer: HttpRequestHandler() {
             return EP_NAME.findExtension(StaticServer::class.java)
         }
 
-        val BASE_DIRECTORY = File("/web-view/build")
+        val BASE_DIRECTORY = File("/web-view/lib/web/")
     }
 
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
@@ -30,9 +32,10 @@ class StaticServer: HttpRequestHandler() {
             FileResponses.sendFile(request, context.channel(), targetFile.toPath())
             return true
         }
-        val targetPath = File(BASE_DIRECTORY, requestPath)
-        val response = response(ScriptsProvider.load(targetPath.toString()))
-        response.headers()["Content-Type"] = FileResponses.getContentType(targetPath.toString())
+        val targetFile = File(BASE_DIRECTORY, requestPath)
+        val contentType = FileResponses.getContentType(targetFile.toString())
+        val resultBuffer = Unpooled.wrappedBuffer(ResourceLoader.load(targetFile))
+        val response = response(contentType, resultBuffer)
         response.send(context.channel(), request)
         return true
     }
