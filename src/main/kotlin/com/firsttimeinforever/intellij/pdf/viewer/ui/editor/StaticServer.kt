@@ -20,7 +20,7 @@ class StaticServer: HttpRequestHandler() {
             return EP_NAME.findExtension(StaticServer::class.java)
         }
 
-        val BASE_DIRECTORY = File("/web-view/lib/web/")
+        val BASE_DIRECTORY = File("/web-view/")
     }
 
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
