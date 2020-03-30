@@ -5,39 +5,51 @@ import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.util.Key
 import java.beans.PropertyChangeListener
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.jcef.JBCefBrowser
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
-import org.cef.handler.CefLoadHandler
 import org.cef.handler.CefLoadHandlerAdapter
-import org.cef.network.CefRequest
 import javax.swing.JComponent
 
-class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
+
+class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
     companion object {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    private var viewPanel: JCEFPanel? = JCEFPanelProvider.get()
+    private var viewPanel: PdfEditorPanel? = PdfEditorPanel()
 
     init {
         if (viewPanel == null) {
             throw RuntimeException("viewPannel was null")
         }
-        with(viewPanel!!) {
-            loadURL(StaticServer.getInstance()?.getFileUrl("/viewer.html").toString())
-            jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
-                override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-                    val targetFileUrl = StaticServer.getInstance()?.getFileUrl("/get-file/${virtualFile.path}")
-                    cefBrowser.executeJavaScript(wrapPdfLoadCall(targetFileUrl.toString()), null, 0)
-                }
-            }, cefBrowser)
-        }
+        openFile()
+    }
+
+    private fun openFile() {
+        val fileUrl = StaticServer.getInstance()?.getFileUrl("/viewer.html").toString()
+        addLoadHandler(viewPanel!!.browser)
+        viewPanel!!.browser.loadURL(fileUrl)
+    }
+
+    private fun addLoadHandler(browser: JBCefBrowser) {
+        browser.jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
+            override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
+                val targetFileUrl = StaticServer.getInstance()?.getFileUrl("/get-file/${virtualFile.path}")
+                closeSidebar(browser!!)
+                browser.executeJavaScript(wrapPdfLoadCall(targetFileUrl.toString()), null, 0)
+            }
+        }, browser.cefBrowser)
     }
 
     private fun wrapPdfLoadCall(content: String): String {
         return "PDFViewerApplication.open(\"$content\")"
+    }
+
+    private fun closeSidebar(cefBrowser: CefBrowser) {
+        val script = "document.addEventListener(\"pagesloaded\", () => {PDFViewerApplication.pdfSidebar.close()})"
+        cefBrowser.executeJavaScript(script, null, 0)
     }
 
     override fun isModified(): Boolean {
@@ -53,14 +65,14 @@ class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
     override fun setState(state: FileEditorState) {}
 
     override fun getComponent(): JComponent {
-        return viewPanel!!.component
+        return viewPanel!!.browser.component
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
         if (viewPanel == null) {
             return null
         }
-        return viewPanel!!.component
+        return viewPanel!!.browser.component
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
