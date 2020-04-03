@@ -9,7 +9,9 @@ import io.netty.handler.codec.http.FullHttpRequest
 import io.netty.handler.codec.http.QueryStringDecoder
 import org.jetbrains.ide.BuiltInServerManager
 import org.jetbrains.ide.HttpRequestHandler
-import org.jetbrains.io.*
+import org.jetbrains.io.FileResponses
+import org.jetbrains.io.response
+import org.jetbrains.io.send
 import java.io.File
 import java.net.URI
 

@@ -5,12 +5,12 @@ import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
-import java.beans.PropertyChangeListener
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JBCefBrowser
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
+import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
 
