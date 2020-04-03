@@ -1,7 +1,7 @@
 import org.jetbrains.intellij.tasks.*
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.17"
+    id("org.jetbrains.intellij") version "0.4.18"
     kotlin("jvm") version "1.3.70"
     java
 }
@@ -38,6 +38,5 @@ tasks {
 tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
-    executable(file("$buildDir/jbr/Contents/Home/bin/java"))
 //    jbrVersion("jbr_jcef-11_0_6b765.15")
 }
