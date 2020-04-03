@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import java.beans.PropertyChangeListener
 import com.intellij.openapi.vfs.VirtualFile
@@ -18,19 +19,17 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    private var viewPanel: PdfEditorPanel? = PdfEditorPanel()
+    private val viewPanel: PdfEditorPanel = PdfEditorPanel()
 
     init {
-        if (viewPanel == null) {
-            throw RuntimeException("viewPannel was null")
-        }
+        Disposer.register(this, viewPanel)
         openFile()
     }
 
     private fun openFile() {
         val fileUrl = StaticServer.getInstance()?.getFileUrl("/viewer.html").toString()
-        addLoadHandler(viewPanel!!.browser)
-        viewPanel!!.browser.loadURL(fileUrl)
+        addLoadHandler(viewPanel.browser)
+        viewPanel.browser.loadURL(fileUrl)
     }
 
     private fun addLoadHandler(browser: JBCefBrowser) {
@@ -65,14 +64,11 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
     override fun setState(state: FileEditorState) {}
 
     override fun getComponent(): JComponent {
-        return viewPanel!!.browser.component
+        return viewPanel.browser.component
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        if (viewPanel == null) {
-            return null
-        }
-        return viewPanel!!.browser.component
+        return viewPanel.browser.component
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
@@ -92,9 +88,5 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
     override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
 
     override fun dispose() {
-        if (viewPanel != null) {
-            viewPanel?.dispose()
-            viewPanel = null
-        }
     }
 }
