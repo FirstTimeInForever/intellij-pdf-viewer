@@ -1,8 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.Url
 import com.intellij.util.Urls.parseEncoded
-import io.netty.buffer.ByteBufUtil
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.http.FullHttpRequest
@@ -23,12 +23,14 @@ class StaticServer: HttpRequestHandler() {
         val BASE_DIRECTORY = File("/web-view/")
     }
 
+    private val logger = logger<StaticServer>();
+
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
         val requestPath = urlDecoder.path()
-        println(requestPath)
+        logger.debug(requestPath)
         if (urlDecoder.uri().contains("get-file")) {
             val targetFile = File(URI(urlDecoder.uri().drop("/get-file/".length)).path)
-            println("Trying to send file: $targetFile")
+            logger.debug("Trying to send file: $targetFile")
             FileResponses.sendFile(request, context.channel(), targetFile.toPath())
             return true
         }
