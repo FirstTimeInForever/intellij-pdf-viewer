@@ -8,7 +8,7 @@ Since CEF browser is still an experimental feature, there is a high chance that 
 
 To build plugin use `buildPlugin` gradle task. This will produce ready to use `zip` archive with plugin contents.
 
-To run/debug IDE with this plugin `runIde` task should be used.
+To run/debug IDE with this plugin `runIde` task should be used. In case of first run `buildWebView` should be executed first.
 
 ### *Disclaimer*
 
