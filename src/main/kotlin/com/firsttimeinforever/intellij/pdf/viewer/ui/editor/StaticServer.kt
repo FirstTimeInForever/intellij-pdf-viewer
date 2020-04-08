@@ -13,7 +13,6 @@ import org.jetbrains.io.FileResponses
 import org.jetbrains.io.response
 import org.jetbrains.io.send
 import java.io.File
-import java.net.URI
 
 
 class StaticServer: HttpRequestHandler() {
@@ -25,13 +24,15 @@ class StaticServer: HttpRequestHandler() {
         val BASE_DIRECTORY = File("/web-view/")
     }
 
+    private val serverUrl = "http://localhost:" + BuiltInServerManager.getInstance().port
     private val logger = logger<StaticServer>();
 
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
         val requestPath = urlDecoder.path()
-        logger.debug(requestPath)
-        if (urlDecoder.uri().contains("get-file")) {
-            val targetFile = File(URI(urlDecoder.uri().drop("/get-file/".length)).path)
+        logger.debug(urlDecoder.path())
+        logger.debug(urlDecoder.parameters().toString())
+        if (urlDecoder.path() == "/get-file") {
+            val targetFile = File(urlDecoder.parameters()["localFile"]!!.first())
             logger.debug("Trying to send file: $targetFile")
             FileResponses.sendFile(request, context.channel(), targetFile.toPath())
             return true
@@ -44,11 +45,15 @@ class StaticServer: HttpRequestHandler() {
         return true
     }
 
-    fun getFileUrl(file: String): Url? {
-        return getServerUrl()?.resolve(file)
+    fun getFilePreviewUrl(path: String): Url? {
+        return getIndexUrl()?.addParameters(mapOf(Pair("path", getLocalFileUrl(path).toString())))
     }
 
-    private fun getServerUrl(): Url? {
-        return parseEncoded("http://localhost:" + BuiltInServerManager.getInstance().port)
+    private fun getLocalFileUrl(path: String): Url? {
+        return parseEncoded("$serverUrl/get-file")!!.addParameters(mapOf(Pair("localFile", path)))
+    }
+
+    private fun getIndexUrl(): Url? {
+        return parseEncoded("$serverUrl/index.html")
     }
 }
