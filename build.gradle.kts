@@ -1,9 +1,11 @@
 import org.jetbrains.intellij.tasks.*
+import com.moowork.gradle.node.npm.*
 
 plugins {
     id("org.jetbrains.intellij") version "0.4.18"
     kotlin("jvm") version "1.3.70"
     java
+    id("com.github.node-gradle.node") version "2.2.3"
 }
 
 group = "com.firsttimeinforever.intellij.pdf.viewer"
@@ -33,6 +35,25 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+    node {
+        download = true
+        version = "13.2.0"
+        nodeModulesDir = file("${projectDir}/src/main/web-view")
+    }
+}
+
+tasks.register<NpmTask>("webViewBuild") {
+    if (!file("${projectDir}/src/main/web-view/node_modules").exists()) {
+        dependsOn("npm_ci")
+    }
+    else {
+        println("Skipping npm_ci step")
+    }
+    setArgs(listOf("run", "build"))
+}
+
+tasks.getByName("buildPlugin") {
+    dependsOn("webViewBuild")
 }
 
 tasks.withType<RunIdeTask>() {
