@@ -1,11 +1,13 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.*
 import com.intellij.ui.jcef.JBCefBrowser
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -20,16 +22,36 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
     }
 
     private val viewPanel: PdfEditorPanel = PdfEditorPanel()
+    private val logger = logger<PdfFileEditor>()
 
     init {
         Disposer.register(this, viewPanel)
         openFile()
+        addUpdateHandler()
     }
 
     private fun openFile() {
         val fileUrl = StaticServer.getInstance()?.getFileUrl("/viewer.html").toString()
         addLoadHandler(viewPanel.browser)
         viewPanel.browser.loadURL(fileUrl)
+    }
+
+    private fun addUpdateHandler() {
+        LocalFileSystem.getInstance().run {
+            addRootToWatch(virtualFile.path, true)
+            addVirtualFileListener(object: VirtualFileListener {
+                override fun contentsChanged(event: VirtualFileEvent) {
+                    logger.debug("Got some events batch")
+                    if (event.file != virtualFile) {
+                        logger.debug("Seems like target file (${virtualFile.path}) is not changed")
+                        return
+                    }
+                    logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
+                    val fileUrl = StaticServer.getInstance()?.getFileUrl("/viewer.html").toString()
+                    viewPanel.browser.loadURL(fileUrl)
+                }
+            })
+        }
     }
 
     private fun addLoadHandler(browser: JBCefBrowser) {
