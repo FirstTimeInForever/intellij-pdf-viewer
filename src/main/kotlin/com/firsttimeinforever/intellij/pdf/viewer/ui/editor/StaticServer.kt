@@ -22,16 +22,24 @@ class StaticServer: HttpRequestHandler() {
         }
 
         val BASE_DIRECTORY = File("/web-view/")
+
+//        private val URL_UUID = UUID.randomUUID().toString()
+        private val URL_UUID = "64fa8636-e686-4c63-9956-132d9471ce77"
     }
 
-    private val serverUrl = "http://localhost:" + BuiltInServerManager.getInstance().port
+    private val serverUrl = "http://localhost:${BuiltInServerManager.getInstance().port}/$URL_UUID"
     private val logger = logger<StaticServer>();
 
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
-        val requestPath = urlDecoder.path()
         logger.debug(urlDecoder.path())
         logger.debug(urlDecoder.parameters().toString())
-        if (urlDecoder.path() == "/get-file") {
+        // Check if current request is actually ours
+        if (!urlDecoder.path().contains(URL_UUID)) {
+            logger.debug("Current url is not ours. Passing it to the next handler.")
+            return false
+        }
+        val requestPath = urlDecoder.path().removePrefix("/$URL_UUID")
+        if (requestPath == "/get-file") {
             val targetFile = File(urlDecoder.parameters()["localFile"]!!.first())
             logger.debug("Trying to send file: $targetFile")
             FileResponses.sendFile(request, context.channel(), targetFile.toPath())
