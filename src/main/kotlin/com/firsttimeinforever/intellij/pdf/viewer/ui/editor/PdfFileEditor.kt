@@ -21,11 +21,11 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
 
     init {
         Disposer.register(this, viewPanel)
-        openFile()
+        reloadDocument()
         addUpdateHandler()
     }
 
-    private fun openFile() {
+    fun reloadDocument() {
         val targetUrl = StaticServer.getInstance()?.getFilePreviewUrl(virtualFile.path)
         logger.debug("Tryign to load url: ${targetUrl!!.toExternalForm()}")
         viewPanel.browser.loadURL(targetUrl.toExternalForm())
