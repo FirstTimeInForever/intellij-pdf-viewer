@@ -22,6 +22,6 @@
     <actions>
         <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"
-                text="Reload PDF document" description="Reloads PDF document in current editor"/>
+                text="Reload PDF Document" description="Reloads PDF document in current editor"/>
     </actions>
 </idea-plugin>
