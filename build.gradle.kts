@@ -59,5 +59,5 @@ tasks.getByName("buildPlugin") {
 tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
-    jbrVersion("jbr_jcef-11_0_6b765.25")
+    jbrVersion("jbr_jcef-11_0_6b840.3")
 }
