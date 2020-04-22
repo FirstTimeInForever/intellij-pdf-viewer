@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -11,42 +10,21 @@ import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
 
-class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
+class PdfFileEditor(private val virtualFile: VirtualFile): FileEditor {
     companion object {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    private val viewPanel: PdfEditorPanel = PdfEditorPanel()
-    private val logger = logger<PdfFileEditor>()
+    private val viewPanelController: PdfEditorPanelController =
+        PdfEditorPanelContollerProvider.INSTANCE.createController()
 
     init {
-        Disposer.register(this, viewPanel)
-        reloadDocument()
-        addUpdateHandler()
+        Disposer.register(this, viewPanelController)
+        viewPanelController.openDocument(virtualFile)
     }
 
     fun reloadDocument() {
-        val targetUrl = StaticServer.getInstance()?.getFilePreviewUrl(virtualFile.path)
-        logger.debug("Tryign to load url: ${targetUrl!!.toExternalForm()}")
-        viewPanel.browser.loadURL(targetUrl.toExternalForm())
-    }
-
-    private fun addUpdateHandler() {
-        LocalFileSystem.getInstance().run {
-            addRootToWatch(virtualFile.path, true)
-            addVirtualFileListener(object: VirtualFileListener {
-                override fun contentsChanged(event: VirtualFileEvent) {
-                    logger.debug("Got some events batch")
-                    if (event.file != virtualFile) {
-                        logger.debug("Seems like target file (${virtualFile.path}) is not changed")
-                        return
-                    }
-                    logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-                    val targetUrl = StaticServer.getInstance()?.getFilePreviewUrl(virtualFile.path)
-                    viewPanel.browser.loadURL(targetUrl!!.toExternalForm())
-                }
-            })
-        }
+        viewPanelController.reloadDocument()
     }
 
     override fun isModified(): Boolean {
@@ -62,11 +40,11 @@ class PdfFileEditor(private val virtualFile: VirtualFile) : FileEditor {
     override fun setState(state: FileEditorState) {}
 
     override fun getComponent(): JComponent {
-        return viewPanel.browser.component
+        return viewPanelController.getComponent()
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        return viewPanel.browser.component
+        return viewPanelController.getComponent()
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
