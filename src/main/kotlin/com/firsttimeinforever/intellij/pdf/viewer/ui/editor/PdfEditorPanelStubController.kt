@@ -1,23 +1,23 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.JComponent
 
 
 class PdfEditorPanelStubController: PdfEditorPanelController() {
+    private val viewPanel = PdfEditorStubPanel()
+
     override fun getComponent(): JComponent {
-        TODO("Not yet implemented")
+        return viewPanel
     }
 
     override fun openDocument(file: VirtualFile) {
-        TODO("Not yet implemented")
     }
 
     override fun reloadDocument() {
-        TODO("Not yet implemented")
     }
 
     override fun dispose() {
-        TODO("Not yet implemented")
     }
 }
