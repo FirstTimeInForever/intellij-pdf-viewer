@@ -1,6 +1,6 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
-import com.intellij.openapi.Disposable
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
@@ -8,20 +8,16 @@ import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileEvent
 import com.intellij.openapi.vfs.VirtualFileListener
-import javax.swing.JComponent
 
 
-class PdfEditorJcefPanelController: PdfEditorPanelController(), Disposable {
+class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
-    private val logger = logger<PdfEditorJcefPanelController>()
+    private val logger = logger<PdfFileEditorJcefPanel>()
     private lateinit var virtualFile: VirtualFile
 
     init {
         Disposer.register(this, browserPanel)
-    }
-
-    override fun getComponent(): JComponent {
-        return browserPanel.component
+        add(browserPanel.component)
     }
 
     private fun addUpdateHandler() {
@@ -35,20 +31,22 @@ class PdfEditorJcefPanelController: PdfEditorPanelController(), Disposable {
                     return
                 }
                 logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-                val targetUrl = StaticServer.getInstance()?.getFilePreviewUrl(virtualFile.path)
+                val targetUrl = StaticServer.getInstance()
+                    ?.getFilePreviewUrl(virtualFile.path)
                 browserPanel.loadURL(targetUrl!!.toExternalForm())
             }
         })
     }
 
-    override fun openDocument(targetFile: VirtualFile) {
-        virtualFile = targetFile
+    override fun openDocument(file: VirtualFile) {
+        virtualFile = file
         addUpdateHandler()
         reloadDocument()
     }
 
     override fun reloadDocument() {
-        val targetUrl = StaticServer.getInstance()?.getFilePreviewUrl(virtualFile.path)
+        val targetUrl = StaticServer.getInstance()
+            ?.getFilePreviewUrl(virtualFile.path)
         logger.debug("Tryign to load url: ${targetUrl!!.toExternalForm()}")
         browserPanel.loadURL(targetUrl.toExternalForm())
     }

@@ -1,18 +1,15 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
-import com.intellij.openapi.ui.popup.Balloon
-import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.ui.awt.RelativePoint
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBScrollPane
-import java.awt.BorderLayout
 import java.awt.Desktop
-import javax.swing.JPanel
-import javax.swing.JScrollPane
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
 
-class PdfEditorStubPanel: JBScrollPane() {
+
+class PdfFileEditorStubPanel: PdfFileEditorPanel() {
     private val textPane = JTextPane()
+    private val scrollPane = JBScrollPane(textPane)
 
     init {
         textPane.isEditable = false
@@ -39,7 +36,16 @@ class PdfEditorStubPanel: JBScrollPane() {
                 Desktop.getDesktop().browse(it.url.toURI())
             }
         }
-        add(textPane)
-        setViewportView(textPane)
+        scrollPane.setViewportView(textPane)
+        add(scrollPane)
+    }
+
+    override fun openDocument(file: VirtualFile) {
+    }
+
+    override fun reloadDocument() {
+    }
+
+    override fun dispose() {
     }
 }

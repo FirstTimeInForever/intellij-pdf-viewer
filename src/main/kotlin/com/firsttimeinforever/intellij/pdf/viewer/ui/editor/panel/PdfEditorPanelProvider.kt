@@ -1,11 +1,12 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.intellij.openapi.util.registry.Registry
 
 
-class PdfEditorPanelContollerProvider private constructor() {
+class PdfEditorPanelProvider private constructor() {
     companion object {
-        val INSTANCE = PdfEditorPanelContollerProvider()
+        val INSTANCE =
+            PdfEditorPanelProvider()
     }
 
     private fun hasJcef(): Boolean {
@@ -18,10 +19,10 @@ class PdfEditorPanelContollerProvider private constructor() {
         return false
     }
 
-    fun createController(): PdfEditorPanelController {
+    fun createPanel(): PdfFileEditorPanel {
         if (!hasJcef()) {
-            return PdfEditorPanelStubController()
+            return PdfFileEditorStubPanel()
         }
-        return PdfEditorJcefPanelController()
+        return PdfFileEditorJcefPanel()
     }
 }
