@@ -4,6 +4,7 @@ import com.moowork.gradle.node.npm.*
 plugins {
     id("org.jetbrains.intellij") version "0.4.18"
     kotlin("jvm") version "1.3.70"
+    kotlin("plugin.serialization") version "1.3.70"
     java
     id("com.github.node-gradle.node") version "2.2.3"
 }
@@ -19,6 +20,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testCompile("junit", "junit", "4.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 }
 
 intellij {
