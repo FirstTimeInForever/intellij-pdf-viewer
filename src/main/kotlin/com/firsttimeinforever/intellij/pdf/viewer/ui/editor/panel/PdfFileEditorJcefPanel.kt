@@ -51,6 +51,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         browserPanel.loadURL(targetUrl.toExternalForm())
     }
 
+    override fun getCurrentPageNumber(): Int {
+        return 0
+    }
+
+    override fun setCurrentPageNumber(page: Int) {
+    }
+
     override fun dispose() {
     }
 }

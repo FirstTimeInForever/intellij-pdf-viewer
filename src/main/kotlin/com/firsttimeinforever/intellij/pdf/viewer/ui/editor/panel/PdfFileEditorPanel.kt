@@ -13,4 +13,7 @@ abstract class PdfFileEditorPanel: JPanel(), Disposable {
     abstract fun openDocument(file: VirtualFile)
 
     abstract fun reloadDocument()
+
+    abstract fun getCurrentPageNumber(): Int
+    abstract fun setCurrentPageNumber(page: Int)
 }
