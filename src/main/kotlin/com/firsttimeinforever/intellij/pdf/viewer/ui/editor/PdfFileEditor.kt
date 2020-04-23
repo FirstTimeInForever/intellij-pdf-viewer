@@ -3,8 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfEditorPanelProvider
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.intellij.openapi.fileEditor.*
-import com.intellij.openapi.fileEditor.impl.EditorHistoryManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.*
