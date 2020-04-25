@@ -1,0 +1,20 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:6.2.2-jdk11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get plugin version
+        run: echo ::set-env name=PLUGIN_VERSION::$(gradle properties -q | grep "version:" | awk '{print $2}')
+      - name: Build plugin
+        run: gradle buildPlugin
+      - name: Upload plugin
+        uses: actions/upload-artifact@v1
+        with:
+          name: "intellij-pdf-viewer-${{ env.PLUGIN_VERSION }}-${{ github.sha }}.zip"
+          path: "build/distributions/intellij-pdf-viewer-${{ env.PLUGIN_VERSION }}.zip"
