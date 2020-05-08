@@ -13,7 +13,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
-
+import javax.swing.BoxLayout
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
@@ -23,9 +23,12 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         MessageEventSubscriptionsManager.fromList(browserPanel, listOf("pageChanged"))
     private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable)
+    private val controlPanel = ControlPanel()
 
     init {
         Disposer.register(this, browserPanel)
+        layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        add(controlPanel)
         add(browserPanel.component)
         eventSubscriptionsManager.addHandler("pageChanged") {
             val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
@@ -35,8 +38,52 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         }
     }
 
-    private fun triggerMessageEvent(eventName: String, data: String) {
+    private fun triggerMessageEvent(eventName: String, data: String = "{}") {
         browserPanel.cefBrowser.executeJavaScript("triggerMessageEvent('$eventName', $data)", null, 0)
+    }
+
+    override fun increaseScale() {
+        triggerMessageEvent("increaseScale")
+    }
+
+    override fun decreaseScale() {
+        triggerMessageEvent("decreaseScale")
+    }
+
+    override fun toggleSidebar() {
+        triggerMessageEvent("toggleSidebar")
+    }
+
+    override fun printDocument() {
+        triggerMessageEvent("printDocument")
+    }
+
+    override fun nextPage() {
+        triggerMessageEvent("nextPage")
+    }
+
+    override fun previousPage() {
+        triggerMessageEvent("previousPage")
+    }
+
+    fun togglePdfjsToolbar() {
+        triggerMessageEvent("toggleToolbar")
+    }
+
+    override fun findNext() {
+        val searchTarget = controlPanel.findTextArea.text
+        if (searchTarget == null) {
+            return
+        }
+        triggerMessageEvent("findNext", "{searchTarget: \"$searchTarget\"}")
+    }
+
+    override fun findPrevious() {
+        val searchTarget = controlPanel.findTextArea.text
+        if (searchTarget == null) {
+            return
+        }
+        triggerMessageEvent("findPrevious", "{searchTarget: \"$searchTarget\"}")
     }
 
     private fun addUpdateHandler() {
@@ -78,9 +125,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         browserPanel.loadURL(targetUrl)
     }
 
-    override fun getCurrentPageNumber(): Int {
-        return currentPageNumberHolder
-    }
+    override fun getCurrentPageNumber(): Int = currentPageNumberHolder
 
     override fun setCurrentPageNumber(page: Int) {
         currentPageNumberHolder = page
@@ -88,6 +133,5 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         triggerMessageEvent("pageSet", data.toString())
     }
 
-    override fun dispose() {
-    }
+    override fun dispose() = Unit
 }

@@ -15,7 +15,7 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    private val viewPanel: PdfFileEditorPanel =
+    val viewPanel: PdfFileEditorPanel =
         PdfEditorPanelProvider.INSTANCE.createPanel()
 
     init {
@@ -23,19 +23,21 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
         viewPanel.openDocument(virtualFile)
     }
 
-    fun reloadDocument() {
-        viewPanel.reloadDocument()
-    }
+    fun reloadDocument() = viewPanel.reloadDocument()
+    fun increaseScale() = viewPanel.increaseScale()
+    fun decreaseScale() = viewPanel.decreaseScale()
+    fun toggleSidebar() = viewPanel.toggleSidebar()
+    fun nextPage() = viewPanel.nextPage()
+    fun previousPage() = viewPanel.previousPage()
+    fun printDocument() = viewPanel.printDocument()
+    fun findNext() = viewPanel.findNext()
+    fun findPrevious() = viewPanel.findPrevious()
 
-    override fun isModified(): Boolean {
-        return false
-    }
+    override fun isModified(): Boolean = false
 
-    override fun addPropertyChangeListener(listener: PropertyChangeListener) {}
+    override fun addPropertyChangeListener(listener: PropertyChangeListener) = Unit
 
-    override fun getName(): String {
-        return NAME
-    }
+    override fun getName(): String = NAME
 
     override fun setState(state: FileEditorState) {
         if (state !is PdfFileEditorState) {
@@ -54,14 +56,13 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
 
     override fun <T : Any?> getUserData(key: Key<T>): T? = null
 
-    override fun <T : Any?> putUserData(key: Key<T>, value: T?) {}
+    override fun <T : Any?> putUserData(key: Key<T>, value: T?) = Unit
 
     override fun getCurrentLocation(): FileEditorLocation? = null
 
     override fun isValid(): Boolean = true
 
-    override fun removePropertyChangeListener(listener: PropertyChangeListener) {}
+    override fun removePropertyChangeListener(listener: PropertyChangeListener) = Unit
 
-    override fun dispose() {
-    }
+    override fun dispose() = Unit
 }

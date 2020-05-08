@@ -20,8 +20,64 @@
     </extensions>
 
     <actions>
-        <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfFileEditorActionGroup"
+               id="PdfFileEditorActionGroup" text="Pdf Viewer Actions" popup="true" compact="true">
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction" icon="AllIcons.Actions.ForceRefresh"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"
                 text="Reload PDF Document" description="Reloads PDF document in current editor"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSidebarAction" icon="AllIcons.Actions.PreviewDetails"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSidebarAction" text="Toggle PDF Sidebar"
+                description="Opens/closes sidebar in current editor"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.IncreaseDocumentScaleAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.IncreaseDocumentScaleAction"
+                text="Increase Current Document Scale" icon="AllIcons.General.Add"
+                description="Increases document scale in current editor">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift meta EQUALS"/>
+            </action>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"
+                text="Decrease Current Document Scale" icon="AllIcons.General.Remove"
+                description="Decreases document scale in current editor">
+                <keyboard-shortcut keymap="$default" first-keystroke="meta MINUS"/>
+            </action>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"
+                text="Print Pdf Document" icon="AllIcons.General.Print"
+                description="Opens print dialog for document in current editor"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.NextPageAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.NextPageAction" text="Next Document Page"
+                icon="AllIcons.Actions.Forward"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.PreviousPageAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.PreviousPageAction"
+                text="Previous Document Page" icon="AllIcons.Actions.Back"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction" icon="AllIcons.Actions.FindForward"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction" text="Find In Document">
+                <keyboard-shortcut keymap="$default" first-keystroke="meta F"/>
+            </action>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
+                text="Find Previous In Document" icon="AllIcons.Actions.FindBackward"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
+                text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
+            id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSidebarAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.PreviousPageAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.NextPageAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.IncreaseDocumentScaleAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup"
+            id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true" compact="true">
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup"
+            id="PdfEditorRightToolbarActionGroup" text="Pdf Viewer Right Toolbar Actions" popup="true" compact="true">
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"/>
+        </group>
     </actions>
 </idea-plugin>
