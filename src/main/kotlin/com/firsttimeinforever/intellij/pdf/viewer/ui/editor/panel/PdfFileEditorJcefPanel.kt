@@ -46,33 +46,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         browserPanel.cefBrowser.executeJavaScript("triggerMessageEvent('$eventName', $data)", null, 0)
     }
 
-    override fun increaseScale() {
-        triggerMessageEvent("increaseScale")
-    }
-
-    override fun decreaseScale() {
-        triggerMessageEvent("decreaseScale")
-    }
-
-    override fun toggleSidebar() {
-        triggerMessageEvent("toggleSidebar")
-    }
-
-    override fun printDocument() {
-        triggerMessageEvent("printDocument")
-    }
-
-    override fun nextPage() {
-        triggerMessageEvent("nextPage")
-    }
-
-    override fun previousPage() {
-        triggerMessageEvent("previousPage")
-    }
-
-    fun togglePdfjsToolbar() {
-        triggerMessageEvent("toggleToolbar")
-    }
+    override fun increaseScale() = triggerMessageEvent("increaseScale")
+    override fun decreaseScale() = triggerMessageEvent("decreaseScale")
+    override fun toggleSidebar() = triggerMessageEvent("toggleSidebar")
+    override fun printDocument() = triggerMessageEvent("printDocument")
+    override fun nextPage() = triggerMessageEvent("nextPage")
+    override fun previousPage() = triggerMessageEvent("previousPage")
+    fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
 
     override fun findNext() {
         val searchTarget = controlPanel.findTextArea.text ?: return
