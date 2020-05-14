@@ -8,9 +8,9 @@ import com.intellij.openapi.actionSystem.*
 import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 class ControlPanel: JPanel() {
     private val leftToolbar =
@@ -50,23 +50,54 @@ class ControlPanel: JPanel() {
         rightPanel.maximumSize = Dimension(Int.MAX_VALUE, 24)
         rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
         add(rightPanel, Component.RIGHT_ALIGNMENT)
-        findTextArea.addActionListener(this::findTextAreaSearchAction)
-        findTextArea.addKeyListener(object: KeyListener {
-            override fun keyTyped(e: KeyEvent?) = Unit
-            override fun keyReleased(e: KeyEvent?) = Unit
+        setupSearchAreaKeybindings()
+    }
 
-            override fun keyPressed(e: KeyEvent?) {
-                if (e?.keyCode == KeyEvent.VK_ESCAPE) {
-                    findTextArea.text = ""
-                    findTextAreaSearchAction()
-                    findTextArea.transferFocusUpCycle()
+    private fun setupSearchAreaKeybindings() {
+        val inputMap = findTextArea.getInputMap(JComponent.WHEN_FOCUSED)
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, true), ENTER_SHIFT_KEY_EVENT)
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ENTER_KEY_EVENT)
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE_KEY_EVENT)
+        val actionMap = findTextArea.actionMap
+        putAction(actionMap, ESCAPE_KEY_EVENT) {
+            findTextArea.text = ""
+            findTextArea.transferFocusUpCycle()
+        }
+        putAction(actionMap, ENTER_SHIFT_KEY_EVENT) {
+            findTextAreaSearchAction(FIND_PREVIOUS_ACTION_ID)
+        }
+        putAction(actionMap, ENTER_KEY_EVENT) {
+            findTextAreaSearchAction(FIND_NEXT_ACTION_ID)
+        }
+        findTextArea.document.addDocumentListener(object: DocumentListener {
+            override fun changedUpdate(event: DocumentEvent?) = Unit
+
+            override fun insertUpdate(event: DocumentEvent?) {
+                if (event == null) {
+                    return
                 }
+                findTextAreaSearchAction(FIND_NEXT_ACTION_ID)
+            }
+
+            override fun removeUpdate(event: DocumentEvent?) {
+                insertUpdate(event)
             }
         })
     }
 
-    private fun findTextAreaSearchAction(actionEvent: ActionEvent? = null) {
-        val action = ActionManager.getInstance().getAction(FIND_NEXT_ACTION_ID)
+    private fun putAction(actionMap: ActionMap, key: String, action: (ActionEvent) -> Unit) {
+        actionMap.put(key, object: AbstractAction() {
+            override fun actionPerformed(event: ActionEvent?) {
+                if (event == null) {
+                    return
+                }
+                action(event)
+            }
+        })
+    }
+
+    private fun findTextAreaSearchAction(targetActionId: String, actionEvent: ActionEvent? = null) {
+        val action = ActionManager.getInstance().getAction(targetActionId)
         val dataContext = DataManager.getInstance().getDataContext(this)
         val event = AnActionEvent(
             null,
@@ -80,7 +111,14 @@ class ControlPanel: JPanel() {
     }
 
     companion object {
+        private const val ENTER_SHIFT_KEY_EVENT = "Enter+Shift"
+        private const val ENTER_KEY_EVENT = "Enter"
+        private const val ESCAPE_KEY_EVENT = "Escape"
+
         private const val FIND_NEXT_ACTION_ID =
             "com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction"
+
+        private const val FIND_PREVIOUS_ACTION_ID =
+            "com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
     }
 }
