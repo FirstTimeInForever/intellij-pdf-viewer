@@ -29,19 +29,22 @@ export class AppComponent {
     }
 
     private hideToolbar() {
-        this.viewer.PDFViewerApplication.appConfig.toolbar.container.parentElement.parentElement.style.display = "none";
-        this.viewer.PDFViewerApplication.appConfig.viewerContainer.parentElement.style['top'] = 0;
-        this.viewer.PDFViewerApplication.appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = 0;
+        const appConfig = this.viewer.PDFViewerApplication.appConfig;
+        appConfig.toolbar.container.parentElement.parentElement.style.display = "none";
+        appConfig.viewerContainer.parentElement.style['top'] = 0;
+        appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = 0;
     }
 
     private showToolbar() {
-        this.viewer.PDFViewerApplication.appConfig.toolbar.container.parentElement.parentElement.style.display = "block";
-        this.viewer.PDFViewerApplication.appConfig.viewerContainer.parentElement.style['top'] = "32px";
-        this.viewer.PDFViewerApplication.appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = "32px";
+        const appConfig = this.viewer.PDFViewerApplication.appConfig;
+        appConfig.toolbar.container.parentElement.parentElement.style.display = "block";
+        appConfig.viewerContainer.parentElement.style['top'] = "32px";
+        appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = "32px";
     }
 
     private toggleToolbar() {
-        if (this.viewer.PDFViewerApplication.appConfig.toolbar.container.parentElement.parentElement.style.display == "block") {
+        const appConfig = this.viewer.PDFViewerApplication.appConfig;
+        if (appConfig.toolbar.container.parentElement.parentElement.style.display == "block") {
             this.hideToolbar();
         }
         else {
@@ -49,6 +52,12 @@ export class AppComponent {
         }
     }
 
+    private setBackgroundColor(color: string) {
+        const appConfig = this.viewer.PDFViewerApplication.appConfig;
+        appConfig.appContainer.style.background = color;
+    }
+
+    private delayedBackgroundColor: string;
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
@@ -67,6 +76,7 @@ export class AppComponent {
                 this.viewer.pdfSrc = res;
                 this.viewer.refresh();
                 this.viewer.onDocumentLoad.subscribe(() => {
+                    this.setBackgroundColor(this.delayedBackgroundColor);
                     this.hideToolbar();
                 });
             });
@@ -105,6 +115,15 @@ export class AppComponent {
         });
         this.messageReceiverService.subscribe("toggleToolbar", (data: any) => {
             this.toggleToolbar();
+        });
+        this.messageReceiverService.subscribe("setBackgroundColor", (data: {color: string}) => {
+            this.delayedBackgroundColor = data.color;
+            try {
+                this.setBackgroundColor(this.delayedBackgroundColor);
+            }
+            catch (error) {
+                console.warn("Could not set background color!");
+            }
         });
     }
 }

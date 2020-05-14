@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -13,6 +14,9 @@ import kotlinx.serialization.json.JsonConfiguration
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
+import java.awt.Color
+import java.beans.PropertyChangeEvent
+import java.beans.PropertyChangeListener
 import javax.swing.BoxLayout
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
@@ -71,10 +75,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     }
 
     override fun findNext() {
-        val searchTarget = controlPanel.findTextArea.text
-        if (searchTarget == null) {
-            return
-        }
+        val searchTarget = controlPanel.findTextArea.text ?: return
         triggerMessageEvent("findNext", "{searchTarget: \"$searchTarget\"}")
     }
 
@@ -108,6 +109,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         virtualFile = file
         addUpdateHandler()
         reloadDocument()
+        controlPanel.addPropertyChangeListener("background", object: PropertyChangeListener {
+            override fun propertyChange(event: PropertyChangeEvent?) {
+                if (event == null) {
+                    return
+                }
+                setBackgroundColor(event.newValue as Color)
+            }
+        })
     }
 
     override fun reloadDocument() {
@@ -120,9 +129,16 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                     return
                 }
                 setCurrentPageNumber(currentPageNumberHolder)
+                setBackgroundColor(controlPanel.background)
             }
         }, browserPanel.cefBrowser)
         browserPanel.loadURL(targetUrl)
+    }
+
+    private fun setBackgroundColor(color: Color) {
+        val colors = listOf(color.red, color.blue, color.green, color.alpha)
+        val colorString = colors.joinToString("", transform = Integer::toHexString)
+        triggerMessageEvent("setBackgroundColor", "{color: \"#${colorString}\"}")
     }
 
     override fun getCurrentPageNumber(): Int = currentPageNumberHolder
