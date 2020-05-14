@@ -33,12 +33,14 @@
                 text="Increase Current Document Scale" icon="AllIcons.General.Add"
                 description="Increases document scale in current editor">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift meta EQUALS"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"
                 text="Decrease Current Document Scale" icon="AllIcons.General.Remove"
                 description="Decreases document scale in current editor">
                 <keyboard-shortcut keymap="$default" first-keystroke="meta MINUS"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"
@@ -53,10 +55,14 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction" icon="AllIcons.Actions.FindForward"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction" text="Find In Document">
                 <keyboard-shortcut keymap="$default" first-keystroke="meta F"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
-                text="Find Previous In Document" icon="AllIcons.Actions.FindBackward"/>
+                text="Find Previous In Document" icon="AllIcons.Actions.FindBackward">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift meta F"/>
+                <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
+            </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
                 text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>

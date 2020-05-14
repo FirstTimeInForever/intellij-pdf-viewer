@@ -55,15 +55,18 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
 
     override fun findNext() {
+        if (!controlPanel.findTextArea.isFocusOwner) {
+            controlPanel.findTextArea.grabFocus()
+        }
         val searchTarget = controlPanel.findTextArea.text ?: return
         triggerMessageEvent("findNext", "{searchTarget: \"$searchTarget\"}")
     }
 
     override fun findPrevious() {
-        val searchTarget = controlPanel.findTextArea.text
-        if (searchTarget == null) {
-            return
+        if (!controlPanel.findTextArea.isFocusOwner) {
+            controlPanel.findTextArea.grabFocus()
         }
+        val searchTarget = controlPanel.findTextArea.text ?: return
         triggerMessageEvent("findPrevious", "{searchTarget: \"$searchTarget\"}")
     }
 
