@@ -86,6 +86,8 @@ export class AppComponent {
                 this.viewer.onDocumentLoad.subscribe(() => {
                     this.setBackgroundColor(this.delayedBackgroundColor);
                     this.hideToolbar();
+                    this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
+                    this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
                 });
             });
         });
@@ -134,12 +136,6 @@ export class AppComponent {
             }
         });
         this.messageReceiverService.subscribe("getDocumentInfo", (data: any) => {
-            if (this.infoOpened) {
-                this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
-            }
-            else {
-                this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
-            }
             this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
         });
     }
