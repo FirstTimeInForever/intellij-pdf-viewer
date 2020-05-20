@@ -10,7 +10,7 @@ class InfoEntry(label: String, value: String): JPanel() {
         layout = BorderLayout()
         border = EmptyBorder(5, 10, 5, 10)
         add(JLabel("$label:  "), BorderLayout.WEST)
-        if (value == "-") {
+        if (value == "-" || value.isEmpty()) {
             add(JLabel("unspecified"), BorderLayout.EAST)
         } else {
             add(JLabel(value), BorderLayout.EAST)
