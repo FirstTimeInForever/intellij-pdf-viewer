@@ -1,8 +1,9 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -17,16 +18,16 @@ import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Color
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import javax.swing.BoxLayout
+import javax.swing.*
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
     private lateinit var virtualFile: VirtualFile
     private val eventSubscriptionsManager =
-        MessageEventSubscriptionsManager.fromList(browserPanel, listOf("pageChanged"))
+        MessageEventSubscriptionsManager.fromList(browserPanel, listOf("pageChanged", "documentInfo"))
     private var currentPageNumberHolder = 0
-    private val jsonSerializer = Json(JsonConfiguration.Stable)
+    private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
     private val controlPanel = ControlPanel()
 
     init {
@@ -38,6 +39,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
             logger.debug(result.toString())
             currentPageNumberHolder = result.pageNumber
+            null
+        }
+        eventSubscriptionsManager.addHandler("documentInfo") {
+            val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
+            logger.debug(result.toString())
+            ApplicationManager.getApplication().invokeLater {
+                showDocumentInfoDialog(result)
+            }
             null
         }
     }
@@ -53,6 +62,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     override fun nextPage() = triggerMessageEvent("nextPage")
     override fun previousPage() = triggerMessageEvent("previousPage")
     fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
+    fun getDocumentInfo() = triggerMessageEvent("getDocumentInfo")
 
     override fun findNext() {
         if (!controlPanel.findTextArea.isFocusOwner) {
@@ -87,6 +97,9 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             }
         })
     }
+
+    private fun showDocumentInfoDialog(documentInfo: DocumentInfoDataObject) =
+        DialogBuilder().centerPanel(DocumentInfoPanel(documentInfo)).showModal(true)
 
     override fun openDocument(file: VirtualFile) {
         virtualFile = file

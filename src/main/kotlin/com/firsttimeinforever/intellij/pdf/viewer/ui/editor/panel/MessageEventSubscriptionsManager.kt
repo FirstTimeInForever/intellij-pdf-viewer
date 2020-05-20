@@ -1,11 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
-import com.intellij.openapi.Disposable
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefJSQuery
-import org.cef.browser.CefBrowser
-import org.cef.browser.CefFrame
-import org.cef.handler.CefLoadHandlerAdapter
 
 class MessageEventSubscriptionsManager private constructor(private val browser: JBCefBrowser) {
     val subscriptions = mutableMapOf<String, JBCefJSQuery>()

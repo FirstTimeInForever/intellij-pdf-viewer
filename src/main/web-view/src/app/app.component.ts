@@ -55,9 +55,17 @@ export class AppComponent {
     private setBackgroundColor(color: string) {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.appContainer.style.background = color;
+        // console.log(appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar"));
+        // appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style["background-color"] = color + " !important";
+        // console.log(appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style["background-color"]);
+    }
+
+    private collectDocumentInfo() {
+        return this.viewer.PDFViewerApplication.pdfDocumentProperties.fieldData;
     }
 
     private delayedBackgroundColor: string;
+    private infoOpened = false;
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
@@ -124,6 +132,15 @@ export class AppComponent {
             catch (error) {
                 console.warn("Could not set background color!");
             }
+        });
+        this.messageReceiverService.subscribe("getDocumentInfo", (data: any) => {
+            if (this.infoOpened) {
+                this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
+            }
+            else {
+                this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
+            }
+            this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
         });
     }
 }

@@ -8,8 +8,6 @@
     This plugin allows you to view PDF files directly in IDE.
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -66,6 +64,9 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.TogglePdfjsToolbarAction"
                 text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"
+                text="Show Document Info" icon="AllIcons.General.Information"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
             id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
@@ -82,6 +83,7 @@
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup"
             id="PdfEditorRightToolbarActionGroup" text="Pdf Viewer Right Toolbar Actions" popup="true" compact="true">
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"/>
         </group>
