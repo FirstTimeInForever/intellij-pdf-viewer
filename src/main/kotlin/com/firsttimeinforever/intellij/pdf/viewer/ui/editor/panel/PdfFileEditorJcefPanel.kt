@@ -111,6 +111,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 if (browser!!.url != targetUrl) {
                     return
                 }
+                eventSubscriptionsManager.injectSubscriptions()
                 setCurrentPageNumber(currentPageNumberHolder)
                 setBackgroundColor(controlPanel.background)
             }

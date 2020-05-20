@@ -16,7 +16,6 @@ class MessageEventSubscriptionsManager private constructor(private val browser: 
             events.forEach {
                 manager.subscriptions.put(it, JBCefJSQuery.create(browser)!!)
             }
-            manager.ensureInject()
             return manager
         }
     }
@@ -25,14 +24,10 @@ class MessageEventSubscriptionsManager private constructor(private val browser: 
         subscriptions[eventName]!!.addHandler(handler)
     }
 
-    private fun ensureInject() {
-        browser.jbCefClient.addLoadHandler(object : CefLoadHandlerAdapter() {
-            override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-                subscriptions.forEach {
-                    subscribeToEvent(it.key, it.value)
-                }
-            }
-        }, browser.cefBrowser)
+    fun injectSubscriptions() {
+        subscriptions.forEach {
+            subscribeToEvent(it.key, it.value)
+        }
     }
 
     private fun subscribeToEvent(eventName: String, query: JBCefJSQuery) {
