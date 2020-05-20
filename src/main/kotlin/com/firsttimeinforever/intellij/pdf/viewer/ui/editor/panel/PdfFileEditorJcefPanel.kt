@@ -18,7 +18,7 @@ import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Color
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import javax.swing.*
+import javax.swing.BoxLayout
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
@@ -29,6 +29,9 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
     private val controlPanel = ControlPanel()
+    private var currentScrollDirectionHorizontal = true
+
+    fun isCurrentScrollDirectionHorizontal() = currentScrollDirectionHorizontal
 
     init {
         Disposer.register(this, browserPanel)
@@ -61,8 +64,21 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     override fun printDocument() = triggerMessageEvent("printDocument")
     override fun nextPage() = triggerMessageEvent("nextPage")
     override fun previousPage() = triggerMessageEvent("previousPage")
+
     fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
     fun getDocumentInfo() = triggerMessageEvent("getDocumentInfo")
+
+    fun toggleScrollDirection(): Boolean {
+        triggerMessageEvent("toggleScrollDirection")
+        currentScrollDirectionHorizontal = !currentScrollDirectionHorizontal
+        return currentScrollDirectionHorizontal
+    }
+
+    fun toggleSpreadEvenPages() = triggerMessageEvent("toggleSpreadEvenPages")
+    fun toggleSpreadOddPages() = triggerMessageEvent("toggleSpreadOddPages")
+
+    fun rotateClockwise() = triggerMessageEvent("rotateClockwise")
+    fun rotateCounterclockwise() = triggerMessageEvent("rotateCounterclockwise")
 
     override fun findNext() {
         if (!controlPanel.findTextArea.isFocusOwner) {
@@ -113,6 +129,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 setBackgroundColor(event.newValue as Color)
             }
         })
+//        java.util.Timer().schedule(object: java.util.TimerTask() {
+//            override fun run() {
+//                browserPanel.openDevtools()
+//            }
+//        }, 10000)
     }
 
     override fun reloadDocument() {

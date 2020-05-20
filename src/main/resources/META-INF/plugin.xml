@@ -67,14 +67,34 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"
                 text="Show Document Info" icon="AllIcons.General.Information"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleScrollDirectionAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleScrollDirectionAction"
+                text="Set Vertical Scrolling" description="Sets vertical scrolling for document pages"
+                icon="AllIcons.Actions.SplitVertically"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadOddPagesAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadOddPagesAction"
+                text="Toggle Spread Odd Pages" description="Enables or disables odd pages spread"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"
+                text="Toggle Spread Even Pages" description="Enables or disables even pages spread"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateClockwiseAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateClockwiseAction"
+                text="Rotate Document Clockwise" description="Rotates document clockwise"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
+                text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
             id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSidebarAction"/>
+            <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.PreviousPageAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.NextPageAction"/>
+            <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.IncreaseDocumentScaleAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"/>
+            <separator/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleScrollDirectionAction"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup"
             id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true" compact="true">
@@ -84,6 +104,7 @@
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup"
             id="PdfEditorRightToolbarActionGroup" text="Pdf Viewer Right Toolbar Actions" popup="true" compact="true">
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ShowDocumentInfoAction"/>
+            <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ReloadDocumentAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.PrintDocumentAction"/>
         </group>

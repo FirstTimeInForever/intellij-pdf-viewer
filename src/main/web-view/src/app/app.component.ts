@@ -9,6 +9,13 @@ import {MessageSenderService} from "./message-sender";
 
 // [viewerFolder]='64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
+enum SpreadState {
+    none,
+    odd,
+    even
+}
+
+
 @Component({
     selector: 'app-root',
     template: `<ng2-pdfjs-viewer #viewer viewerId="__uniqueViewerId" (onPageChange)="pageChanged($event)" 
@@ -75,6 +82,74 @@ export class AppComponent {
         return split[split.length - 1];
     }
 
+// cursorHandToolButton: button#cursorHandTool.secondaryToolbarButton.handTool
+// cursorSelectToolButton: button#cursorSelectTool.secondaryToolbarButton.selectTool.toggled
+// documentPropertiesButton: button#documentProperties.secondaryToolbarButton.documentProperties
+// downloadButton: button#secondaryDownload.secondaryToolbarButton.download.visibleMediumView
+// firstPageButton: button#firstPage.secondaryToolbarButton.firstPage
+// lastPageButton: button#lastPage.secondaryToolbarButton.lastPage
+// openFileButton: button#secondaryOpenFile.secondaryToolbarButton.openFile.visibleLargeView
+// pageRotateCcwButton: button#pageRotateCcw.secondaryToolbarButton.rotateCcw
+// pageRotateCwButton: button#pageRotateCw.secondaryToolbarButton.rotateCw
+// presentationModeButton: button#secondaryPresentationMode.secondaryToolbarButton.presentationMode.visibleLargeView.hidden
+// printButton: button#secondaryPrint.secondaryToolbarButton.print.visibleMediumView
+// scrollHorizontalButton: button#scrollHorizontal.secondaryToolbarButton.scrollModeButtons.scrollHorizontal
+// scrollVerticalButton: button#scrollVertical.secondaryToolbarButton.scrollModeButtons.scrollVertical.toggled
+// scrollWrappedButton: button#scrollWrapped.secondaryToolbarButton.scrollModeButtons.scrollWrapped
+// spreadEvenButton: button#spreadEven.secondaryToolbarButton.spreadModeButtons.spreadEven
+// spreadNoneButton: button#spreadNone.secondaryToolbarButton.spreadModeButtons.spreadNone.toggled
+// spreadOddButton: button#spreadOdd.secondaryToolbarButton.spreadModeButtons.spreadOdd
+// toggleButton: button#secondaryToolbarToggle.toolbarButton
+// toolbar: div#secondaryToolbar.secondaryToolbar.hidden.doorHangerRight
+// toolbarButtonContainer: div#secondaryToolbarButtonContainer
+// viewBookmarkButton: a#secondaryViewBookmark.secondaryToolbarButton.bookmark.visibleSmallView
+
+    private spreadState = SpreadState.none;
+
+    private toggleOddSpread() {
+        if (this.spreadState != SpreadState.odd) {
+            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadOddButton.click();
+            this.spreadState = SpreadState.odd;
+        }
+        else {
+            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadNoneButton.click();
+            this.spreadState = SpreadState.none;
+        }
+    }
+
+    private toggleEvenSpread() {
+        if (this.spreadState != SpreadState.even) {
+            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadEvenButton.click();
+            this.spreadState = SpreadState.even;
+        }
+        else {
+            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadNoneButton.click();
+            this.spreadState = SpreadState.none;
+        }
+    }
+
+    private rotateClockwise() {
+        this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.pageRotateCwButton.click();
+    }
+
+    private rotateCounterclockwise() {
+        this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.pageRotateCcwButton.click();
+    }
+
+    private currentScrollDirectionHorizontal = false;
+
+    private toggleScrollDirection() {
+        const toolbar = this.viewer.PDFViewerApplication.appConfig.secondaryToolbar;
+        if (this.currentScrollDirectionHorizontal) {
+            toolbar.scrollVerticalButton.click();
+            this.currentScrollDirectionHorizontal = false;
+        }
+        else {
+            toolbar.scrollHorizontalButton.click();
+            this.currentScrollDirectionHorizontal = true;
+        }
+    }
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
         private messageSenderService: MessageSenderService) {
@@ -98,9 +173,14 @@ export class AppComponent {
                     this.hideToolbar();
                     this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
                     this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
+                    console.log(this.viewer.PDFViewerApplication);
                 });
             });
         });
+        this.registerEventSubscriptions();
+    }
+
+    private registerEventSubscriptions() {
         this.messageReceiverService.subscribe("pageSet", (data: any) => {
             this.actualPage = data.pageNumber;
         });
@@ -147,6 +227,21 @@ export class AppComponent {
         });
         this.messageReceiverService.subscribe("getDocumentInfo", (data: any) => {
             this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
+        });
+        this.messageReceiverService.subscribe("toggleScrollDirection", (data: any) => {
+            this.toggleScrollDirection();
+        });
+        this.messageReceiverService.subscribe("rotateClockwise", (data: any) => {
+            this.rotateClockwise();
+        });
+        this.messageReceiverService.subscribe("rotateCounterclockwise", (data: any) => {
+            this.rotateCounterclockwise();
+        });
+        this.messageReceiverService.subscribe("toggleSpreadOddPages", (data: any) => {
+            this.toggleOddSpread();
+        });
+        this.messageReceiverService.subscribe("toggleSpreadEvenPages", (data: any) => {
+            this.toggleEvenSpread();
         });
     }
 }
