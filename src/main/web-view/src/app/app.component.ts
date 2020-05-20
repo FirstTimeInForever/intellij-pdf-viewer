@@ -61,17 +61,27 @@ export class AppComponent {
     }
 
     private collectDocumentInfo() {
-        return this.viewer.PDFViewerApplication.pdfDocumentProperties.fieldData;
+        const info = {};
+        Object.assign(info, this.viewer.PDFViewerApplication.pdfDocumentProperties.fieldData);
+        info["fileName"] = this.fileName;
+        return info;
     }
 
     private delayedBackgroundColor: string;
-    private infoOpened = false;
+    private fileName: string;
+
+    private parseFileName(url: string) {
+        const split = decodeURIComponent(url).split("/");
+        return split[split.length - 1];
+    }
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
         private messageSenderService: MessageSenderService) {
         const subscription = this.route.queryParams.subscribe(params => {
             const targetUrl = params['path'];
+            this.fileName = this.parseFileName(targetUrl);
+            console.log(this.fileName);
             if (!targetUrl) {
                 return;
             }
