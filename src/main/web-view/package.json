@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --deploy-url /64fa8636-e686-4c63-9956-132d9471ce77",
+    "buildDev": "ng build --deploy-url /64fa8636-e686-4c63-9956-132d9471ce77 --prod=false",
+    "build": "ng build --deploy-url /64fa8636-e686-4c63-9956-132d9471ce77 --prod=true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

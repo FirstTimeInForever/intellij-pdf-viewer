@@ -30,6 +30,9 @@ intellij {
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
+
+val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
+
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -40,21 +43,44 @@ tasks {
     node {
         download = true
         version = "13.2.0"
-        nodeModulesDir = file("${projectDir}/src/main/web-view")
+        nodeModulesDir = webviewSourceDirectory
     }
 }
 
-tasks.register<NpmTask>("webViewBuild") {
+tasks.register("ensureNodeModulesInstalled"){
+    dependsOn("nodeSetup")
+    dependsOn("npmSetup")
     if (!file("${projectDir}/src/main/web-view/node_modules").exists()) {
         dependsOn("npm_ci")
     }
     else {
         println("Skipping npm_ci step")
     }
+}
+
+fun cacheWebviewBuildTask(task: NpmTask) {
+    task.run {
+        inputs.file(File(webviewSourceDirectory, "package.json")).withPathSensitivity(PathSensitivity.RELATIVE)
+        inputs.dir(File(webviewSourceDirectory, "src")).withPathSensitivity(PathSensitivity.RELATIVE)
+        inputs.file(File(webviewSourceDirectory, "package-lock.json")).withPathSensitivity(PathSensitivity.RELATIVE)
+        outputs.dir("${projectDir}/build/resources/main/web-view")
+        outputs.cacheIf { true }
+    }
+}
+
+tasks.register<NpmTask>("webViewBuildDev") {
+    cacheWebviewBuildTask(this)
+    dependsOn("ensureNodeModulesInstalled")
+    setArgs(listOf("run", "buildDev"))
+}
+
+tasks.register<NpmTask>("webViewBuild") {
+    cacheWebviewBuildTask(this)
+    dependsOn("ensureNodeModulesInstalled")
     setArgs(listOf("run", "build"))
 }
 
-tasks.getByName("buildPlugin") {
+tasks.getByName("processResources") {
     dependsOn("webViewBuild")
 }
 
