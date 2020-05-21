@@ -62,7 +62,7 @@ export class AppComponent {
     private setBackgroundColor(color: string) {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.appContainer.style.background = color;
-        appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style.background = "inherit";
+        appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style.background = color;
     }
 
     private collectDocumentInfo() {
