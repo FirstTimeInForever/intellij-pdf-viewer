@@ -6,4 +6,8 @@ class PrintDocumentAction: PdfEditorAction() {
     override fun actionPerformed(event: AnActionEvent) {
         getEditor(event)?.printDocument()
     }
+
+    override fun update(event: AnActionEvent) {
+        event.presentation.isEnabledAndVisible = false
+    }
 }

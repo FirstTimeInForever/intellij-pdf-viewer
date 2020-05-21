@@ -174,6 +174,8 @@ export class AppComponent {
                     this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
                     this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
                     console.log(this.viewer.PDFViewerApplication);
+                    this.viewer.PDFViewerApplication.unbindWindowEvents();
+                    window["debugApplication"] = this.viewer.PDFViewerApplication;
                 });
             });
         });
