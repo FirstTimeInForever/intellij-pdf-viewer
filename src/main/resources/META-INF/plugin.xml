@@ -73,16 +73,20 @@
                 icon="AllIcons.Actions.SplitVertically"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadOddPagesAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadOddPagesAction"
-                text="Toggle Spread Odd Pages" description="Enables or disables odd pages spread"/>
+                text="Toggle Spread Odd Pages" description="Enables or disables odd pages spread"
+                icon="/icons/actions/spreadOdd.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"
-                text="Toggle Spread Even Pages" description="Enables or disables even pages spread"/>
+                text="Toggle Spread Even Pages" description="Enables or disables even pages spread"
+                icon="/icons/actions/spreadEven.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateClockwiseAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateClockwiseAction"
-                text="Rotate Document Clockwise" description="Rotates document clockwise"/>
+                text="Rotate Document Clockwise" description="Rotates document clockwise"
+                icon="/icons/actions/rotateRight.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
-                text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"/>
+                text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"
+                icon="/icons/actions/rotateLeft.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
                 text="Open Devtools Window" description="Opens devtools window for current document"/>
@@ -96,6 +100,12 @@
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.IncreaseDocumentScaleAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.DecreaseDocumentScaleAction"/>
+            <separator/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateClockwiseAction"/>
+            <separator/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadOddPagesAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleScrollDirectionAction"/>
         </group>

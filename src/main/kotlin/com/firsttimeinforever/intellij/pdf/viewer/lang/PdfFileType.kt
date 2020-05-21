@@ -12,7 +12,7 @@ class PdfFileType private constructor(): LanguageFileType(PdfLanguage.INSTANCE) 
     }
 
     override fun getIcon(): Icon? {
-        return PdfViewerIcons.FILE_ICON
+        return PdfViewerIcons.FILE
     }
 
     override fun getName(): String {
