@@ -83,6 +83,9 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.RotateCounterclockwiseAction"
                 text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
+                text="Open Devtools Window" description="Opens devtools window for current document"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
             id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">

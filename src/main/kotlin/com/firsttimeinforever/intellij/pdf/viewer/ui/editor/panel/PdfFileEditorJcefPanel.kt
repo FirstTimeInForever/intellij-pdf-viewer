@@ -80,6 +80,8 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     fun rotateClockwise() = triggerMessageEvent("rotateClockwise")
     fun rotateCounterclockwise() = triggerMessageEvent("rotateCounterclockwise")
 
+    fun openDevtools() = browserPanel.openDevtools()
+
     override fun findNext() {
         if (!controlPanel.findTextArea.isFocusOwner) {
             controlPanel.findTextArea.grabFocus()
@@ -129,11 +131,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 setBackgroundColor(event.newValue as Color)
             }
         })
-//        java.util.Timer().schedule(object: java.util.TimerTask() {
-//            override fun run() {
-//                browserPanel.openDevtools()
-//            }
-//        }, 10000)
     }
 
     override fun reloadDocument() {
