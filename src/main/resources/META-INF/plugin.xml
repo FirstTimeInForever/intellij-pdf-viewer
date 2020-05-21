@@ -6,6 +6,9 @@
     <description><![CDATA[
     <h1>Intellij PDF Viewer Plugin</h1>
     This plugin allows you to view PDF files directly in IDE.
+    <div>
+    <img width="400" src="https://raw.githubusercontent.com/FirstTimeInForever/intellij-pdf-viewer/development/images/plugin-screenshot.png">
+    </div
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
