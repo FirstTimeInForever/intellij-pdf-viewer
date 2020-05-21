@@ -3,12 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 import com.intellij.openapi.util.registry.Registry
 
 
-class PdfEditorPanelProvider private constructor() {
-    companion object {
-        val INSTANCE =
-            PdfEditorPanelProvider()
-    }
-
+object PdfEditorPanelProvider {
     private fun hasJcef(): Boolean {
         try {
             if (Class.forName("org.cef.browser.CefBrowser", true, javaClass.classLoader) != null) {

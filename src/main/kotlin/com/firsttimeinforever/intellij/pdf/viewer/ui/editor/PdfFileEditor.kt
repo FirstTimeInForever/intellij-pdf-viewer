@@ -16,7 +16,7 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
     }
 
     val viewPanel: PdfFileEditorPanel =
-        PdfEditorPanelProvider.INSTANCE.createPanel()
+        PdfEditorPanelProvider.createPanel()
 
     init {
         Disposer.register(this, viewPanel)
