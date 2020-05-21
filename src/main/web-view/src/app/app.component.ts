@@ -82,28 +82,6 @@ export class AppComponent {
         return split[split.length - 1];
     }
 
-// cursorHandToolButton: button#cursorHandTool.secondaryToolbarButton.handTool
-// cursorSelectToolButton: button#cursorSelectTool.secondaryToolbarButton.selectTool.toggled
-// documentPropertiesButton: button#documentProperties.secondaryToolbarButton.documentProperties
-// downloadButton: button#secondaryDownload.secondaryToolbarButton.download.visibleMediumView
-// firstPageButton: button#firstPage.secondaryToolbarButton.firstPage
-// lastPageButton: button#lastPage.secondaryToolbarButton.lastPage
-// openFileButton: button#secondaryOpenFile.secondaryToolbarButton.openFile.visibleLargeView
-// pageRotateCcwButton: button#pageRotateCcw.secondaryToolbarButton.rotateCcw
-// pageRotateCwButton: button#pageRotateCw.secondaryToolbarButton.rotateCw
-// presentationModeButton: button#secondaryPresentationMode.secondaryToolbarButton.presentationMode.visibleLargeView.hidden
-// printButton: button#secondaryPrint.secondaryToolbarButton.print.visibleMediumView
-// scrollHorizontalButton: button#scrollHorizontal.secondaryToolbarButton.scrollModeButtons.scrollHorizontal
-// scrollVerticalButton: button#scrollVertical.secondaryToolbarButton.scrollModeButtons.scrollVertical.toggled
-// scrollWrappedButton: button#scrollWrapped.secondaryToolbarButton.scrollModeButtons.scrollWrapped
-// spreadEvenButton: button#spreadEven.secondaryToolbarButton.spreadModeButtons.spreadEven
-// spreadNoneButton: button#spreadNone.secondaryToolbarButton.spreadModeButtons.spreadNone.toggled
-// spreadOddButton: button#spreadOdd.secondaryToolbarButton.spreadModeButtons.spreadOdd
-// toggleButton: button#secondaryToolbarToggle.toolbarButton
-// toolbar: div#secondaryToolbar.secondaryToolbar.hidden.doorHangerRight
-// toolbarButtonContainer: div#secondaryToolbarButtonContainer
-// viewBookmarkButton: a#secondaryViewBookmark.secondaryToolbarButton.bookmark.visibleSmallView
-
     private spreadState = SpreadState.none;
 
     private toggleOddSpread() {
