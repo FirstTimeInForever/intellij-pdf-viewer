@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorJcefPanel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
@@ -7,8 +8,10 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 abstract class PdfEditorPdfjsAction: PdfEditorAction() {
-    override fun update(event: AnActionEvent) {
-        event.presentation.isEnabledAndVisible = getPanel(event) != null
+    override fun haveVisibleEditor(event: AnActionEvent): Boolean {
+        return haveVisibleEditor(event) {
+            it is PdfFileEditor && it.viewPanel is PdfFileEditorJcefPanel
+        }
     }
 
     fun getPanel(event: AnActionEvent): PdfFileEditorJcefPanel? {
