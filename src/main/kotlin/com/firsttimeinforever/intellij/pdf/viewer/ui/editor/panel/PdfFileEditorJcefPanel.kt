@@ -73,6 +73,20 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             this.grabFocus()
             null
         }
+        val escapeKeyListener = object: KeyListener {
+            override fun keyPressed(event: KeyEvent?) {
+                if (event == null) {
+                    return
+                }
+                if (event.keyCode == KeyEvent.VK_ESCAPE) {
+                    toggleFullscreenMode()
+                    removeKeyListener(this)
+                }
+            }
+            override fun keyTyped(event: KeyEvent?) = Unit
+            override fun keyReleased(event: KeyEvent?) = Unit
+        }
+        addKeyListener(escapeKeyListener)
     }
 
     private fun clickInBrowserWindow() {
