@@ -18,6 +18,19 @@ class PresentationModeController {
     private targetDocument: Document = null;
     private htmlRoot: HTMLElement = null;
 
+    private clickEventListener = () => {
+        this.viewer.pdfPresentationMode.request();
+        this.htmlRoot.removeEventListener("click", this.clickEventListener);
+        this.htmlRoot.addEventListener("keydown", this.escapeEventListener)
+    };
+
+    private escapeEventListener = (event) => {
+        if (event.key === "Escape") {
+            this.htmlRoot.removeEventListener("keydown", this.escapeEventListener)
+            this.exit();
+        }
+    };
+
     constructor(viewer: any) {
         this.viewer = viewer;
         this.targetDocument = viewer.pdfPresentationMode.container.ownerDocument;
@@ -33,16 +46,7 @@ class PresentationModeController {
         if (this.viewer.pdfPresentationMode.isFullscreen) {
             return false;
         }
-        this.htmlRoot.onclick = () => {
-            this.viewer.pdfPresentationMode.request();
-            this.htmlRoot.onclick = function() {};
-            this.htmlRoot.onkeypress = (event) => {
-                if (event.key === "Escape") {
-                    this.htmlRoot.onkeypress = function() {};
-                    this.exit();
-                }
-            }
-        };
+        this.htmlRoot.addEventListener("click", this.clickEventListener);
         return true;
     }
 
@@ -76,6 +80,13 @@ export class AppComponent {
 
     pageChanged(pageNumber: number) {
         this.messageSenderService.triggerEvent("pageChanged", {pageNumber});
+    }
+
+    private sendFocusTransferNotification() {
+        if (!this.messageSenderService) {
+            return;
+        }
+        this.messageSenderService.triggerEvent("frameFocused", {})
     }
 
     private hideToolbar() {
@@ -185,6 +196,9 @@ export class AppComponent {
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
         private messageSenderService: MessageSenderService) {
+        window.addEventListener("click", () => {
+            this.sendFocusTransferNotification();
+        });
         const subscription = this.route.queryParams.subscribe(params => {
             const targetUrl = params['path'];
             this.fileName = this.parseFileName(targetUrl);
@@ -209,6 +223,10 @@ export class AppComponent {
                     this.viewer.PDFViewerApplication.unbindWindowEvents();
                     window["debugApplication"] = this.viewer.PDFViewerApplication;
                     this.presentationModeController = new PresentationModeController(this.viewer.PDFViewerApplication);
+                    const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
+                    targetDocument.addEventListener("click", () => {
+                        this.sendFocusTransferNotification();
+                    });
                 });
             });
         });

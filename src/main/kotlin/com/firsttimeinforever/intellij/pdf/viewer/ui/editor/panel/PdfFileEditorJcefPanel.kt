@@ -19,9 +19,10 @@ import java.awt.Color
 import java.awt.MouseInfo
 import java.awt.Robot
 import java.awt.event.InputEvent
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
-import java.util.*
 import javax.swing.BoxLayout
 import javax.swing.FocusManager
 
@@ -32,7 +33,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val eventSubscriptionsManager =
         MessageEventSubscriptionsManager.fromList(
             browserPanel,
-            listOf("pageChanged", "documentInfo", "presentationModeEnterReady")
+            listOf("pageChanged", "documentInfo", "presentationModeEnterReady", "frameFocused")
         )
     private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
@@ -66,6 +67,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         eventSubscriptionsManager.addHandler("presentationModeEnterReady") {
             presentationModeActive = true
             clickInBrowserWindow()
+            null
+        }
+        eventSubscriptionsManager.addHandler("frameFocused") {
+            this.grabFocus()
             null
         }
     }
