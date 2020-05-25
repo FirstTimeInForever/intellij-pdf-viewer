@@ -45,6 +45,20 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     fun isPresentationModeActive() = presentationModeActive
 
+    private val escapeKeyListener = object: KeyListener {
+        override fun keyPressed(event: KeyEvent?) {
+            if (event == null) {
+                return
+            }
+            if (event.keyCode == KeyEvent.VK_ESCAPE) {
+                toggleFullscreenMode()
+                removeKeyListener(this)
+            }
+        }
+        override fun keyTyped(event: KeyEvent?) = Unit
+        override fun keyReleased(event: KeyEvent?) = Unit
+    }
+
     init {
         Disposer.register(this, browserPanel)
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -54,7 +68,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
             logger.debug(result.toString())
             currentPageNumberHolder = result.pageNumber
-            null
         }
         eventSubscriptionsManager.addHandler("documentInfo") {
             val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
@@ -62,29 +75,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             ApplicationManager.getApplication().invokeLater {
                 showDocumentInfoDialog(result)
             }
-            null
         }
         eventSubscriptionsManager.addHandler("presentationModeEnterReady") {
             presentationModeActive = true
             clickInBrowserWindow()
-            null
         }
         eventSubscriptionsManager.addHandler("frameFocused") {
             this.grabFocus()
-            null
-        }
-        val escapeKeyListener = object: KeyListener {
-            override fun keyPressed(event: KeyEvent?) {
-                if (event == null) {
-                    return
-                }
-                if (event.keyCode == KeyEvent.VK_ESCAPE) {
-                    toggleFullscreenMode()
-                    removeKeyListener(this)
-                }
-            }
-            override fun keyTyped(event: KeyEvent?) = Unit
-            override fun keyReleased(event: KeyEvent?) = Unit
         }
         addKeyListener(escapeKeyListener)
     }

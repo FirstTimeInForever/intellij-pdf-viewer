@@ -16,8 +16,16 @@ class MessageEventSubscriptionsManager private constructor(private val browser: 
         }
     }
 
-    fun addHandler(eventName: String, handler: (String) -> JBCefJSQuery.Response?) {
+    fun addHandlerWithResponse(eventName: String, handler: (String) -> JBCefJSQuery.Response?) {
+        check(subscriptions.contains(eventName))
         subscriptions[eventName]!!.addHandler(handler)
+    }
+
+    fun addHandler(eventName: String, handler: (String) -> Unit) {
+        addHandlerWithResponse(eventName) {
+            handler(it)
+            null
+        }
     }
 
     fun injectSubscriptions() {
