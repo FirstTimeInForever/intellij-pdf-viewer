@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorJcefPanel
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications

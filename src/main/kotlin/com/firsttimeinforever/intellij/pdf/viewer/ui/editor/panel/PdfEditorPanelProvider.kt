@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel
 import com.intellij.openapi.util.registry.Registry
 
 

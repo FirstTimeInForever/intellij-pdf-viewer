@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.messages
 
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefJSQuery
