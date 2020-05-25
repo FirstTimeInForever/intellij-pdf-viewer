@@ -15,8 +15,7 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
         private const val NAME = "Pdf Viewer File Editor"
     }
 
-    val viewPanel: PdfFileEditorPanel =
-        PdfEditorPanelProvider.createPanel()
+    val viewPanel: PdfFileEditorPanel = PdfEditorPanelProvider.createPanel()
 
     init {
         Disposer.register(this, viewPanel)
@@ -26,10 +25,8 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
     fun reloadDocument() = viewPanel.reloadDocument()
     fun increaseScale() = viewPanel.increaseScale()
     fun decreaseScale() = viewPanel.decreaseScale()
-    fun toggleSidebar() = viewPanel.toggleSidebar()
     fun nextPage() = viewPanel.nextPage()
     fun previousPage() = viewPanel.previousPage()
-    fun printDocument() = viewPanel.printDocument()
     fun findNext() = viewPanel.findNext()
     fun findPrevious() = viewPanel.findPrevious()
 

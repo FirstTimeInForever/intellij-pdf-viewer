@@ -2,8 +2,8 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ToggleSidebarAction: PdfEditorAction() {
+class ToggleSidebarAction: PdfEditorPdfjsAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        getEditor(event)?.toggleSidebar()
+        getPanel(event)?.toggleSidebar()
     }
 }

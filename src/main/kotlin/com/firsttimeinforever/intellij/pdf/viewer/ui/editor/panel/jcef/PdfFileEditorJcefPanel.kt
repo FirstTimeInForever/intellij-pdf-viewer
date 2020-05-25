@@ -108,13 +108,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     override fun increaseScale() = triggerMessageEvent("increaseScale")
     override fun decreaseScale() = triggerMessageEvent("decreaseScale")
-    override fun toggleSidebar() = triggerMessageEvent("toggleSidebar")
-    override fun printDocument() = triggerMessageEvent("printDocument")
     override fun nextPage() = triggerMessageEvent("nextPage")
     override fun previousPage() = triggerMessageEvent("previousPage")
 
     fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
     fun getDocumentInfo() = triggerMessageEvent("getDocumentInfo")
+    fun toggleSidebar() = triggerMessageEvent("toggleSidebar")
+    fun printDocument() = triggerMessageEvent("printDocument")
 
     fun toggleScrollDirection(): Boolean {
         triggerMessageEvent("toggleScrollDirection")

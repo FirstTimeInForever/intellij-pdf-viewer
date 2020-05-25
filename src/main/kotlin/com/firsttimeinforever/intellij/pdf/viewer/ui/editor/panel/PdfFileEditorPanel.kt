@@ -13,10 +13,8 @@ abstract class PdfFileEditorPanel: JPanel(), Disposable {
     abstract fun openDocument(file: VirtualFile)
 
     abstract fun reloadDocument()
-    abstract fun toggleSidebar()
     abstract fun increaseScale()
     abstract fun decreaseScale()
-    abstract fun printDocument()
     abstract fun nextPage()
     abstract fun previousPage()
     abstract fun findNext()

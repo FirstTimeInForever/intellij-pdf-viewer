@@ -2,9 +2,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class PrintDocumentAction: PdfEditorAction() {
+class PrintDocumentAction: PdfEditorPdfjsAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        getEditor(event)?.printDocument()
+        getPanel(event)?.printDocument()
     }
 
     override fun update(event: AnActionEvent) {
