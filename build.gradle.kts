@@ -2,7 +2,7 @@ import org.jetbrains.intellij.tasks.*
 import com.moowork.gradle.node.npm.*
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.18"
+    id("org.jetbrains.intellij") version "0.4.21"
     kotlin("jvm") version "1.3.70"
     kotlin("plugin.serialization") version "1.3.70"
     java
