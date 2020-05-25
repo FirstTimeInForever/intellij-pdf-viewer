@@ -7,19 +7,60 @@ import {MessageSenderService} from "./message-sender";
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
-// [viewerFolder]='64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
-
 enum SpreadState {
     none,
     odd,
     even
 }
 
+class PresentationModeController {
+    private viewer: any = null;
+    private targetDocument: Document = null;
+    private htmlRoot: HTMLElement = null;
+
+    constructor(viewer: any) {
+        this.viewer = viewer;
+        this.targetDocument = viewer.pdfPresentationMode.container.ownerDocument;
+        this.htmlRoot = this.targetDocument.getElementsByTagName("html")[0];
+    }
+
+    isFullscreen(): boolean {
+        return this.viewer.pdfPresentationMode.isFullscreen;
+    }
+
+    enter(): boolean {
+        console.log("enter call");
+        if (this.viewer.pdfPresentationMode.isFullscreen) {
+            return false;
+        }
+        this.htmlRoot.onclick = () => {
+            this.viewer.pdfPresentationMode.request();
+            this.htmlRoot.onclick = function() {};
+            this.htmlRoot.onkeypress = (event) => {
+                if (event.key === "Escape") {
+                    this.htmlRoot.onkeypress = function() {};
+                    this.exit();
+                }
+            }
+        };
+        return true;
+    }
+
+    exit() {
+        console.log("Exit call");
+        if (!this.viewer.pdfPresentationMode.isFullscreen) {
+            return;
+        }
+        //ignored promise
+        this.targetDocument.exitFullscreen();
+    }
+}
+
 
 @Component({
     selector: 'app-root',
     template: `<ng2-pdfjs-viewer #viewer viewerId="__uniqueViewerId" (onPageChange)="pageChanged($event)" 
-                                 [page]="actualPage" [download]=false [fullScreen]=false [openFile]=false 
+                                 [page]="actualPage" [download]=false [openFile]=false 
                                  viewerFolder='64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs' 
                                  [viewBookmark]=false pagemode='none'>
     </ng2-pdfjs-viewer>`,
@@ -28,6 +69,8 @@ enum SpreadState {
 export class AppComponent {
     @ViewChild('viewer')
     private viewer: PdfJsViewerComponent;
+
+    private presentationModeController: PresentationModeController = null;
 
     actualPage: number;
 
@@ -126,6 +169,19 @@ export class AppComponent {
         }
     }
 
+    private togglePresentationMode() {
+        if (!this.presentationModeController) {
+            return;
+        }
+        if (!this.presentationModeController.isFullscreen()) {
+            this.presentationModeController.enter();
+            this.messageSenderService.triggerEvent("presentationModeEnterReady", {})
+        }
+        else {
+            this.presentationModeController.exit();
+        }
+    }
+
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
         private messageSenderService: MessageSenderService) {
@@ -152,6 +208,7 @@ export class AppComponent {
                     console.log(this.viewer.PDFViewerApplication);
                     this.viewer.PDFViewerApplication.unbindWindowEvents();
                     window["debugApplication"] = this.viewer.PDFViewerApplication;
+                    this.presentationModeController = new PresentationModeController(this.viewer.PDFViewerApplication);
                 });
             });
         });
@@ -220,6 +277,9 @@ export class AppComponent {
         });
         this.messageReceiverService.subscribe("toggleSpreadEvenPages", (data: any) => {
             this.toggleEvenSpread();
+        });
+        this.messageReceiverService.subscribe("togglePresentationMode", (data: any) => {
+            this.togglePresentationMode();
         });
     }
 }

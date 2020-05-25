@@ -8,7 +8,7 @@
     This plugin allows you to view PDF files directly in IDE.
     <div>
     <img width="400" src="https://raw.githubusercontent.com/FirstTimeInForever/intellij-pdf-viewer/development/images/plugin-screenshot.png">
-    </div
+    </div>
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
@@ -19,6 +19,9 @@
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider" />
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer" />
     </extensions>
+<!--    <applicationListeners>-->
+<!--        <listener class="PluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener"></listener>-->
+<!--    </applicationListeners>-->
 
     <actions>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfFileEditorActionGroup"
@@ -93,6 +96,10 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.OpenDevtoolsAction"
                 text="Open Devtools Window" description="Opens devtools window for current document"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleDocumentPresentationModeAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleDocumentPresentationModeAction"
+                text="Enter PDF Presentation Mode" description="Enters document presentation mode"
+                icon="AllIcons.General.ExpandComponentHover"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
             id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
@@ -111,6 +118,7 @@
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleSpreadEvenPagesAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleScrollDirectionAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.ToggleDocumentPresentationModeAction"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup"
             id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true" compact="true">

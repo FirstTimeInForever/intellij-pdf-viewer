@@ -16,22 +16,33 @@ import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Color
+import java.awt.MouseInfo
+import java.awt.Robot
+import java.awt.event.InputEvent
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.util.*
 import javax.swing.BoxLayout
+import javax.swing.FocusManager
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
     private lateinit var virtualFile: VirtualFile
     private val eventSubscriptionsManager =
-        MessageEventSubscriptionsManager.fromList(browserPanel, listOf("pageChanged", "documentInfo"))
+        MessageEventSubscriptionsManager.fromList(
+            browserPanel,
+            listOf("pageChanged", "documentInfo", "presentationModeEnterReady")
+        )
     private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
+    private var presentationModeActive = false
 
     fun isCurrentScrollDirectionHorizontal() = currentScrollDirectionHorizontal
+
+    fun isPresentationModeActive() = presentationModeActive
 
     init {
         Disposer.register(this, browserPanel)
@@ -52,6 +63,25 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             }
             null
         }
+        eventSubscriptionsManager.addHandler("presentationModeEnterReady") {
+            presentationModeActive = true
+            clickInBrowserWindow()
+            null
+        }
+    }
+
+    private fun clickInBrowserWindow() {
+        val originalPosition = MouseInfo.getPointerInfo().location
+        val originalFocusOwner = FocusManager.getCurrentManager().focusOwner;
+        val robot = Robot();
+        val location = browserPanel.component.locationOnScreen
+        val xcenter = browserPanel.component.width / 2
+        val ycenter = browserPanel.component.height / 2
+        robot.mouseMove(location.x + xcenter, location.y + ycenter);
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseMove(originalPosition.x, originalPosition.y)
+        originalFocusOwner?.requestFocus()
     }
 
     private fun triggerMessageEvent(eventName: String, data: String = "{}") {
@@ -81,6 +111,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     fun rotateCounterclockwise() = triggerMessageEvent("rotateCounterclockwise")
 
     fun openDevtools() = browserPanel.openDevtools()
+
+    fun toggleFullscreenMode() {
+        if (!presentationModeActive) {
+            presentationModeActive = false
+        }
+        triggerMessageEvent("togglePresentationMode")
+    }
 
     override fun findNext() {
         if (!controlPanel.findTextArea.isFocusOwner) {
