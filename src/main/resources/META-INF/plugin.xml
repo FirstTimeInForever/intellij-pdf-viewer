@@ -18,6 +18,7 @@
             implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType" fieldName="INSTANCE"/>
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider" />
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer" />
+        <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
     </extensions>
 <!--    <applicationListeners>-->
 <!--        <listener class="PluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener"></listener>-->

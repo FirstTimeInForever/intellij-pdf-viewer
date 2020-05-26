@@ -9,7 +9,7 @@ class OpenDevtoolsAction: PdfEditorPdfjsAction() {
     }
 
     override fun update(event: AnActionEvent) {
-        if (Registry.get("pdf.viewer.debug").asBoolean()) {
+        if (Registry.`is`("pdf.viewer.debug", false)) {
             super.update(event)
         }
         else {
