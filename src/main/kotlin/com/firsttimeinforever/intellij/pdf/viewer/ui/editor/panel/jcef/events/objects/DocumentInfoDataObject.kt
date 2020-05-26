@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects
 
 import kotlinx.serialization.Serializable
 

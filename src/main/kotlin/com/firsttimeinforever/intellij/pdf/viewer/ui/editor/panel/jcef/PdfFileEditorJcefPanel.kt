@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
@@ -63,7 +64,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         add(browserPanel.component)
         eventReceiver.run {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
-                val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
+                val result = jsonSerializer.parse(PageChangeDataObject.serializer(), it)
                 currentPageNumberHolder = result.pageNumber
             }
             addHandler(SubscribableEventType.DOCUMENT_INFO) {
@@ -77,7 +78,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
-                println(result)
                 pagesCountHolder = result.count
             }
         }
@@ -202,8 +202,8 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private fun updatePageNumber(value: Int) {
         eventSender.triggerWith(
             TriggerableEventType.SET_PAGE,
-            PageChangeEventDataObject(value),
-            PageChangeEventDataObject.serializer()
+            PageChangeDataObject(value),
+            PageChangeDataObject.serializer()
         )
     }
 

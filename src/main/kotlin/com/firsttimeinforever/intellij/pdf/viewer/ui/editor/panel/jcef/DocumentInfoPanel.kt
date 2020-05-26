@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.DocumentInfoDataObject
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.DocumentInfoDataObject
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 import javax.swing.JSeparator
