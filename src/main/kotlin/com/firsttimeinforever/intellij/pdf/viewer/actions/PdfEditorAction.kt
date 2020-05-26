@@ -1,15 +1,21 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
+import com.intellij.ide.ui.UISettings
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 
 abstract class PdfEditorAction: AnAction() {
+    open val disableInIdePresentationMode = true
+
     override fun update(event: AnActionEvent) {
-        event.presentation.isEnabledAndVisible = haveVisibleEditor(event)
         super.update(event)
+        event.presentation.isEnabledAndVisible = haveVisibleEditor(event)
+        if (UISettings.instance.presentationMode && disableInIdePresentationMode) {
+            event.presentation.isEnabledAndVisible = false
+        }
     }
 
     open fun haveVisibleEditor(event: AnActionEvent): Boolean {

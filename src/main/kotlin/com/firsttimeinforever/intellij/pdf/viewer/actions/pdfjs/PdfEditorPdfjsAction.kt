@@ -9,6 +9,8 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 abstract class PdfEditorPdfjsAction: PdfEditorAction() {
+    open val disabledInPresentationMode = false
+
     override fun haveVisibleEditor(event: AnActionEvent): Boolean {
         return haveVisibleEditor(event) {
             it is PdfFileEditor && it.viewPanel is PdfFileEditorJcefPanel
@@ -24,6 +26,12 @@ abstract class PdfEditorPdfjsAction: PdfEditorAction() {
                 null
             }
         }
+    }
+
+    override fun update(event: AnActionEvent) {
+        super.update(event)
+        val panel = getPanel(event)?: return
+        event.presentation.isEnabled = !(panel.isPresentationModeActive() && disabledInPresentationMode)
     }
 
     companion object {

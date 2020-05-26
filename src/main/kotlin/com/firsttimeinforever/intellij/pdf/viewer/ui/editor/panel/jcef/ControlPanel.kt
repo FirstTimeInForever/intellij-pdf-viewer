@@ -4,6 +4,8 @@ import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarAc
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup
 import com.intellij.ide.DataManager
+import com.intellij.ide.ui.UISettings
+import com.intellij.ide.ui.UISettingsListener
 import com.intellij.openapi.actionSystem.*
 import java.awt.*
 import java.awt.event.ActionEvent
@@ -12,7 +14,7 @@ import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class ControlPanel: JPanel() {
+class ControlPanel: JPanel(), UISettingsListener {
     private val leftToolbar =
         createToolbarForGroup<PdfEditorLeftToolbarActionGroup>("PdfEditorLeftToolbarActionGroup")
     private val searchToolbar =
@@ -101,6 +103,24 @@ class ControlPanel: JPanel() {
             0
         )
         action.actionPerformed(event)
+    }
+
+    private var presentationModeState = false
+
+    var presentationModeEnabled
+        set(value: Boolean) {
+            presentationModeState = value
+            findTextArea.isEnabled = !value
+        }
+        get() = presentationModeState
+
+    override fun uiSettingsChanged(settings: UISettings) {
+        // Action buttons will be hidded by their update
+        findTextArea.isVisible = !settings.presentationMode
+        findTextArea.isEnabled = !settings.presentationMode
+        if (presentationModeEnabled) {
+            findTextArea.isEnabled = false
+        }
     }
 
     companion object {

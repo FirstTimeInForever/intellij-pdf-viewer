@@ -131,9 +131,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     fun openDevtools() = browserPanel.openDevtools()
 
     fun toggleFullscreenMode() {
-        if (!presentationModeActive) {
+        if (presentationModeActive) {
             presentationModeActive = false
         }
+        controlPanel.presentationModeEnabled = !controlPanel.presentationModeEnabled
         triggerMessageEvent("togglePresentationMode")
     }
 

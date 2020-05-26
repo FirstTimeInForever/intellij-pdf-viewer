@@ -20,9 +20,11 @@
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer" />
         <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
     </extensions>
-<!--    <applicationListeners>-->
+
+    <applicationListeners>
 <!--        <listener class="PluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener"></listener>-->
-<!--    </applicationListeners>-->
+        <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ControlPanel" topic="com.intellij.ide.ui.UISettingsListener"/>
+    </applicationListeners>
 
     <actions>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfFileEditorActionGroup"

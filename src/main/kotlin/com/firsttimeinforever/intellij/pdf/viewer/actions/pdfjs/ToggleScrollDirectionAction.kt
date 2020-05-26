@@ -4,6 +4,8 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class ToggleScrollDirectionAction: PdfEditorPdfjsAction() {
+    override val disabledInPresentationMode = true
+
     companion object {
         const val VERTICAL_TEXT = "Set Vertical Scrolling"
         const val HORIZONTAL_TEXT = "Set Horizontal Scrolling"
