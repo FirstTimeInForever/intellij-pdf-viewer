@@ -5,6 +5,9 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorP
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.editor.colors.EditorColorsListener
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -23,12 +26,10 @@ import java.awt.Robot
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
-import java.beans.PropertyChangeEvent
-import java.beans.PropertyChangeListener
 import javax.swing.BoxLayout
 import javax.swing.FocusManager
 
-class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
+class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
     private lateinit var virtualFile: VirtualFile
@@ -208,14 +209,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         virtualFile = file
         addUpdateHandler()
         reloadDocument()
-        controlPanel.addPropertyChangeListener("background", object: PropertyChangeListener {
-            override fun propertyChange(event: PropertyChangeEvent?) {
-                if (event == null) {
-                    return
-                }
-                setBackgroundColor(event.newValue as Color)
-            }
-        })
     }
 
     override fun reloadDocument() {
@@ -229,7 +222,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 }
                 eventReceiver.injectSubscriptions()
                 setCurrentPageNumber(currentPageNumberHolder)
-                setBackgroundColor(controlPanel.background)
+                setBackgroundColor(EditorColorsManager.getInstance().globalScheme.defaultBackground)
             }
         }, browserPanel.cefBrowser)
         browserPanel.loadURL(targetUrl)
@@ -255,4 +248,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     }
 
     override fun dispose() = Unit
+
+    override fun globalSchemeChange(scheme: EditorColorsScheme?) {
+        if (scheme == null) {
+            return
+        }
+        setBackgroundColor(scheme.defaultBackground)
+    }
 }

@@ -23,7 +23,10 @@
 
     <applicationListeners>
 <!--        <listener class="PluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener"></listener>-->
-        <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ControlPanel" topic="com.intellij.ide.ui.UISettingsListener"/>
+        <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ControlPanel"
+            topic="com.intellij.ide.ui.UISettingsListener"/>
+        <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel"
+            topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
     </applicationListeners>
 
     <actions>
