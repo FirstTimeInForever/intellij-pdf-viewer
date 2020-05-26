@@ -2,7 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.messages.*
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.ui.DialogBuilder
