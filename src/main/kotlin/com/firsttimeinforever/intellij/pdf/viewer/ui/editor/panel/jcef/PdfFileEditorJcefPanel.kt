@@ -77,25 +77,27 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
-        eventSubscriptionsManager.addHandler("pageChanged") {
-            val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
-            logger.debug(result.toString())
-            currentPageNumberHolder = result.pageNumber
-        }
-        eventSubscriptionsManager.addHandler("documentInfo") {
-            val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
-            logger.debug(result.toString())
-            ApplicationManager.getApplication().invokeLater {
-                showDocumentInfoDialog(result)
+        eventSubscriptionsManager.run {
+            addHandler("pageChanged") {
+                val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
+                logger.debug(result.toString())
+                currentPageNumberHolder = result.pageNumber
             }
-        }
-        eventSubscriptionsManager.addHandler("presentationModeEnterReady") {
-            presentationModeActive = true
-            clickInBrowserWindow()
-            onPresentationModeEnter()
-        }
-        eventSubscriptionsManager.addHandler("frameFocused") {
-            this.grabFocus()
+            addHandler("documentInfo") {
+                val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
+                logger.debug(result.toString())
+                ApplicationManager.getApplication().invokeLater {
+                    showDocumentInfoDialog(result)
+                }
+            }
+            addHandler("presentationModeEnterReady") {
+                presentationModeActive = true
+                clickInBrowserWindow()
+                onPresentationModeEnter()
+            }
+            eventSubscriptionsManager.addHandler("frameFocused") {
+                grabFocus()
+            }
         }
         addKeyListener(pageNavigationKeyListener)
     }
