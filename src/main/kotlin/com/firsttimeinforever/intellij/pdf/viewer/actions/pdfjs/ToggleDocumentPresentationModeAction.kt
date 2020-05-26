@@ -7,7 +7,7 @@ class ToggleDocumentPresentationModeAction: PdfEditorPdfjsAction() {
     override val disableInIdePresentationMode: Boolean = false
 
     override fun actionPerformed(event: AnActionEvent) {
-        getPanel(event)?.toggleFullscreenMode()
+        getPanel(event)?.togglePresentationMode()
     }
 
     override fun update(event: AnActionEvent) {

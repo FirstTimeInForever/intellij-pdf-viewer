@@ -47,14 +47,25 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     fun isPresentationModeActive() = presentationModeActive
 
-    private val escapeKeyListener = object: KeyListener {
+    private val presentationModeExitKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
             if (event == null) {
                 return
             }
             if (event.keyCode == KeyEvent.VK_ESCAPE) {
-                toggleFullscreenMode()
+                togglePresentationMode()
                 removeKeyListener(this)
+            }
+        }
+        override fun keyTyped(event: KeyEvent?) = Unit
+        override fun keyReleased(event: KeyEvent?) = Unit
+    }
+
+    private val pageNavigationKeyListener = object: KeyListener {
+        override fun keyPressed(event: KeyEvent?) {
+            when (event?.keyCode) {
+                KeyEvent.VK_LEFT -> previousPage()
+                KeyEvent.VK_RIGHT -> nextPage()
             }
         }
         override fun keyTyped(event: KeyEvent?) = Unit
@@ -81,11 +92,12 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         eventSubscriptionsManager.addHandler("presentationModeEnterReady") {
             presentationModeActive = true
             clickInBrowserWindow()
+            onPresentationModeEnter()
         }
         eventSubscriptionsManager.addHandler("frameFocused") {
             this.grabFocus()
         }
-        addKeyListener(escapeKeyListener)
+        addKeyListener(pageNavigationKeyListener)
     }
 
     private fun clickInBrowserWindow() {
@@ -100,6 +112,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseMove(originalPosition.x, originalPosition.y)
         originalFocusOwner?.requestFocus()
+    }
+
+    private fun onPresentationModeEnter() {
+        addKeyListener(presentationModeExitKeyListener)
+    }
+
+    private fun onPresentationModeExit() {
+        removeKeyListener(presentationModeExitKeyListener)
     }
 
     private fun triggerMessageEvent(eventName: String, data: String = "{}") {
@@ -130,9 +150,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     fun openDevtools() = browserPanel.openDevtools()
 
-    fun toggleFullscreenMode() {
+    fun togglePresentationMode() {
         if (presentationModeActive) {
             presentationModeActive = false
+            onPresentationModeExit()
         }
         controlPanel.presentationModeEnabled = !controlPanel.presentationModeEnabled
         triggerMessageEvent("togglePresentationMode")
