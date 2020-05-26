@@ -32,20 +32,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
     private lateinit var virtualFile: VirtualFile
-    private val eventSubscriptionsManager =
-        MessageEventSubscriptionsManager.fromList(
-            browserPanel,
-            listOf(
-                "pageChanged",
-                "documentInfo",
-                "presentationModeEnterReady",
-                "presentationModeEnter",
-                "presentationModeExit",
-                "frameFocused"
-            )
-        )
-    private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
+    private val eventReceiver =
+        MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
+    private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
+    private var currentPageNumberHolder = 0
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
     private var presentationModeActive = false
@@ -56,12 +47,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     private val presentationModeExitKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
-            if (event == null) {
-                return
-            }
-            if (event.keyCode == KeyEvent.VK_ESCAPE) {
-                togglePresentationMode()
-                removeKeyListener(this)
+            when (event?.keyCode) {
+                KeyEvent.VK_ESCAPE -> {
+                    togglePresentationMode()
+                    removeKeyListener(this)
+                }
             }
         }
         override fun keyTyped(event: KeyEvent?) = Unit
@@ -84,33 +74,31 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
-        eventSubscriptionsManager.run {
-            addHandler("pageChanged") {
+        eventReceiver.run {
+            addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
                 logger.debug(result.toString())
                 currentPageNumberHolder = result.pageNumber
             }
-            addHandler("documentInfo") {
+            addHandler(SubscribableEventType.DOCUMENT_INFO) {
                 val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
                 logger.debug(result.toString())
                 ApplicationManager.getApplication().invokeLater {
                     showDocumentInfoDialog(result)
                 }
             }
-            addHandler("presentationModeEnterReady") {
-//                presentationModeActive = true
+            addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER_READY) {
                 clickInBrowserWindow()
-//                onPresentationModeEnter()
             }
-            addHandler("presentationModeEnter") {
+            addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER) {
                 presentationModeActive = true
                 onPresentationModeEnter()
             }
-            addHandler("presentationModeExit") {
+            addHandler(SubscribableEventType.PRESENTATION_MODE_EXIT) {
                 presentationModeActive = false
                 onPresentationModeExit()
             }
-            eventSubscriptionsManager.addHandler("frameFocused") {
+            eventReceiver.addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
             }
         }
@@ -141,31 +129,25 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
         controlPanel.presentationModeEnabled = false
     }
 
-    private fun triggerMessageEvent(eventName: String, data: String = "{}") {
-        browserPanel.cefBrowser.executeJavaScript("triggerMessageEvent('$eventName', $data)", null, 0)
-    }
+    override fun increaseScale() = eventSender.trigger(TriggerableEventType.INCREASE_SCALE)
+    override fun decreaseScale() = eventSender.trigger(TriggerableEventType.DECREASE_SCALE)
+    override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
+    override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 
-    override fun increaseScale() = triggerMessageEvent("increaseScale")
-    override fun decreaseScale() = triggerMessageEvent("decreaseScale")
-    override fun nextPage() = triggerMessageEvent("nextPage")
-    override fun previousPage() = triggerMessageEvent("previousPage")
-
-    fun togglePdfjsToolbar() = triggerMessageEvent("toggleToolbar")
-    fun getDocumentInfo() = triggerMessageEvent("getDocumentInfo")
-    fun toggleSidebar() = triggerMessageEvent("toggleSidebar")
-    fun printDocument() = triggerMessageEvent("printDocument")
+    fun togglePdfjsToolbar() = eventSender.trigger(TriggerableEventType.TOGGLE_PDFJS_TOOLBAR)
+    fun getDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
+    fun toggleSidebar() = eventSender.trigger(TriggerableEventType.TOGGLE_SIDEBAR)
+    fun printDocument() = eventSender.trigger(TriggerableEventType.PRINT_DOCUMENT)
+    fun toggleSpreadEvenPages() = eventSender.trigger(TriggerableEventType.TOGGLE_SPREAD_EVEN_PAGES)
+    fun toggleSpreadOddPages() = eventSender.trigger(TriggerableEventType.TOGGLE_SPREAD_ODD_PAGES)
+    fun rotateClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_CLOCKWISE)
+    fun rotateCounterclockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
 
     fun toggleScrollDirection(): Boolean {
-        triggerMessageEvent("toggleScrollDirection")
+        eventSender.trigger(TriggerableEventType.TOGGLE_SCROLL_DIRECTION)
         currentScrollDirectionHorizontal = !currentScrollDirectionHorizontal
         return currentScrollDirectionHorizontal
     }
-
-    fun toggleSpreadEvenPages() = triggerMessageEvent("toggleSpreadEvenPages")
-    fun toggleSpreadOddPages() = triggerMessageEvent("toggleSpreadOddPages")
-
-    fun rotateClockwise() = triggerMessageEvent("rotateClockwise")
-    fun rotateCounterclockwise() = triggerMessageEvent("rotateCounterclockwise")
 
     fun openDevtools() = browserPanel.openDevtools()
 
@@ -174,7 +156,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             presentationModeActive = false
             onPresentationModeExit()
         }
-        triggerMessageEvent("togglePresentationMode")
+        eventSender.trigger(TriggerableEventType.TOGGLE_PRESENTATION_MODE)
     }
 
     override fun findNext() {
@@ -182,7 +164,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             controlPanel.findTextArea.grabFocus()
         }
         val searchTarget = controlPanel.findTextArea.text ?: return
-        triggerMessageEvent("findNext", "{searchTarget: \"$searchTarget\"}")
+        eventSender.triggerWith(
+            TriggerableEventType.FIND_NEXT,
+            SearchDataObject(searchTarget),
+            SearchDataObject.serializer()
+        )
     }
 
     override fun findPrevious() {
@@ -190,7 +176,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             controlPanel.findTextArea.grabFocus()
         }
         val searchTarget = controlPanel.findTextArea.text ?: return
-        triggerMessageEvent("findPrevious", "{searchTarget: \"$searchTarget\"}")
+        eventSender.triggerWith(
+            TriggerableEventType.FIND_PREVIOUS,
+            SearchDataObject(searchTarget),
+            SearchDataObject.serializer()
+        )
     }
 
     private fun addUpdateHandler() {
@@ -237,7 +227,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 if (browser!!.url != targetUrl) {
                     return
                 }
-                eventSubscriptionsManager.injectSubscriptions()
+                eventReceiver.injectSubscriptions()
                 setCurrentPageNumber(currentPageNumberHolder)
                 setBackgroundColor(controlPanel.background)
             }
@@ -246,17 +236,22 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     }
 
     private fun setBackgroundColor(color: Color) {
-        val colors = listOf(color.red, color.blue, color.green, color.alpha)
-        val colorString = colors.joinToString("", transform = Integer::toHexString)
-        triggerMessageEvent("setBackgroundColor", "{color: \"#${colorString}\"}")
+        eventSender.triggerWith(
+            TriggerableEventType.SET_BACKGROUND_COLOR,
+            SetBackgroundColorDataObject.from(color),
+            SetBackgroundColorDataObject.serializer()
+        )
     }
 
     override fun getCurrentPageNumber(): Int = currentPageNumberHolder
 
     override fun setCurrentPageNumber(page: Int) {
         currentPageNumberHolder = page
-        val data = jsonSerializer.toJson(PageChangeEventDataObject.serializer(), PageChangeEventDataObject(page))
-        triggerMessageEvent("pageSet", data.toString())
+        eventSender.triggerWith(
+            TriggerableEventType.SET_PAGE,
+            PageChangeEventDataObject(page),
+            PageChangeEventDataObject.serializer()
+        )
     }
 
     override fun dispose() = Unit
