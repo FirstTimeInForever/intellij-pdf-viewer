@@ -1,5 +1,6 @@
-package com.firsttimeinforever.intellij.pdf.viewer.actions
+package com.firsttimeinforever.intellij.pdf.viewer.actions.common
 
+import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class FindPreviousInDocumentAction: PdfEditorAction() {

@@ -116,9 +116,9 @@ class ControlPanel: JPanel() {
         private const val ESCAPE_KEY_EVENT = "Escape"
 
         private const val FIND_NEXT_ACTION_ID =
-            "com.firsttimeinforever.intellij.pdf.viewer.actions.FindNextInDocumentAction"
+            "com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction"
 
         private const val FIND_PREVIOUS_ACTION_ID =
-            "com.firsttimeinforever.intellij.pdf.viewer.actions.FindPreviousInDocumentAction"
+            "com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
     }
 }
