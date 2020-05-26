@@ -211,46 +211,52 @@ export class AppComponent {
                 this.viewer.pdfSrc = res;
                 this.viewer.refresh();
                 this.viewer.onDocumentLoad.subscribe(() => {
-                    this.setBackgroundColor(this.delayedBackgroundColor);
-                    this.hideToolbar();
-                    this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
-                    this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
-                    console.log(this.viewer.PDFViewerApplication);
-                    this.viewer.PDFViewerApplication.unbindWindowEvents();
-                    window["debugApplication"] = this.viewer.PDFViewerApplication;
-                    this.createPresentationModeController();
-                    const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
-                    this.buildIgnoreClickTargetsList();
-                    targetDocument.addEventListener("click", this.focusEventHandler);
+                    this.onDocumentLoad();
                 });
             });
         });
         this.registerEventSubscriptions();
     }
 
+    private onDocumentLoad() {
+        this.setBackgroundColor(this.delayedBackgroundColor);
+        this.hideToolbar();
+        this.viewer.PDFViewerApplication.unbindWindowEvents();
+        window["debugApplication"] = this.viewer.PDFViewerApplication;
+        this.createPresentationModeController();
+        const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
+        this.buildIgnoreClickTargetsList();
+        targetDocument.addEventListener("click", this.focusEventHandler);
+        this.ensureDocumentPropertiesReady();
+    }
+
+    private ensureDocumentPropertiesReady() {
+        this.viewer.PDFViewerApplication.pdfDocumentProperties.open();
+        this.viewer.PDFViewerApplication.pdfDocumentProperties.close();
+    }
+
     private registerEventSubscriptions() {
         this.messageReceiverService.subscribe("pageSet", (data: any) => {
             this.actualPage = data.pageNumber;
         });
-        this.messageReceiverService.subscribe("toggleSidebar", (data: any) => {
+        this.messageReceiverService.subscribe("toggleSidebar", () => {
             this.viewer.PDFViewerApplication.pdfSidebar.toggleButton.click();
-            console.log(this.viewer.PDFViewerApplication);
         });
-        this.messageReceiverService.subscribe("increaseScale", (data: any) => {
+        this.messageReceiverService.subscribe("increaseScale", () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.zoomIn.click();
             // this.viewer.PDFViewerApplication.zoomIn(2);
         });
-        this.messageReceiverService.subscribe("decreaseScale", (data: any) => {
+        this.messageReceiverService.subscribe("decreaseScale", () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.zoomOut.click();
             // this.viewer.PDFViewerApplication.zoomOut(2);
         });
-        this.messageReceiverService.subscribe("printDocument", (data: any) => {
+        this.messageReceiverService.subscribe("printDocument", () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.print.click();
         });
-        this.messageReceiverService.subscribe("nextPage", (data: any) => {
+        this.messageReceiverService.subscribe("nextPage", () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.next.click();
         });
-        this.messageReceiverService.subscribe("previousPage", (data: any) => {
+        this.messageReceiverService.subscribe("previousPage", () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.previous.click();
         });
         this.messageReceiverService.subscribe("findNext", (data: any) => {
@@ -261,9 +267,7 @@ export class AppComponent {
             this.viewer.PDFViewerApplication.appConfig.findBar.findField.value = data.searchTarget;
             this.viewer.PDFViewerApplication.appConfig.findBar.findPreviousButton.click();
         });
-        this.messageReceiverService.subscribe("toggleToolbar", (data: any) => {
-            this.toggleToolbar();
-        });
+        this.registerSubscription("toggleToolbar", this.toggleToolbar);
         this.messageReceiverService.subscribe("setBackgroundColor", (data: {color: string}) => {
             this.delayedBackgroundColor = data.color;
             try {
@@ -276,23 +280,17 @@ export class AppComponent {
         this.messageReceiverService.subscribe("getDocumentInfo", (data: any) => {
             this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
         });
-        this.messageReceiverService.subscribe("toggleScrollDirection", (data: any) => {
-            this.toggleScrollDirection();
-        });
-        this.messageReceiverService.subscribe("rotateClockwise", (data: any) => {
-            this.rotateClockwise();
-        });
-        this.messageReceiverService.subscribe("rotateCounterclockwise", (data: any) => {
-            this.rotateCounterclockwise();
-        });
-        this.messageReceiverService.subscribe("toggleSpreadOddPages", (data: any) => {
-            this.toggleOddSpread();
-        });
-        this.messageReceiverService.subscribe("toggleSpreadEvenPages", (data: any) => {
-            this.toggleEvenSpread();
-        });
-        this.messageReceiverService.subscribe("togglePresentationMode", (data: any) => {
-            this.togglePresentationMode();
+        this.registerSubscription("toggleScrollDirection", this.toggleScrollDirection);
+        this.registerSubscription("rotateClockwise", this.rotateClockwise);
+        this.registerSubscription("rotateCounterclockwise", this.rotateCounterclockwise);
+        this.registerSubscription("toggleSpreadOddPages", this.toggleOddSpread);
+        this.registerSubscription("toggleSpreadEvenPages", this.toggleEvenSpread);
+        this.registerSubscription("togglePresentationMode", this.togglePresentationMode);
+    }
+
+    private registerSubscription(event: string, callback) {
+        this.messageReceiverService.subscribe(event, (data: any) => {
+            callback.apply(this, data);
         });
     }
 }
