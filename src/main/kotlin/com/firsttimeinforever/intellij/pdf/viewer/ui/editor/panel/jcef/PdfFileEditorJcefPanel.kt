@@ -35,7 +35,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
     private val eventSubscriptionsManager =
         MessageEventSubscriptionsManager.fromList(
             browserPanel,
-            listOf("pageChanged", "documentInfo", "presentationModeEnterReady", "frameFocused")
+            listOf(
+                "pageChanged",
+                "documentInfo",
+                "presentationModeEnterReady",
+                "presentationModeEnter",
+                "presentationModeExit",
+                "frameFocused"
+            )
         )
     private var currentPageNumberHolder = 0
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
@@ -91,9 +98,17 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
                 }
             }
             addHandler("presentationModeEnterReady") {
-                presentationModeActive = true
+//                presentationModeActive = true
                 clickInBrowserWindow()
+//                onPresentationModeEnter()
+            }
+            addHandler("presentationModeEnter") {
+                presentationModeActive = true
                 onPresentationModeEnter()
+            }
+            addHandler("presentationModeExit") {
+                presentationModeActive = false
+                onPresentationModeExit()
             }
             eventSubscriptionsManager.addHandler("frameFocused") {
                 grabFocus()
@@ -118,10 +133,12 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
 
     private fun onPresentationModeEnter() {
         addKeyListener(presentationModeExitKeyListener)
+        controlPanel.presentationModeEnabled = true
     }
 
     private fun onPresentationModeExit() {
         removeKeyListener(presentationModeExitKeyListener)
+        controlPanel.presentationModeEnabled = false
     }
 
     private fun triggerMessageEvent(eventName: String, data: String = "{}") {
@@ -157,7 +174,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel() {
             presentationModeActive = false
             onPresentationModeExit()
         }
-        controlPanel.presentationModeEnabled = !controlPanel.presentationModeEnabled
         triggerMessageEvent("togglePresentationMode")
     }
 

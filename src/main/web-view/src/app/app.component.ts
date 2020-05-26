@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
 import {MessageReceiverService} from "./message-receiver.service";
 import {MessageSenderService} from "./message-sender";
+import {PresentationModeController} from "./PresentationModeController";
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
@@ -12,54 +13,6 @@ enum SpreadState {
     odd,
     even
 }
-
-class PresentationModeController {
-    private viewer: any = null;
-    private targetDocument: Document = null;
-    private htmlRoot: HTMLElement = null;
-
-    private clickEventListener = () => {
-        this.viewer.pdfPresentationMode.request();
-        this.htmlRoot.removeEventListener("click", this.clickEventListener);
-        this.htmlRoot.addEventListener("keydown", this.escapeEventListener)
-    };
-
-    private escapeEventListener = (event) => {
-        if (event.key === "Escape") {
-            this.htmlRoot.removeEventListener("keydown", this.escapeEventListener)
-            this.exit();
-        }
-    };
-
-    constructor(viewer: any) {
-        this.viewer = viewer;
-        this.targetDocument = viewer.pdfPresentationMode.container.ownerDocument;
-        this.htmlRoot = this.targetDocument.getElementsByTagName("html")[0];
-    }
-
-    isFullscreen(): boolean {
-        return this.viewer.pdfPresentationMode.isFullscreen;
-    }
-
-    enter(): boolean {
-        console.log("enter call");
-        if (this.viewer.pdfPresentationMode.isFullscreen) {
-            return false;
-        }
-        this.htmlRoot.addEventListener("click", this.clickEventListener);
-        return true;
-    }
-
-    exit() {
-        console.log("Exit call");
-        if (!this.viewer.pdfPresentationMode.isFullscreen) {
-            return;
-        }
-        //ignored promise
-        this.targetDocument.exitFullscreen();
-    }
-}
-
 
 @Component({
     selector: 'app-root',
@@ -182,15 +135,28 @@ export class AppComponent {
 
     private togglePresentationMode() {
         if (!this.presentationModeController) {
+            console.warn("presentationModeController was null at the time of enter request.");
             return;
         }
         if (!this.presentationModeController.isFullscreen()) {
             this.presentationModeController.enter();
-            this.messageSenderService.triggerEvent("presentationModeEnterReady", {})
         }
         else {
             this.presentationModeController.exit();
         }
+    }
+
+    private createPresentationModeController() {
+        this.presentationModeController = new PresentationModeController(this.viewer.PDFViewerApplication);
+        this.presentationModeController.addEnterEventHandler(() => {
+            this.messageSenderService.triggerEvent("presentationModeEnter", {});
+        });
+        this.presentationModeController.addEnterReadyEventHandler(() => {
+            this.messageSenderService.triggerEvent("presentationModeEnterReady", {});
+        });
+        this.presentationModeController.addExitEventHandler(() => {
+            this.messageSenderService.triggerEvent("presentationModeExit", {});
+        });
     }
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
@@ -222,7 +188,7 @@ export class AppComponent {
                     console.log(this.viewer.PDFViewerApplication);
                     this.viewer.PDFViewerApplication.unbindWindowEvents();
                     window["debugApplication"] = this.viewer.PDFViewerApplication;
-                    this.presentationModeController = new PresentationModeController(this.viewer.PDFViewerApplication);
+                    this.createPresentationModeController();
                     const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
                     targetDocument.addEventListener("click", () => {
                         this.sendFocusTransferNotification();
