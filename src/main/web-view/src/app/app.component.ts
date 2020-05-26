@@ -158,13 +158,43 @@ export class AppComponent {
             this.messageSenderService.triggerEvent("presentationModeExit", {});
         });
     }
+    
+    private ignoredClickTargets = [];
+
+    private buildIgnoreClickTargetsList() {
+        const config = this.viewer.PDFViewerApplication.appConfig;
+        let result = [
+            config.findBar.findPreviousButton,
+            config.findBar.findNextButton,
+            config.toolbar.previous,
+            config.toolbar.next,
+            config.toolbar.print,
+            config.toolbar.zoomOut,
+            config.toolbar.zoomIn,
+            this.viewer.PDFViewerApplication.pdfSidebar.toggleButton,
+            config.secondaryToolbar.scrollHorizontalButton,
+            config.secondaryToolbar.scrollVerticalButton,
+            config.secondaryToolbar.pageRotateCcwButton,
+            config.secondaryToolbar.pageRotateCwButton,
+            config.secondaryToolbar.spreadEvenButton,
+            config.secondaryToolbar.spreadNoneButton,
+            config.secondaryToolbar.spreadOddButton,
+        ];
+        this.ignoredClickTargets = result;
+    }
+
+    private focusEventHandler = (event) => {
+        console.log(event.target);
+        if (this.ignoredClickTargets.includes(event.target)) {
+            return;
+        }
+        this.sendFocusTransferNotification();
+    };
 
     constructor(private http: HttpClient, private route: ActivatedRoute,
         private messageReceiverService: MessageReceiverService,
         private messageSenderService: MessageSenderService) {
-        window.addEventListener("click", () => {
-            this.sendFocusTransferNotification();
-        });
+        window.addEventListener("click", this.focusEventHandler);
         const subscription = this.route.queryParams.subscribe(params => {
             const targetUrl = params['path'];
             this.fileName = this.parseFileName(targetUrl);
@@ -190,9 +220,8 @@ export class AppComponent {
                     window["debugApplication"] = this.viewer.PDFViewerApplication;
                     this.createPresentationModeController();
                     const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
-                    targetDocument.addEventListener("click", () => {
-                        this.sendFocusTransferNotification();
-                    });
+                    this.buildIgnoreClickTargetsList();
+                    targetDocument.addEventListener("click", this.focusEventHandler);
                 });
             });
         });
