@@ -31,7 +31,7 @@ abstract class PdfEditorPdfjsAction: PdfEditorAction() {
     override fun update(event: AnActionEvent) {
         super.update(event)
         val panel = getPanel(event)?: return
-        event.presentation.isEnabled = !(panel.isPresentationModeActive() && disabledInPresentationMode)
+        event.presentation.isEnabled = !(panel.presentationModeController.isPresentationModeActive() && disabledInPresentationMode)
     }
 
     companion object {

@@ -21,13 +21,9 @@ import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Color
-import java.awt.MouseInfo
-import java.awt.Robot
-import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.BoxLayout
-import javax.swing.FocusManager
 
 class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val browserPanel = JCEFHtmlPanel("about:blank")
@@ -37,27 +33,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val eventReceiver =
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
     private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
+    val presentationModeController =
+        PresentationModeController(this, browserPanel, eventReceiver, eventSender)
     private var currentPageNumberHolder = 0
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
-    private var presentationModeActive = false
 
     fun isCurrentScrollDirectionHorizontal() = currentScrollDirectionHorizontal
-
-    fun isPresentationModeActive() = presentationModeActive
-
-    private val presentationModeExitKeyListener = object: KeyListener {
-        override fun keyPressed(event: KeyEvent?) {
-            when (event?.keyCode) {
-                KeyEvent.VK_ESCAPE -> {
-                    togglePresentationMode()
-                    removeKeyListener(this)
-                }
-            }
-        }
-        override fun keyTyped(event: KeyEvent?) = Unit
-        override fun keyReleased(event: KeyEvent?) = Unit
-    }
 
     private val pageNavigationKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
@@ -78,56 +60,29 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         eventReceiver.run {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.parse(PageChangeEventDataObject.serializer(), it)
-                logger.debug(result.toString())
                 currentPageNumberHolder = result.pageNumber
             }
             addHandler(SubscribableEventType.DOCUMENT_INFO) {
                 val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
-                logger.debug(result.toString())
                 ApplicationManager.getApplication().invokeLater {
                     showDocumentInfoDialog(result)
                 }
             }
-            addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER_READY) {
-                clickInBrowserWindow()
-            }
-            addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER) {
-                presentationModeActive = true
-                onPresentationModeEnter()
-            }
-            addHandler(SubscribableEventType.PRESENTATION_MODE_EXIT) {
-                presentationModeActive = false
-                onPresentationModeExit()
-            }
-            eventReceiver.addHandler(SubscribableEventType.FRAME_FOCUSED) {
+            addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
             }
         }
         addKeyListener(pageNavigationKeyListener)
-    }
-
-    private fun clickInBrowserWindow() {
-        val originalPosition = MouseInfo.getPointerInfo().location
-        val originalFocusOwner = FocusManager.getCurrentManager().focusOwner;
-        val robot = Robot();
-        val location = browserPanel.component.locationOnScreen
-        val xcenter = browserPanel.component.width / 2
-        val ycenter = browserPanel.component.height / 2
-        robot.mouseMove(location.x + xcenter, location.y + ycenter);
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseMove(originalPosition.x, originalPosition.y)
-        originalFocusOwner?.requestFocus()
-    }
-
-    private fun onPresentationModeEnter() {
-        addKeyListener(presentationModeExitKeyListener)
-        controlPanel.presentationModeEnabled = true
-    }
-
-    private fun onPresentationModeExit() {
-        removeKeyListener(presentationModeExitKeyListener)
-        controlPanel.presentationModeEnabled = false
+        presentationModeController.run {
+            addEnterListener {
+                controlPanel.presentationModeEnabled = true
+                false
+            }
+            addExitListener {
+                controlPanel.presentationModeEnabled = false
+                false
+            }
+        }
     }
 
     override fun increaseScale() = eventSender.trigger(TriggerableEventType.INCREASE_SCALE)
@@ -151,14 +106,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     }
 
     fun openDevtools() = browserPanel.openDevtools()
-
-    fun togglePresentationMode() {
-        if (presentationModeActive) {
-            presentationModeActive = false
-            onPresentationModeExit()
-        }
-        eventSender.trigger(TriggerableEventType.TOGGLE_PRESENTATION_MODE)
-    }
 
     override fun findNext() {
         if (!controlPanel.findTextArea.isFocusOwner) {

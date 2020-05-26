@@ -14,7 +14,7 @@ class FindPreviousInDocumentAction: PdfEditorAction() {
         val editor = getEditor(event)?: return
         when (editor.viewPanel) {
             is PdfFileEditorJcefPanel -> {
-                event.presentation.isEnabled = !editor.viewPanel.isPresentationModeActive()
+                event.presentation.isEnabled = !editor.viewPanel.presentationModeController.isPresentationModeActive()
             }
             else -> {
                 event.presentation.isEnabled = true
