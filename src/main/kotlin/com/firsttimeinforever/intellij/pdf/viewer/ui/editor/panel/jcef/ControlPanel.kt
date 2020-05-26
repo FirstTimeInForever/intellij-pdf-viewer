@@ -25,9 +25,6 @@ class ControlPanel: JPanel() {
 
     init {
         layout = GridLayout()
-        size = Dimension(Int.MAX_VALUE, 24)
-        maximumSize = Dimension(Int.MAX_VALUE, 24)
-        preferredSize = Dimension(Int.MAX_VALUE, 24)
         leftToolbar.component.border = null
         searchToolbar.component.border = null
         rightToolbar.component.border = null
@@ -37,17 +34,13 @@ class ControlPanel: JPanel() {
         rightPanel.add(searchToolbar.component)
         searchToolbar.setTargetComponent(rightPanel)
         searchToolbar.adjustTheSameSize(true)
-        setActionToolbarSize(searchToolbar, Dimension(26 * 2, 24))
         rightPanel.add(findTextArea)
         findTextArea.preferredSize = Dimension(200, 24)
         findTextArea.minimumSize = Dimension(100, 24)
 
-        setActionToolbarSize(rightToolbar, Dimension(26, 24))
         rightPanel.add(rightToolbar.component)
         rightToolbar.adjustTheSameSize(true)
 
-        rightPanel.size = Dimension(Int.MAX_VALUE, 24)
-        rightPanel.maximumSize = Dimension(Int.MAX_VALUE, 24)
         rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
         add(rightPanel, Component.RIGHT_ALIGNMENT)
         setupSearchAreaKeybindings()
