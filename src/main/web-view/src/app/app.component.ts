@@ -35,6 +35,8 @@ export class AppComponent {
         this.messageSenderService.triggerEvent("pageChanged", {pageNumber});
     }
 
+    private pagesCount = 0;
+
     private sendFocusTransferNotification() {
         if (!this.messageSenderService) {
             return;
@@ -228,6 +230,10 @@ export class AppComponent {
         this.buildIgnoreClickTargetsList();
         targetDocument.addEventListener("click", this.focusEventHandler);
         this.ensureDocumentPropertiesReady();
+        this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
+        this.messageSenderService.triggerEvent("pagesCound", {
+            count: this.pagesCount
+        });
     }
 
     private ensureDocumentPropertiesReady() {

@@ -10,16 +10,16 @@ abstract class PdfFileEditorPanel: JPanel(), Disposable {
         layout = BorderLayout()
     }
 
-    abstract fun openDocument(file: VirtualFile)
+    open fun openDocument(file: VirtualFile) = Unit
 
-    abstract fun reloadDocument()
-    abstract fun increaseScale()
-    abstract fun decreaseScale()
-    abstract fun nextPage()
-    abstract fun previousPage()
-    abstract fun findNext()
-    abstract fun findPrevious()
+    open fun reloadDocument() = Unit
+    open fun increaseScale() = Unit
+    open fun decreaseScale() = Unit
+    open fun nextPage() = Unit
+    open fun previousPage() = Unit
+    open fun findNext() = Unit
+    open fun findPrevious() = Unit
 
-    abstract fun getCurrentPageNumber(): Int
-    abstract fun setCurrentPageNumber(page: Int)
+    open var currentPageNumber: Int = 0
+    open val pagesCount: Int = 0
 }

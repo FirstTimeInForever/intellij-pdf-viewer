@@ -40,11 +40,11 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
         if (state !is PdfFileEditorState) {
             return
         }
-        viewPanel.setCurrentPageNumber(state.page)
+        viewPanel.currentPageNumber = state.page
     }
 
     override fun getState(level: FileEditorStateLevel): FileEditorState {
-        return PdfFileEditorState(viewPanel.getCurrentPageNumber())
+        return PdfFileEditorState(viewPanel.currentPageNumber)
     }
 
     override fun getComponent(): JComponent = viewPanel

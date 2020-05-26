@@ -6,5 +6,6 @@ enum class SubscribableEventType(val displayName: String) {
     PRESENTATION_MODE_ENTER_READY("presentationModeEnterReady"),
     PRESENTATION_MODE_ENTER("presentationModeEnter"),
     PRESENTATION_MODE_EXIT("presentationModeExit"),
-    FRAME_FOCUSED("frameFocused")
+    FRAME_FOCUSED("frameFocused"),
+    PAGES_COUNT("pagesCound")
 }

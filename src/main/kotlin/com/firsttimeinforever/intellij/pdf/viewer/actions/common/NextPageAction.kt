@@ -9,4 +9,16 @@ class NextPageAction: PdfEditorAction() {
     override fun actionPerformed(event: AnActionEvent) {
         getEditor(event)?.nextPage()
     }
+
+    override fun update(event: AnActionEvent) {
+        super.update(event)
+        val editor = getEditor(event)?: return
+        if (editor.viewPanel.pagesCount == 0) {
+            event.presentation.isEnabled = false
+        }
+        else {
+            event.presentation.isEnabled = (editor.viewPanel.currentPageNumber !=
+                editor.viewPanel.pagesCount)
+        }
+    }
 }

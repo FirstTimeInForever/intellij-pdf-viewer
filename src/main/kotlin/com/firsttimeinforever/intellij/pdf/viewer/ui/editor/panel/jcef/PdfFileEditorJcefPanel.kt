@@ -35,11 +35,15 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
     val presentationModeController =
         PresentationModeController(this, browserPanel, eventReceiver, eventSender)
-    private var currentPageNumberHolder = 0
+    private var currentPageNumberHolder: Int = 1
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
+    private var pagesCountHolder = 0
 
     fun isCurrentScrollDirectionHorizontal() = currentScrollDirectionHorizontal
+
+    override val pagesCount
+        get() = pagesCountHolder
 
     private val pageNavigationKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
@@ -70,6 +74,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             }
             addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
+            }
+            addHandler(SubscribableEventType.PAGES_COUNT) {
+                val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
+                println(result)
+                pagesCountHolder = result.count
             }
         }
         addKeyListener(pageNavigationKeyListener)
@@ -168,7 +177,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                     return
                 }
                 eventReceiver.injectSubscriptions()
-                setCurrentPageNumber(currentPageNumberHolder)
+                updatePageNumber(currentPageNumber)
                 setBackgroundColor(EditorColorsManager.getInstance().globalScheme.defaultBackground)
             }
         }, browserPanel.cefBrowser)
@@ -183,13 +192,17 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         )
     }
 
-    override fun getCurrentPageNumber(): Int = currentPageNumberHolder
+    override var currentPageNumber: Int
+        get() = currentPageNumberHolder
+        set(value: Int) {
+            currentPageNumberHolder = value
+            updatePageNumber(value)
+        }
 
-    override fun setCurrentPageNumber(page: Int) {
-        currentPageNumberHolder = page
+    private fun updatePageNumber(value: Int) {
         eventSender.triggerWith(
             TriggerableEventType.SET_PAGE,
-            PageChangeEventDataObject(page),
+            PageChangeEventDataObject(value),
             PageChangeEventDataObject.serializer()
         )
     }

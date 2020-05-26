@@ -40,18 +40,5 @@ class PdfFileEditorStubPanel: PdfFileEditorPanel() {
         add(scrollPane)
     }
 
-    override fun openDocument(file: VirtualFile) = Unit
-    override fun reloadDocument() = Unit
-    override fun increaseScale() = Unit
-    override fun decreaseScale() = Unit
-    override fun findNext() = Unit
-    override fun findPrevious() = Unit
-    override fun nextPage() = Unit
-    override fun previousPage() = Unit
-
-    override fun getCurrentPageNumber(): Int = 0
-
-    override fun setCurrentPageNumber(page: Int) = Unit
-
     override fun dispose() = Unit
 }
