@@ -5,12 +5,19 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.intellij.ui.jcef.JCEFHtmlPanel
+import org.cef.browser.CefBrowser
+import org.cef.callback.CefJSDialogCallback
+import org.cef.handler.CefDisplayHandler
+import org.cef.handler.CefJSDialogHandler
+import org.cef.handler.CefJSDialogHandlerAdapter
+import org.cef.misc.BoolRef
 import java.awt.MouseInfo
 import java.awt.Robot
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.FocusManager
+import javax.swing.SwingUtilities
 
 typealias PresentationModeListenerType = (PresentationModeController) -> Boolean
 
@@ -40,7 +47,9 @@ class PresentationModeController(
     init {
         eventReceiver.run {
             addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER_READY) {
-                clickInBrowserWindow()
+                SwingUtilities.invokeLater {
+                    clickInBrowserWindow()
+                }
             }
             addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER) {
                 presentationModeActive = true
@@ -70,12 +79,12 @@ class PresentationModeController(
 
     private fun clickInBrowserWindow() {
         val originalPosition = MouseInfo.getPointerInfo().location
-        val originalFocusOwner = FocusManager.getCurrentManager().focusOwner;
-        val robot = Robot();
+        val originalFocusOwner = FocusManager.getCurrentManager().focusOwner
+        val robot = Robot()
         val location = browserPanel.component.locationOnScreen
         val xcenter = browserPanel.component.width / 2
         val ycenter = browserPanel.component.height / 2
-        robot.mouseMove(location.x + xcenter, location.y + ycenter);
+        robot.mouseMove(location.x + xcenter, location.y + ycenter)
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseMove(originalPosition.x, originalPosition.y)
