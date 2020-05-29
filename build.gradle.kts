@@ -26,6 +26,7 @@ dependencies {
 intellij {
     // Build against next EAP version
     version = "LATEST-EAP-SNAPSHOT"
+//    version = "2020.1"
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -88,5 +89,5 @@ tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     systemProperties["pdf.viewer.debug"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
-    jbrVersion("jbr_jcef-11_0_6b840.3")
+//    jbrVersion("jbr_jcef-11_0_6b840.3")
 }
