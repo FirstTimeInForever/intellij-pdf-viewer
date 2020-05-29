@@ -2,7 +2,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBScrollPane
+import java.awt.BorderLayout
 import java.awt.Desktop
+import javax.swing.BorderFactory
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
 
@@ -36,6 +38,7 @@ class PdfFileEditorStubPanel: PdfFileEditorPanel() {
                 Desktop.getDesktop().browse(it.url.toURI())
             }
         }
+        textPane.border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
         scrollPane.setViewportView(textPane)
         add(scrollPane)
     }
