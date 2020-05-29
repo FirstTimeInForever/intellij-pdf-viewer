@@ -123,6 +123,10 @@
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"
                 text="Enter PDF Presentation Mode" description="Enters document presentation mode"
                 icon="AllIcons.General.ExpandComponentHover"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
+                text="Toggle Fullscreen Mode" description="Toggles fullscreen mode"
+                icon="AllIcons.General.FitContent"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
             id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
@@ -142,6 +146,7 @@
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup"
             id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true" compact="true">
