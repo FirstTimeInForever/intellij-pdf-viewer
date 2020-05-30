@@ -1,6 +1,6 @@
 # IntelliJ PDF Viewer Plugin
 
-IntelliJ PDF Viewer plugin adds support for viewing PDF files in IntelliJ-based IDEs. This plugin uses recently integrated CEF (Chromium Embedded Framework) browser to render PDF documents with [PDF.js](https://mozilla.github.io/pdf.js/) library.
+IntelliJ PDF Viewer plugin adds support for viewing PDF files in IntelliJ-based IDEs. This plugin uses recently integrated (`2020.2`) CEF (Chromium Embedded Framework) browser to render PDF documents with [PDF.js](https://mozilla.github.io/pdf.js/) library.
 
 ## Features
 
@@ -23,7 +23,13 @@ IntelliJ PDF Viewer plugin adds support for viewing PDF files in IntelliJ-based 
 
 ![Plugin screenshot](images/plugin-screenshot.png)
 
-## Note on JCEF support
+## Notes on JCEF support
+
+Starting from `2020.2 EAP` (more precisely `202.4357.23-EAP-SNAPSHOT`) all IDEs should have bundled JCEF with `ide.browser.jcef.enabled` registry flag set to `true`. So the plugin should just work. If it doesn't work, please check if markdown plugin works fine. Check it's preview providers and confirm that JCEF is present.
+
+### Builds before `2020.2 EAP`
+
+You can't run this plugin without modifying `PdfEditorPanelProvider` with builds before `2020.2 EAP`. If you really want to - you should change JCEF presence detection with code from early versions (look at `0.0.4` tag).
 
 Since CEF browser is still an experimental feature, there is a high chance that it is not shipped by default with your IDE. To be able to use CEF functionality you need to switch to version of JBR that supports it. See [this issue](https://youtrack.jetbrains.com/issue/IDEA-231833#focus=streamItem-27-3993099.0-0) for more details. You can learn how to switch IDE runtime [here](https://www.jetbrains.com/help/idea/switching-boot-jdk.html).
 
