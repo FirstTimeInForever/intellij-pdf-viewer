@@ -87,6 +87,6 @@ tasks.getByName("processResources") {
 tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     systemProperties["pdf.viewer.debug"] = true
-    jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED")
+    jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
 //    jbrVersion("jbr_jcef-11_0_7b926.4")
 }
