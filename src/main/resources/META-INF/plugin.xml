@@ -28,6 +28,8 @@
     </div>
     ]]></description>
 
+    <idea-version since-build="202" until-build="299.*"/>
+
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">

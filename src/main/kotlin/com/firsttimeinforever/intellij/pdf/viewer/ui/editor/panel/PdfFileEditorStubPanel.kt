@@ -1,13 +1,10 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBScrollPane
-import java.awt.BorderLayout
 import java.awt.Desktop
 import javax.swing.BorderFactory
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
-
 
 class PdfFileEditorStubPanel: PdfFileEditorPanel() {
     private val textPane = JTextPane()
@@ -26,11 +23,15 @@ class PdfFileEditorStubPanel: PdfFileEditorPanel() {
             <br><br>
             <h3>Why am I seeing this?</h3>
             <p>
-                This plugin uses new IntelliJ platform implementation of web browser called JCEF (Java Chromium Embedded Framework). This feature is still in development. There is high chance that you need to switch your JBR.
-                <br><br>
-                <a href='https://youtrack.jetbrains.com/issue/IDEA-231833#focus=streamItem-27-3993099.0-0'>Youtrack issue</a><br>
-                <a href='https://www.jetbrains.com/help/idea/switching-boot-jdk.html'>How to switch IDE runtime</a>
+                This plugin uses new IntelliJ platform implementation of web browser called JCEF (Java Chromium Embedded Framework). This feature is still in development, so there might be some bugs.
             </p>
+            <br>
+            <h3>Please ensure you are:</h3>
+            <ul>
+                <li>Running IDE with JetBrains Runtime</li>
+                <li>You are using default JBR bundled with IDE</li>
+                <li>JCEF is enabled (check ide.browser.jcef.enabled registry flag - it should be enabled)</li>
+            </ul>
             </html>
         """.trimIndent()
         textPane.addHyperlinkListener {
@@ -38,7 +39,7 @@ class PdfFileEditorStubPanel: PdfFileEditorPanel() {
                 Desktop.getDesktop().browse(it.url.toURI())
             }
         }
-        textPane.border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        textPane.border = BorderFactory.createEmptyBorder(20, 20, 20, 20)
         scrollPane.setViewportView(textPane)
         add(scrollPane)
     }
