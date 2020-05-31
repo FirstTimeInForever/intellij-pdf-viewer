@@ -8,6 +8,8 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.*
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.JTextPane
 
 
 class PdfFileEditor(virtualFile: VirtualFile): FileEditor {

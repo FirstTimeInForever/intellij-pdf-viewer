@@ -4,6 +4,10 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
@@ -41,6 +45,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private var currentScrollDirectionHorizontal = true
     private var pagesCountHolder = 0
     private var pageSpreadStateHolder = PageSpreadState.NONE
+    private val documentLoadErrorPanel = DocumentLoadErrorPanel()
 
     val isCurrentScrollDirectionHorizontal
         get() = currentScrollDirectionHorizontal
@@ -81,6 +86,20 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
                 pagesCountHolder = result.count
+            }
+            addHandler(SubscribableEventType.DOCUMENT_LOAD_ERROR) {
+                browserPanel.component.isVisible = false
+                add(documentLoadErrorPanel)
+                val actionManager = ActionManager.getInstance()
+                val reloadAction = actionManager.getAction(RELOAD_ACTION_ID)
+                Notifications.Bus.notify(
+                    Notification(
+                        "IntelliJ PDF Viewer",
+                        "Could not open document!",
+                        "Failed to open selected document!",
+                        NotificationType.ERROR
+                    ).addAction(reloadAction)
+                )
             }
         }
         addKeyListener(pageNavigationKeyListener)
@@ -179,13 +198,13 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     override fun openDocument(file: VirtualFile) {
         virtualFile = file
         addUpdateHandler()
+        addReloadHandler()
         reloadDocument()
     }
 
-    override fun reloadDocument() {
+    private fun addReloadHandler() {
         val targetUrl = StaticServer.getInstance()
             ?.getFilePreviewUrl(virtualFile.path)!!.toExternalForm()
-        logger.debug("Trying to load url: ${targetUrl}")
         browserPanel.jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
             override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
                 if (browser!!.url != targetUrl) {
@@ -196,6 +215,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 setBackgroundColor(EditorColorsManager.getInstance().globalScheme.defaultBackground)
             }
         }, browserPanel.cefBrowser)
+    }
+
+    override fun reloadDocument() {
+        remove(documentLoadErrorPanel)
+        browserPanel.component.isVisible = true
+        val targetUrl = StaticServer.getInstance()
+            ?.getFilePreviewUrl(virtualFile.path)!!.toExternalForm()
+        logger.debug("Trying to load url: ${targetUrl}")
         browserPanel.loadURL(targetUrl)
     }
 
@@ -229,5 +256,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             return
         }
         setBackgroundColor(scheme.defaultBackground)
+    }
+
+    companion object {
+        private const val RELOAD_ACTION_ID =
+            "com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction"
     }
 }

@@ -212,6 +212,7 @@ export class AppComponent {
                 responseType: 'blob'
             });
             request.subscribe((res: Blob) => {
+                this.setupErrorCatcher();
                 this.viewer.pdfSrc = res;
                 this.viewer.refresh();
                 this.viewer.onDocumentLoad.subscribe(() => {
@@ -220,6 +221,21 @@ export class AppComponent {
             });
         });
         this.registerEventSubscriptions();
+    }
+
+    private setupErrorCatcher() {
+        this.viewer.iframe.nativeElement.addEventListener("load", () => {
+            this.viewer.iframe.nativeElement.contentWindow.addEventListener("unhandledrejection", (event) => {
+                if (event.reason.message && event.reason.message.includes("while loading the PDF")) {
+                    this.messageSenderService.triggerEvent("documentLoadError", {});
+                }
+                else {
+                    this.messageSenderService.triggerEvent("unhandledError", {});
+                }
+                console.error("Got promise rejection in iframe");
+                console.error(event);
+            });
+        });
     }
 
     private onDocumentLoad() {
