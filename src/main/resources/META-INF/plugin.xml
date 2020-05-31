@@ -28,8 +28,6 @@
     </div>
     ]]></description>
 
-    <idea-version since-build="202" until-build="299.*"/>
-
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -41,7 +39,6 @@
     </extensions>
 
     <applicationListeners>
-<!--        <listener class="PluginListener" topic="com.intellij.ide.plugins.DynamicPluginListener"></listener>-->
         <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ControlPanel"
             topic="com.intellij.ide.ui.UISettingsListener"/>
         <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel"

@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType
-import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.WeighedFileEditorProvider
 import com.intellij.openapi.project.Project
@@ -12,19 +11,13 @@ class PdfFileEditorProvider: WeighedFileEditorProvider() {
         private const val EDITOR_TYPE_ID = "pdf-viewer-preview-editor"
     }
 
-    override fun getEditorTypeId(): String {
-        return EDITOR_TYPE_ID
-    }
+    override fun getEditorTypeId() = EDITOR_TYPE_ID
 
     override fun accept(project: Project, file: VirtualFile): Boolean {
         return file.fileType == PdfFileType.INSTANCE
     }
 
-    override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        return PdfFileEditor(file)
-    }
+    override fun createEditor(project: Project, file: VirtualFile) = PdfFileEditor(file)
 
-    override fun getPolicy(): FileEditorPolicy {
-        return FileEditorPolicy.HIDE_DEFAULT_EDITOR
-    }
+    override fun getPolicy() = FileEditorPolicy.HIDE_DEFAULT_EDITOR
 }

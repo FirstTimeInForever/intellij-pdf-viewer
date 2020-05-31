@@ -26,13 +26,14 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
 
     fun addHandler(event: SubscribableEventType, handler: (String) -> Unit) {
         addHandlerWithResponse(event) {
-            logger.debug("$event\n$it")
+            logger.debug("Received event: $event with data: $it")
             handler(it)
             null
         }
     }
 
     fun injectSubscriptions() {
+        logger.debug("Injecting subscriptions for events: ${subscriptions.values}")
         subscriptions.forEach {
             subscribeToEvent(it.key, it.value)
         }

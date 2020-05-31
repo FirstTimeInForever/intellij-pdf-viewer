@@ -14,25 +14,29 @@ import org.jetbrains.io.response
 import org.jetbrains.io.send
 import java.io.File
 
-
 class StaticServer: HttpRequestHandler() {
     companion object {
-        fun getInstance(): StaticServer? {
-            return EP_NAME.findExtension(StaticServer::class.java)
-        }
+        val instance
+            get() = EP_NAME.findExtension(StaticServer::class.java)?:
+                error("Could not find StaticServer extension")
 
         val BASE_DIRECTORY = File("/web-view/")
-
-//        private val URL_UUID = UUID.randomUUID().toString()
-        private val URL_UUID = "64fa8636-e686-4c63-9956-132d9471ce77"
+        private const val URL_UUID = "64fa8636-e686-4c63-9956-132d9471ce77"
     }
 
     private val serverUrl = "http://localhost:${BuiltInServerManager.getInstance().port}/$URL_UUID"
-    private val logger = logger<StaticServer>();
+    private val logger = logger<StaticServer>()
+
+    init {
+        logger.debug("Starting static server with url: $serverUrl")
+    }
 
     override fun process(urlDecoder: QueryStringDecoder, request: FullHttpRequest, context: ChannelHandlerContext): Boolean {
-        logger.debug(urlDecoder.path())
-        logger.debug(urlDecoder.parameters().toString())
+        logger.debug(
+            """Incoming request with path:\n
+            path: ${urlDecoder.path()}\n
+            parameters: ${urlDecoder.parameters()}"""
+        )
         // Check if current request is actually ours
         if (!urlDecoder.path().contains(URL_UUID)) {
             logger.debug("Current url is not ours. Passing it to the next handler.")
@@ -47,21 +51,25 @@ class StaticServer: HttpRequestHandler() {
         }
         val targetFile = File(BASE_DIRECTORY, requestPath)
         val contentType = FileResponses.getContentType(targetFile.toString())
+        logger.debug("Trying to send viewer source file: $targetFile with contentType: $contentType")
         val resultBuffer = Unpooled.wrappedBuffer(ResourceLoader.load(targetFile))
         val response = response(contentType, resultBuffer)
         response.send(context.channel(), request)
         return true
     }
 
-    fun getFilePreviewUrl(path: String): Url? {
-        return getIndexUrl()?.addParameters(mapOf(Pair("path", getLocalFileUrl(path).toString())))
+    private fun parseEncodedPath(target: String): Url {
+        return parseEncoded(target)?: error("parseEncoded failed for \"$target\"")
     }
 
-    private fun getLocalFileUrl(path: String): Url? {
-        return parseEncoded("$serverUrl/get-file")!!.addParameters(mapOf(Pair("localFile", path)))
+    fun getFilePreviewUrl(path: String): Url {
+        return getIndexUrl().addParameters(mapOf("path" to getLocalFileUrl(path).toString()))
     }
 
-    private fun getIndexUrl(): Url? {
-        return parseEncoded("$serverUrl/index.html")
+    private fun getLocalFileUrl(path: String): Url {
+        val parsed = parseEncodedPath("$serverUrl/get-file")
+        return parsed.addParameters(mapOf("localFile" to path))
     }
+
+    private fun getIndexUrl() = parseEncodedPath("$serverUrl/index.html")
 }

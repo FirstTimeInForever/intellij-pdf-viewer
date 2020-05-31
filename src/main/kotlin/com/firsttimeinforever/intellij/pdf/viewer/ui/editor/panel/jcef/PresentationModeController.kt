@@ -5,12 +5,6 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.intellij.ui.jcef.JCEFHtmlPanel
-import org.cef.browser.CefBrowser
-import org.cef.callback.CefJSDialogCallback
-import org.cef.handler.CefDisplayHandler
-import org.cef.handler.CefJSDialogHandler
-import org.cef.handler.CefJSDialogHandlerAdapter
-import org.cef.misc.BoolRef
 import java.awt.MouseInfo
 import java.awt.Robot
 import java.awt.event.InputEvent

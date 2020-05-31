@@ -40,6 +40,10 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+    withType<PatchPluginXmlTask>() {
+        sinceBuild("202")
+        untilBuild("299.*")
+    }
     node {
         download = true
         version = "13.2.0"

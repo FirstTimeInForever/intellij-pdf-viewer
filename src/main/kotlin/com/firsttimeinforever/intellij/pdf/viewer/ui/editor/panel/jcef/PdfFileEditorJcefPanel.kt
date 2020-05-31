@@ -185,9 +185,8 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                     return
                 }
                 logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-                val targetUrl = StaticServer.getInstance()
-                    ?.getFilePreviewUrl(virtualFile.path)
-                browserPanel.loadURL(targetUrl!!.toExternalForm())
+                val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
+                browserPanel.loadURL(targetUrl.toExternalForm())
             }
         })
     }
@@ -203,8 +202,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     }
 
     private fun addReloadHandler() {
-        val targetUrl = StaticServer.getInstance()
-            ?.getFilePreviewUrl(virtualFile.path)!!.toExternalForm()
+        val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path).toExternalForm()
         browserPanel.jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
             override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
                 if (browser!!.url != targetUrl) {
@@ -220,8 +218,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     override fun reloadDocument() {
         remove(documentLoadErrorPanel)
         browserPanel.component.isVisible = true
-        val targetUrl = StaticServer.getInstance()
-            ?.getFilePreviewUrl(virtualFile.path)!!.toExternalForm()
+        val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path).toExternalForm()
         logger.debug("Trying to load url: ${targetUrl}")
         browserPanel.loadURL(targetUrl)
     }
