@@ -91,7 +91,7 @@ class ControlPanel: JPanel(), UISettingsListener {
         })
     }
 
-    private fun findTextAreaSearchAction(targetActionId: String, actionEvent: ActionEvent? = null) {
+    private fun findTextAreaSearchAction(targetActionId: String) {
         val action = ActionManager.getInstance().getAction(targetActionId)
         val dataContext = DataManager.getInstance().getDataContext(this)
         val event = AnActionEvent(

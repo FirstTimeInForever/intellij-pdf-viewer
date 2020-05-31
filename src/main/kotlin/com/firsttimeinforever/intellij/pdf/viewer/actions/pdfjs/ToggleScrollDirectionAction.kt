@@ -16,7 +16,7 @@ class ToggleScrollDirectionAction: PdfEditorPdfjsAction() {
     override fun update(event: AnActionEvent) {
         super.update(event)
         val panel = getPanel(event)?: return
-        if (panel.isCurrentScrollDirectionHorizontal()) {
+        if (panel.isCurrentScrollDirectionHorizontal) {
             event.presentation.text = HORIZONTAL_TEXT
             event.presentation.description = HORIZONTAL_DESCRIPTION
             event.presentation.icon = AllIcons.Actions.SplitVertically

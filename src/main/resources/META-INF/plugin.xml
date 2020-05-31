@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="true">
     <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
     <name>Intellij PDF Viewer</name>
     <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">Intellij PDF Viewer</vendor>
@@ -102,13 +102,17 @@
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"
                 text="Set Vertical Scrolling" description="Sets vertical scrolling for document pages"
                 icon="AllIcons.Actions.SplitVertically"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadOddPagesAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadOddPagesAction"
-                text="Toggle Spread Odd Pages" description="Enables or disables odd pages spread"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"
+                text="Disable Page Spread" description="Disables page spread"
+                icon="/icons/actions/spreadNone.svg"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"
+                text="Spread Odd Pages" description="Spreads pages in odd pairs"
                 icon="/icons/actions/spreadOdd.svg"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadEvenPagesAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadEvenPagesAction"
-                text="Toggle Spread Even Pages" description="Enables or disables even pages spread"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"
+                text="Spread Even Pages" description="Spreads pages in even pairs"
                 icon="/icons/actions/spreadEven.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
@@ -143,8 +147,9 @@
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"/>
             <separator/>
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadOddPagesAction"/>
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSpreadEvenPagesAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"/>

@@ -11,7 +11,6 @@ abstract class PdfEditorAction: AnAction() {
     open val disableInIdePresentationMode = true
 
     override fun update(event: AnActionEvent) {
-        super.update(event)
         event.presentation.isEnabledAndVisible = haveVisibleEditor(event)
         if (UISettings.instance.presentationMode && disableInIdePresentationMode) {
             event.presentation.isEnabledAndVisible = false

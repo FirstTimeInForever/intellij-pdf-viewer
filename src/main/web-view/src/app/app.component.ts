@@ -91,26 +91,28 @@ export class AppComponent {
 
     private spreadState = SpreadState.none;
 
-    private toggleOddSpread() {
-        if (this.spreadState != SpreadState.odd) {
-            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadOddButton.click();
-            this.spreadState = SpreadState.odd;
+    private spreadNonePages() {
+        if (this.spreadState == SpreadState.none) {
+            return;
         }
-        else {
-            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadNoneButton.click();
-            this.spreadState = SpreadState.none;
-        }
+        this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadNoneButton.click();
+        this.spreadState = SpreadState.none;
     }
 
-    private toggleEvenSpread() {
-        if (this.spreadState != SpreadState.even) {
-            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadEvenButton.click();
-            this.spreadState = SpreadState.even;
+    private spreadOddPages() {
+        if (this.spreadState == SpreadState.odd) {
+            return;
         }
-        else {
-            this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadNoneButton.click();
-            this.spreadState = SpreadState.none;
+        this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadOddButton.click();
+        this.spreadState = SpreadState.odd;
+    }
+
+    private spreadEvenPages() {
+        if (this.spreadState == SpreadState.even) {
+            return;
         }
+        this.viewer.PDFViewerApplication.appConfig.secondaryToolbar.spreadEvenButton.click();
+        this.spreadState = SpreadState.even;
     }
 
     private rotateClockwise() {
@@ -289,8 +291,9 @@ export class AppComponent {
         this.registerSubscription("toggleScrollDirection", this.toggleScrollDirection);
         this.registerSubscription("rotateClockwise", this.rotateClockwise);
         this.registerSubscription("rotateCounterclockwise", this.rotateCounterclockwise);
-        this.registerSubscription("toggleSpreadOddPages", this.toggleOddSpread);
-        this.registerSubscription("toggleSpreadEvenPages", this.toggleEvenSpread);
+        this.registerSubscription("spreadNonePages", this.spreadNonePages);
+        this.registerSubscription("spreadOddPages", this.spreadOddPages);
+        this.registerSubscription("spreadEvenPages", this.spreadEvenPages);
         this.registerSubscription("togglePresentationMode", this.togglePresentationMode);
     }
 

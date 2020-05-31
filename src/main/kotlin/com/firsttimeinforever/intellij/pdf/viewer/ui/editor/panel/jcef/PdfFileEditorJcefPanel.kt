@@ -40,8 +40,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
     private var pagesCountHolder = 0
+    private var pageSpreadStateHolder = PageSpreadState.NONE
 
-    fun isCurrentScrollDirectionHorizontal() = currentScrollDirectionHorizontal
+    val isCurrentScrollDirectionHorizontal
+        get() = currentScrollDirectionHorizontal
 
     override val pagesCount
         get() = pagesCountHolder
@@ -103,8 +105,21 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     fun getDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
     fun toggleSidebar() = eventSender.trigger(TriggerableEventType.TOGGLE_SIDEBAR)
     fun printDocument() = eventSender.trigger(TriggerableEventType.PRINT_DOCUMENT)
-    fun toggleSpreadEvenPages() = eventSender.trigger(TriggerableEventType.TOGGLE_SPREAD_EVEN_PAGES)
-    fun toggleSpreadOddPages() = eventSender.trigger(TriggerableEventType.TOGGLE_SPREAD_ODD_PAGES)
+
+    var pageSpreadState
+        get() = pageSpreadStateHolder
+        set(state) {
+            if (pageSpreadStateHolder == state) {
+                return
+            }
+            pageSpreadStateHolder = state
+            eventSender.trigger(when (state) {
+                PageSpreadState.NONE -> TriggerableEventType.SPREAD_NONE
+                PageSpreadState.EVEN -> TriggerableEventType.SPREAD_EVEN_PAGES
+                PageSpreadState.ODD -> TriggerableEventType.SPREAD_ODD_PAGES
+            })
+        }
+
     fun rotateClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_CLOCKWISE)
     fun rotateCounterclockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
 
