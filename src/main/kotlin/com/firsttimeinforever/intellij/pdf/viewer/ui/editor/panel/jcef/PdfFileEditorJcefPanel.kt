@@ -132,10 +132,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     fun openDevtools() = browserPanel.openDevtools()
 
     override fun findNext() {
-        if (!controlPanel.findTextArea.isFocusOwner) {
-            controlPanel.findTextArea.grabFocus()
+        if (!controlPanel.searchTextField.isFocusOwner) {
+            controlPanel.searchTextField.grabFocus()
         }
-        val searchTarget = controlPanel.findTextArea.text ?: return
+        val searchTarget = controlPanel.searchTextField.text ?: return
         eventSender.triggerWith(
             TriggerableEventType.FIND_NEXT,
             SearchDataObject(searchTarget),
@@ -144,10 +144,10 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     }
 
     override fun findPrevious() {
-        if (!controlPanel.findTextArea.isFocusOwner) {
-            controlPanel.findTextArea.grabFocus()
+        if (!controlPanel.searchTextField.isFocusOwner) {
+            controlPanel.searchTextField.grabFocus()
         }
-        val searchTarget = controlPanel.findTextArea.text ?: return
+        val searchTarget = controlPanel.searchTextField.text ?: return
         eventSender.triggerWith(
             TriggerableEventType.FIND_PREVIOUS,
             SearchDataObject(searchTarget),
