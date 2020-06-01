@@ -5,8 +5,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarA
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup
 import com.intellij.ide.ui.UISettings
 import com.intellij.ide.ui.UISettingsListener
-import java.awt.*
-import javax.swing.*
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.FlowLayout
+import java.awt.GridLayout
+import javax.swing.JPanel
 
 class ControlPanel: JPanel(), UISettingsListener {
     private val leftToolbar =

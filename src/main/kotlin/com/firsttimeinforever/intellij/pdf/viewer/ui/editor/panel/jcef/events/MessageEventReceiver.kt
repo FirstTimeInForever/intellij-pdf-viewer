@@ -1,22 +1,12 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefJSQuery
 
-class MessageEventReceiver private constructor(private val browser: JBCefBrowser) {
+class MessageEventReceiver private constructor(private val browser: JBCefBrowser): Disposable {
     val subscriptions = mutableMapOf<SubscribableEventType, JBCefJSQuery>()
-
-    companion object {
-        fun fromList(browser: JBCefBrowser, events: List<SubscribableEventType>): MessageEventReceiver {
-            val manager = MessageEventReceiver(browser)
-            events.forEach {
-                manager.subscriptions.put(it, JBCefJSQuery.create(browser)!!)
-            }
-            return manager
-        }
-    }
-
     private val logger = logger<MessageEventReceiver>()
 
     fun addHandlerWithResponse(event: SubscribableEventType, handler: (String) -> JBCefJSQuery.Response?) {
@@ -26,6 +16,7 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
 
     fun addHandler(event: SubscribableEventType, handler: (String) -> Unit) {
         addHandlerWithResponse(event) {
+            println("Received event: $event with data: $it")
             logger.debug("Received event: $event with data: $it")
             handler(it)
             null
@@ -45,5 +36,19 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
                 ${query.inject("JSON.stringify(data)")}
             })
         """.trimIndent(), null, 0)
+    }
+
+    companion object {
+        fun fromList(browser: JBCefBrowser, events: List<SubscribableEventType>): MessageEventReceiver {
+            val manager = MessageEventReceiver(browser)
+            events.forEach {
+                manager.subscriptions.put(it, JBCefJSQuery.create(browser))
+            }
+            return manager
+        }
+    }
+
+    override fun dispose() {
+        subscriptions.values.forEach { it.dispose() }
     }
 }

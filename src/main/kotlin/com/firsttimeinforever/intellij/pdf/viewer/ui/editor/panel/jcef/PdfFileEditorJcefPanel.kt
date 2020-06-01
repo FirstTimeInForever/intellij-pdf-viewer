@@ -2,9 +2,11 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventSender
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
-import com.intellij.icons.AllIcons
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -42,7 +44,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
     private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
     val presentationModeController =
-        PresentationModeController(this, browserPanel, eventReceiver, eventSender)
+        PresentationModeController(this, browserPanel.component, eventReceiver, eventSender)
     private var currentPageNumberHolder: Int = 1
     private val controlPanel = ControlPanel()
     private var currentScrollDirectionHorizontal = true
@@ -56,19 +58,25 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     override val pagesCount
         get() = pagesCountHolder
 
-    private val loadErrorNotification by lazy {
+    private fun showDocumentLoadErrorNotification() {
         val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
             error("Could not get document reload action")
-        Notification(
+        val notification = Notification(
             "IntelliJ PDF Viewer",
             "Could not open document!",
             "Failed to open selected document!",
             NotificationType.ERROR
         ).addAction(reloadAction.templatePresentation.run {
             object: AnAction(text, description, icon) {
-                override fun actionPerformed(event: AnActionEvent) = reloadDocument()
+                override fun actionPerformed(event: AnActionEvent) {
+                    if (browserPanel.isDisposed) {
+                        return
+                    }
+                    reloadDocument()
+                }
             }
         })
+        Notifications.Bus.notify(notification)
     }
 
     private val pageNavigationKeyListener = object: KeyListener {
@@ -84,6 +92,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
 
     init {
         Disposer.register(this, browserPanel)
+        Disposer.register(this, eventReceiver)
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
@@ -106,9 +115,14 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 pagesCountHolder = result.count
             }
             addHandler(SubscribableEventType.DOCUMENT_LOAD_ERROR) {
-                browserPanel.component.isVisible = false
-                add(documentLoadErrorPanel)
-                Notifications.Bus.notify(loadErrorNotification)
+                // For some reason this event triggers with no data
+                // This should be impossible, due to passing event data
+                // to triggerEvent() in unhandledrejection event handler
+                if (it.isNotEmpty()) {
+                    browserPanel.component.isVisible = false
+                    add(documentLoadErrorPanel)
+                    showDocumentLoadErrorNotification()
+                }
             }
         }
         addKeyListener(pageNavigationKeyListener)

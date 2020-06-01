@@ -26,9 +26,15 @@ export class MessageSenderService {
         if (!this.subscriptions[eventName]) {
             return;
         }
-        console.log("Triggereing event");
+        console.log(`Triggereing event: ${eventName}`);
         this.subscriptions[eventName].forEach(callback => {
-            callback.apply(null, [data]);
+            try {
+                callback.apply(null, [data]);
+            }
+            catch(error) {
+                console.warn(`Could not trigger event: ${eventName} with callback: ${callback}`);
+                console.warn(error);
+            }
         });
     }
 }

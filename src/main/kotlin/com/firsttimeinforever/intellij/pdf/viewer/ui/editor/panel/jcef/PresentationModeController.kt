@@ -4,20 +4,20 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventSender
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
-import com.intellij.ui.jcef.JCEFHtmlPanel
 import java.awt.MouseInfo
 import java.awt.Robot
 import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.FocusManager
+import javax.swing.JComponent
 import javax.swing.SwingUtilities
 
 typealias PresentationModeListenerType = (PresentationModeController) -> Boolean
 
 class PresentationModeController(
     private val panel: PdfFileEditorJcefPanel,
-    private val browserPanel: JCEFHtmlPanel,
+    private val browserComponent: JComponent,
     private val eventReceiver: MessageEventReceiver,
     private val eventSender: MessageEventSender
 ) {
@@ -34,6 +34,7 @@ class PresentationModeController(
                 }
             }
         }
+
         override fun keyTyped(event: KeyEvent?) = Unit
         override fun keyReleased(event: KeyEvent?) = Unit
     }
@@ -75,9 +76,9 @@ class PresentationModeController(
         val originalPosition = MouseInfo.getPointerInfo().location
         val originalFocusOwner = FocusManager.getCurrentManager().focusOwner
         val robot = Robot()
-        val location = browserPanel.component.locationOnScreen
-        val xcenter = browserPanel.component.width / 2
-        val ycenter = browserPanel.component.height / 2
+        val location = browserComponent.locationOnScreen
+        val xcenter = browserComponent.width / 2
+        val ycenter = browserComponent.height / 2
         robot.mouseMove(location.x + xcenter, location.y + ycenter)
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);

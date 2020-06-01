@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
 import {MessageReceiverService} from "./message-receiver.service";
-import {MessageSenderService} from "./message-sender";
+import {MessageSenderService} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
@@ -84,7 +84,7 @@ export class AppComponent {
     private delayedBackgroundColor: string;
     private fileName: string;
 
-    private parseFileName(url: string) {
+    private static parseFileName(url: string) {
         const split = decodeURIComponent(url).split("/");
         return split[split.length - 1];
     }
@@ -167,7 +167,7 @@ export class AppComponent {
 
     private buildIgnoreClickTargetsList() {
         const config = this.viewer.PDFViewerApplication.appConfig;
-        let result = [
+        this.ignoredClickTargets = [
             config.findBar.findPreviousButton,
             config.findBar.findNextButton,
             config.toolbar.previous,
@@ -184,7 +184,6 @@ export class AppComponent {
             config.secondaryToolbar.spreadNoneButton,
             config.secondaryToolbar.spreadOddButton,
         ];
-        this.ignoredClickTargets = result;
     }
 
     private focusEventHandler = (event) => {
@@ -201,7 +200,7 @@ export class AppComponent {
         window.addEventListener("click", this.focusEventHandler);
         const subscription = this.route.queryParams.subscribe(params => {
             const targetUrl = params['path'];
-            this.fileName = this.parseFileName(targetUrl);
+            this.fileName = AppComponent.parseFileName(targetUrl);
             console.log(this.fileName);
             if (!targetUrl) {
                 return;
@@ -224,16 +223,20 @@ export class AppComponent {
     }
 
     private setupErrorCatcher() {
-        this.viewer.iframe.nativeElement.addEventListener("load", () => {
-            this.viewer.iframe.nativeElement.contentWindow.addEventListener("unhandledrejection", (event) => {
-                if (event.reason.message && event.reason.message.includes("while loading the PDF")) {
-                    this.messageSenderService.triggerEvent("documentLoadError", {});
+        const iframe = this.viewer.iframe;
+        iframe.nativeElement.addEventListener("load", () => {
+            iframe.nativeElement.contentWindow.addEventListener("unhandledrejection", (event) => {
+                try {
+                    if (event.reason.message && event.reason.message.includes("while loading the PDF")) {
+                        this.messageSenderService.triggerEvent("documentLoadError", {event});
+                    }
+                    else {
+                        this.messageSenderService.triggerEvent("unhandledError", {});
+                    }
                 }
-                else {
-                    this.messageSenderService.triggerEvent("unhandledError", {});
+                catch (error) {
+                    console.error(error);
                 }
-                console.error("Got promise rejection in iframe");
-                console.error(event);
             });
         });
     }
@@ -249,7 +252,7 @@ export class AppComponent {
         targetDocument.addEventListener("click", this.focusEventHandler);
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
-        this.messageSenderService.triggerEvent("pagesCound", {
+        this.messageSenderService.triggerEvent("pagesCount", {
             count: this.pagesCount
         });
     }
@@ -301,7 +304,7 @@ export class AppComponent {
                 console.warn("Could not set background color!");
             }
         });
-        this.messageReceiverService.subscribe("getDocumentInfo", (data: any) => {
+        this.messageReceiverService.subscribe("getDocumentInfo", () => {
             this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
         });
         this.registerSubscription("toggleScrollDirection", this.toggleScrollDirection);
