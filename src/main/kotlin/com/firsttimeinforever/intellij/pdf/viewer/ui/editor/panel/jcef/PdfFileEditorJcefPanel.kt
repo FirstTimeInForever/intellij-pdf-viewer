@@ -4,10 +4,13 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.*
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
+import com.intellij.icons.AllIcons
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
@@ -53,6 +56,21 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     override val pagesCount
         get() = pagesCountHolder
 
+    private val loadErrorNotification by lazy {
+        val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
+            error("Could not get document reload action")
+        Notification(
+            "IntelliJ PDF Viewer",
+            "Could not open document!",
+            "Failed to open selected document!",
+            NotificationType.ERROR
+        ).addAction(reloadAction.templatePresentation.run {
+            object: AnAction(text, description, icon) {
+                override fun actionPerformed(event: AnActionEvent) = reloadDocument()
+            }
+        })
+    }
+
     private val pageNavigationKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
             when (event?.keyCode) {
@@ -90,16 +108,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             addHandler(SubscribableEventType.DOCUMENT_LOAD_ERROR) {
                 browserPanel.component.isVisible = false
                 add(documentLoadErrorPanel)
-                val actionManager = ActionManager.getInstance()
-                val reloadAction = actionManager.getAction(RELOAD_ACTION_ID)
-                Notifications.Bus.notify(
-                    Notification(
-                        "IntelliJ PDF Viewer",
-                        "Could not open document!",
-                        "Failed to open selected document!",
-                        NotificationType.ERROR
-                    ).addAction(reloadAction)
-                )
+                Notifications.Bus.notify(loadErrorNotification)
             }
         }
         addKeyListener(pageNavigationKeyListener)

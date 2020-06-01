@@ -1,7 +1,9 @@
 <idea-plugin require-restart="true">
     <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
     <name>Intellij PDF Viewer</name>
-    <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">Intellij PDF Viewer</vendor>
+    <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
+        FirstTimeInForever
+    </vendor>
 
     <description><![CDATA[
     <h1>Intellij PDF Viewer Plugin</h1>
@@ -32,107 +34,114 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="PDF" extensions="pdf" language="PDF"
-            implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType" fieldName="INSTANCE"/>
-        <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider" />
-        <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer" />
+                  implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"
+                  fieldName="INSTANCE"/>
+        <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
+        <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer"/>
         <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
     </extensions>
 
     <applicationListeners>
         <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ControlPanel"
-            topic="com.intellij.ide.ui.UISettingsListener"/>
+                  topic="com.intellij.ide.ui.UISettingsListener"/>
         <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel"
-            topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+                  topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
     </applicationListeners>
 
     <actions>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfFileEditorActionGroup"
                id="PdfFileEditorActionGroup" text="Pdf Viewer Actions" popup="true" compact="true">
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction" icon="AllIcons.Actions.ForceRefresh"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction"
+                    icon="AllIcons.Actions.ForceRefresh"
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction"
                     text="Reload PDF Document" description="Reloads PDF document in current editor"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction" icon="AllIcons.Actions.PreviewDetails"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction" text="Toggle PDF Sidebar"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction"
+                    icon="AllIcons.Actions.PreviewDetails"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction"
+                    text="Toggle PDF Sidebar"
                     description="Opens/closes sidebar in current editor"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"
-                text="Increase Current Document Scale" icon="AllIcons.General.Add"
-                description="Increases document scale in current editor">
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"
+                    text="Increase Current Document Scale" icon="AllIcons.General.Add"
+                    description="Increases document scale in current editor">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift meta EQUALS"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"
-                text="Decrease Current Document Scale" icon="AllIcons.General.Remove"
-                description="Decreases document scale in current editor">
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"
+                    text="Decrease Current Document Scale" icon="AllIcons.General.Remove"
+                    description="Decreases document scale in current editor">
                 <keyboard-shortcut keymap="$default" first-keystroke="meta MINUS"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.PrintDocumentAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.PrintDocumentAction"
-                text="Print Pdf Document" icon="AllIcons.General.Print"
-                description="Opens print dialog for document in current editor"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.PrintDocumentAction"
+                    text="Print Pdf Document" icon="AllIcons.General.Print"
+                    description="Opens print dialog for document in current editor"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.NextPageAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.NextPageAction" text="Next Document Page"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.NextPageAction"
+                    text="Next Document Page"
                     icon="AllIcons.Actions.Forward"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PreviousPageAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PreviousPageAction"
-                text="Previous Document Page" icon="AllIcons.Actions.Back"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction" icon="AllIcons.Actions.FindForward"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction" text="Find In Document">
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PreviousPageAction"
+                    text="Previous Document Page" icon="AllIcons.Actions.Back"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction"
+                    icon="AllIcons.Actions.FindForward"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction"
+                    text="Find In Document">
                 <keyboard-shortcut keymap="$default" first-keystroke="meta F"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
-                text="Find Previous In Document" icon="AllIcons.Actions.FindBackward">
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
+                    text="Find Previous In Document" icon="AllIcons.Actions.FindBackward">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift meta F"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.TogglePdfjsToolbarAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.TogglePdfjsToolbarAction"
-                text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.TogglePdfjsToolbarAction"
+                    text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
-                text="Show Document Info" icon="AllIcons.General.Information"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
+                    text="Show Document Info" icon="AllIcons.General.Information"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"
-                text="Set Vertical Scrolling" description="Sets vertical scrolling for document pages"
-                icon="AllIcons.Actions.SplitVertically"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleScrollDirectionAction"
+                    text="Set Vertical Scrolling" description="Sets vertical scrolling for document pages"
+                    icon="AllIcons.Actions.SplitVertically"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"
-                text="Disable Page Spread" description="Disables page spread"
-                icon="/icons/actions/spreadNone.svg"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"
+                    text="Disable Page Spread" description="Disables page spread"
+                    icon="/icons/actions/spreadNone.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"
-                text="Spread Odd Pages" description="Spreads pages in odd pairs"
-                icon="/icons/actions/spreadOdd.svg"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadOddPagesAction"
+                    text="Spread Odd Pages" description="Spreads pages in odd pairs"
+                    icon="/icons/actions/spreadOdd.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"
-                text="Spread Even Pages" description="Spreads pages in even pairs"
-                icon="/icons/actions/spreadEven.svg"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadEvenPagesAction"
+                    text="Spread Even Pages" description="Spreads pages in even pairs"
+                    icon="/icons/actions/spreadEven.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
-                text="Rotate Document Clockwise" description="Rotates document clockwise"
-                icon="/icons/actions/rotateRight.svg"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
+                    text="Rotate Document Clockwise" description="Rotates document clockwise"
+                    icon="/icons/actions/rotateRight.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
-                text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"
-                icon="/icons/actions/rotateLeft.svg"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
+                    text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"
+                    icon="/icons/actions/rotateLeft.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.OpenDevtoolsAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.OpenDevtoolsAction"
-                text="Open Devtools Window" description="Opens devtools window for current document"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.OpenDevtoolsAction"
+                    text="Open Devtools Window" description="Opens devtools window for current document"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"
-                text="Enter PDF Presentation Mode" description="Enters document presentation mode"
-                icon="AllIcons.General.ExpandComponentHover"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleDocumentPresentationModeAction"
+                    text="Enter PDF Presentation Mode" description="Enters document presentation mode"
+                    icon="AllIcons.General.ExpandComponentHover"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
-                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
-                text="Toggle Fullscreen Mode" description="Toggles fullscreen mode"
-                icon="AllIcons.General.FitContent"/>
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
+                    text="Toggle Fullscreen Mode" description="Toggles fullscreen mode"
+                    icon="AllIcons.General.FitContent"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
-            id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
+               id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PreviousPageAction"/>
@@ -153,12 +162,14 @@
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup"
-            id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true" compact="true">
+               id="PdfEditorToolbarSearchActionGroup" text="Pdf Viewer Toolbar Search Actions" popup="true"
+               compact="true">
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup"
-            id="PdfEditorRightToolbarActionGroup" text="Pdf Viewer Right Toolbar Actions" popup="true" compact="true">
+               id="PdfEditorRightToolbarActionGroup" text="Pdf Viewer Right Toolbar Actions" popup="true"
+               compact="true">
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction"/>
