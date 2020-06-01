@@ -2,8 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
-import {MessageReceiverService} from "./message-receiver.service";
-import {MessageSenderService} from "./message-sender.service";
+import {MessageReceiverService, SubscriptableEvents} from "./message-receiver.service";
+import {MessageSenderService, TriggerableEvents} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
@@ -32,7 +32,7 @@ export class AppComponent {
     actualPage: number;
 
     pageChanged(pageNumber: number) {
-        this.messageSenderService.triggerEvent("pageChanged", {pageNumber});
+        this.messageSenderService.triggerEvent(TriggerableEvents.PAGE_CHANGED, {pageNumber});
     }
 
     private pagesCount = 0;
@@ -41,7 +41,7 @@ export class AppComponent {
         if (!this.messageSenderService) {
             return;
         }
-        this.messageSenderService.triggerEvent("frameFocused", {})
+        this.messageSenderService.triggerEvent(TriggerableEvents.FRAME_FOCUSED, {})
     }
 
     private hideToolbar() {
@@ -153,13 +153,13 @@ export class AppComponent {
     private createPresentationModeController() {
         this.presentationModeController = new PresentationModeController(this.viewer.PDFViewerApplication);
         this.presentationModeController.addEnterEventHandler(() => {
-            this.messageSenderService.triggerEvent("presentationModeEnter", {});
+            this.messageSenderService.triggerEvent(TriggerableEvents.PRESENTATION_MODE_ENTER, {});
         });
         this.presentationModeController.addEnterReadyEventHandler(() => {
-            this.messageSenderService.triggerEvent("presentationModeEnterReady", {});
+            this.messageSenderService.triggerEvent(TriggerableEvents.PRESENTATION_MODE_ENTER_READY, {});
         });
         this.presentationModeController.addExitEventHandler(() => {
-            this.messageSenderService.triggerEvent("presentationModeExit", {});
+            this.messageSenderService.triggerEvent(TriggerableEvents.PRESENTATION_MODE_EXIT, {});
         });
     }
     
@@ -228,10 +228,10 @@ export class AppComponent {
             iframe.nativeElement.contentWindow.addEventListener("unhandledrejection", (event) => {
                 try {
                     if (event.reason.message && event.reason.message.includes("while loading the PDF")) {
-                        this.messageSenderService.triggerEvent("documentLoadError", {event});
+                        this.messageSenderService.triggerEvent(TriggerableEvents.DOCUMENT_LOAD_ERROR, {event});
                     }
                     else {
-                        this.messageSenderService.triggerEvent("unhandledError", {});
+                        this.messageSenderService.triggerEvent(TriggerableEvents.UNHANDLED_ERROR, {});
                     }
                 }
                 catch (error) {
@@ -252,7 +252,7 @@ export class AppComponent {
         targetDocument.addEventListener("click", this.focusEventHandler);
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
-        this.messageSenderService.triggerEvent("pagesCount", {
+        this.messageSenderService.triggerEvent(TriggerableEvents.PAGES_COUNT, {
             count: this.pagesCount
         });
     }
@@ -263,39 +263,39 @@ export class AppComponent {
     }
 
     private registerEventSubscriptions() {
-        this.messageReceiverService.subscribe("pageSet", (data: any) => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_PAGE, (data: any) => {
             this.actualPage = data.pageNumber;
         });
-        this.messageReceiverService.subscribe("toggleSidebar", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.TOGGLE_SIDEBAR, () => {
             this.viewer.PDFViewerApplication.pdfSidebar.toggleButton.click();
         });
-        this.messageReceiverService.subscribe("increaseScale", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.INCREASE_SCALE, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.zoomIn.click();
             // this.viewer.PDFViewerApplication.zoomIn(2);
         });
-        this.messageReceiverService.subscribe("decreaseScale", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.DECREASE_SCALE, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.zoomOut.click();
             // this.viewer.PDFViewerApplication.zoomOut(2);
         });
-        this.messageReceiverService.subscribe("printDocument", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.PRINT_DOCUMENT, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.print.click();
         });
-        this.messageReceiverService.subscribe("nextPage", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.GOTO_NEXT_PAGE, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.next.click();
         });
-        this.messageReceiverService.subscribe("previousPage", () => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.GOTO_PREVIOUS_PAGE, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.previous.click();
         });
-        this.messageReceiverService.subscribe("findNext", (data: any) => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.FIND_NEXT, (data: any) => {
             this.viewer.PDFViewerApplication.appConfig.findBar.findField.value = data.searchTarget;
             this.viewer.PDFViewerApplication.appConfig.findBar.findNextButton.click();
         });
-        this.messageReceiverService.subscribe("findPrevious", (data: any) => {
+        this.messageReceiverService.subscribe(SubscriptableEvents.FIND_PREVIOUS, (data: any) => {
             this.viewer.PDFViewerApplication.appConfig.findBar.findField.value = data.searchTarget;
             this.viewer.PDFViewerApplication.appConfig.findBar.findPreviousButton.click();
         });
-        this.registerSubscription("toggleToolbar", this.toggleToolbar);
-        this.messageReceiverService.subscribe("setBackgroundColor", (data: {color: string}) => {
+        this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleToolbar);
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_BACKGROUND_COLOR, (data: {color: string}) => {
             this.delayedBackgroundColor = data.color;
             try {
                 this.setBackgroundColor(this.delayedBackgroundColor);
@@ -304,19 +304,19 @@ export class AppComponent {
                 console.warn("Could not set background color!");
             }
         });
-        this.messageReceiverService.subscribe("getDocumentInfo", () => {
-            this.messageSenderService.triggerEvent("documentInfo", this.collectDocumentInfo());
+        this.messageReceiverService.subscribe(SubscriptableEvents.GET_DOCUMENT_INFO, () => {
+            this.messageSenderService.triggerEvent(TriggerableEvents.DOCUMENT_INFO, this.collectDocumentInfo());
         });
-        this.registerSubscription("toggleScrollDirection", this.toggleScrollDirection);
-        this.registerSubscription("rotateClockwise", this.rotateClockwise);
-        this.registerSubscription("rotateCounterclockwise", this.rotateCounterclockwise);
-        this.registerSubscription("spreadNonePages", this.spreadNonePages);
-        this.registerSubscription("spreadOddPages", this.spreadOddPages);
-        this.registerSubscription("spreadEvenPages", this.spreadEvenPages);
-        this.registerSubscription("togglePresentationMode", this.togglePresentationMode);
+        this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
+        this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);
+        this.subscribeTo(SubscriptableEvents.ROTATE_COUNTERCLOCKWISE, this.rotateCounterclockwise);
+        this.subscribeTo(SubscriptableEvents.SPREAD_NONE, this.spreadNonePages);
+        this.subscribeTo(SubscriptableEvents.SPREAD_ODD_PAGES, this.spreadOddPages);
+        this.subscribeTo(SubscriptableEvents.SPREAD_EVEN_PAGES, this.spreadEvenPages);
+        this.subscribeTo(SubscriptableEvents.TOGGLE_PRESENTATION_MODE, this.togglePresentationMode);
     }
 
-    private registerSubscription(event: string, callback) {
+    private subscribeTo(event: string, callback) {
         this.messageReceiverService.subscribe(event, (data: any) => {
             callback.apply(this, data);
         });

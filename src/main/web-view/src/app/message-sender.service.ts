@@ -5,6 +5,18 @@ interface SubscriptionsList {
     [key: string]: Function[];
 }
 
+export enum TriggerableEvents {
+    PAGE_CHANGED = "pageChanged",
+    DOCUMENT_INFO = "documentInfo",
+    PRESENTATION_MODE_ENTER_READY = "presentationModeEnterReady",
+    PRESENTATION_MODE_ENTER = "presentationModeEnter",
+    PRESENTATION_MODE_EXIT = "presentationModeExit",
+    FRAME_FOCUSED = "frameFocused",
+    PAGES_COUNT = "pagesCount",
+    DOCUMENT_LOAD_ERROR = "documentLoadError",
+    UNHANDLED_ERROR = "unhandledError"
+}
+
 @Injectable({
     providedIn: 'root',
 })
