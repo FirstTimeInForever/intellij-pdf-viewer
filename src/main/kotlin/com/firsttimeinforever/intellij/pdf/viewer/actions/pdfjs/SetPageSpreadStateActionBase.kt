@@ -9,15 +9,12 @@ abstract class SetPageSpreadStateActionBase(
 ): ToggleAction() {
     private val baseImplementation = PdfEditorPdfjsActionBaseImpl(
         disabledInPresentationMode = true,
-        disableInIdePresentationMode = false
+        disableInIdePresentationMode = true
     )
 
     override fun update(event: AnActionEvent) {
         super.update(event)
         baseImplementation.update(event)
-//        if (isSelected(event)) {
-//            event.presentation.isEnabled = false
-//        }
     }
 
     override fun isSelected(event: AnActionEvent): Boolean {
