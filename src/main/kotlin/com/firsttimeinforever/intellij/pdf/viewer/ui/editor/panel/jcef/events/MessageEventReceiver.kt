@@ -16,7 +16,6 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
 
     fun addHandler(event: SubscribableEventType, handler: (String) -> Unit) {
         addHandlerWithResponse(event) {
-            println("Received event: $event with data: $it")
             logger.debug("Received event: $event with data: $it")
             handler(it)
             null

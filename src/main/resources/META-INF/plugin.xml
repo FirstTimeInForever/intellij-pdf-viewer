@@ -1,4 +1,4 @@
-<idea-plugin require-restart="true">
+<idea-plugin>
     <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
     <name>Intellij PDF Viewer</name>
     <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">

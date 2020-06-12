@@ -24,8 +24,8 @@ dependencies {
 }
 
 intellij {
-//    version = "LATEST-EAP-SNAPSHOT"
-    version = "202.4357.23-EAP-SNAPSHOT"
+    version = "LATEST-EAP-SNAPSHOT"
+//    version = "202.4357.23-EAP-SNAPSHOT"
 }
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
