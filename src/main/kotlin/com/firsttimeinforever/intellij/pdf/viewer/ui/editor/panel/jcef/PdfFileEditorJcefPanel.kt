@@ -62,7 +62,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
             error("Could not get document reload action")
         val notification = Notification(
-            "IntelliJ PDF Viewer",
+            "PDF Viewer",
             "Could not open document!",
             "Failed to open selected document!",
             NotificationType.ERROR

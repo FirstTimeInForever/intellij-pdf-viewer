@@ -1,12 +1,12 @@
 <idea-plugin>
     <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
-    <name>Intellij PDF Viewer</name>
+    <name>PDF Viewer</name>
     <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
         FirstTimeInForever
     </vendor>
 
     <description><![CDATA[
-    <h1>Intellij PDF Viewer Plugin</h1>
+    <h1>PDF Viewer</h1>
     This plugin allows you to view PDF files directly in IDE.
     <br>
     Main Features:

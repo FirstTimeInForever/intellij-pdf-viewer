@@ -38,7 +38,7 @@ abstract class PdfEditorPdfjsAction: PdfEditorAction() {
         fun showUnsupportedActionNotification(event: AnActionEvent) {
             Notifications.Bus.notify(
                 Notification(
-                    "IntelliJ PDF Viewer",
+                    "PDF Viewer",
                     "Usupported action",
                     "${event.presentation.text} action is not supported for this type of view!",
                     NotificationType.ERROR
