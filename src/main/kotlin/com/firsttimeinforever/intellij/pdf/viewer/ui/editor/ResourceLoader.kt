@@ -8,7 +8,9 @@ object ResourceLoader {
         val targetPath = ensureCorrectFormedPath(file)
         val stream = this::class.java.getResourceAsStream(targetPath)
             ?: throw FileNotFoundException("Could not load resource file: $targetPath")
-        return stream.readAllBytes()
+        val data = stream.readBytes()
+        stream.close()
+        return data
     }
 
     // Fix incorrect pathing on windows, duh
