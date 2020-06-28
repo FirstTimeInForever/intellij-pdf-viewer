@@ -4,18 +4,22 @@ import java.io.File
 import java.io.FileNotFoundException
 
 object ResourceLoader {
+    private val shouldFixPaths =
+        System.getProperty("os.name").toLowerCase().contains("windows")
+    
     fun load(file: File): ByteArray {
         val targetPath = ensureCorrectFormedPath(file)
-        val stream = this::class.java.getResourceAsStream(targetPath)
-            ?: throw FileNotFoundException("Could not load resource file: $targetPath")
-        val data = stream.readBytes()
-        stream.close()
-        return data
+        return this::class.java.getResourceAsStream(targetPath).use {
+            if (it == null) {
+                throw FileNotFoundException("Could not load resource file: $targetPath")
+            }
+            it.readBytes()
+        }
     }
 
     // Fix incorrect pathing on windows, duh
     private fun ensureCorrectFormedPath(file: File): String {
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        if (shouldFixPaths) {
             return file.toString().replace('\\', '/')
         }
         return file.toString()
