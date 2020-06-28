@@ -19,14 +19,15 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-//    testCompile("junit", "junit", "4.12")
+    // testCompile("junit", "junit", "4.12")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 }
 
 intellij {
+    // Should be changed to explicit version after 2020.2 release
     version = "LATEST-EAP-SNAPSHOT"
-//    version = "202.4357.23-EAP-SNAPSHOT"
 }
+
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
@@ -92,5 +93,4 @@ tasks.withType<RunIdeTask>() {
     systemProperties["ide.browser.jcef.enabled"] = true
     systemProperties["pdf.viewer.debug"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
-//    jbrVersion("jbr_jcef-11_0_7b926.4")
 }
