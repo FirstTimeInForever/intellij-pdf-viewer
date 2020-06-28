@@ -1,12 +1,16 @@
-# IntelliJ PDF Viewer Plugin
+# IntelliJ PDF Viewer
 
-IntelliJ PDF Viewer plugin adds support for viewing PDF files in IntelliJ-based IDEs. This plugin uses recently integrated (`2020.2`) CEF (Chromium Embedded Framework) browser to render PDF documents with [PDF.js](https://mozilla.github.io/pdf.js/) library.
+[![JetBrains plugins](https://img.shields.io/jetbrains/plugin/v/14494-pdf-viewer)](https://plugins.jetbrains.com/plugin/14494-pdf-viewer)
+[![License](https://img.shields.io/github/license/FirstTimeInForever/intellij-pdf-viewer)](https://github.com/FirstTimeInForever/intellij-pdf-viewer/blob/master/LICENSE)
+[![Latest release](https://img.shields.io/github/v/tag/firsttimeinforever/intellij-pdf-viewer?include_prereleases)](https://github.com/FirstTimeInForever/intellij-pdf-viewer/releases)
+
+[IntelliJ PDF Viewer](https://plugins.jetbrains.com/plugin/14494-pdf-viewer) plugin adds support for viewing PDF files in IntelliJ-based IDEs. This plugin uses recently integrated (`2020.2`) CEF (Chromium Embedded Framework) browser to render PDF documents with [PDF.js](https://mozilla.github.io/pdf.js/) library.
 
 ## Features
 
 - Document navigation
 - Presentation mode
-- Text search in document*
+- Text search*
 - Document scaling
 - Thumbnail view
 - Sections list**
@@ -17,11 +21,23 @@ IntelliJ PDF Viewer plugin adds support for viewing PDF files in IntelliJ-based 
 
 \* Search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
 
-** Sections list should be defined by document. Otherwise it will be disabled. 
+** Document should define sections list. Otherwise, sections view won't be active.
 
 ## How it looks
 
 ![Plugin screenshot](images/plugin-screenshot.png)
+
+## Installation
+
+- Using IDE built-in plugin system:
+
+  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "PDF Viewer"</kbd> >
+  <kbd>Install Plugin</kbd>
+
+- Manually:
+
+  Download the [latest release](https://github.com/FirstTimeInForever/intellij-pdf-viewer/releases/latest) and install it manually using
+  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 ## Notes on JCEF support
 
