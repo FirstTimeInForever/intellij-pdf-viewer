@@ -210,10 +210,10 @@ export class AppComponent {
         const subscription = this.route.queryParams.subscribe(params => {
             const targetUrl = params['path'];
             this.fileName = AppComponent.parseFileName(targetUrl);
-            console.log(this.fileName);
             if (!targetUrl) {
                 return;
             }
+            console.log(this.fileName);
             subscription.unsubscribe();
             console.log(targetUrl);
             let request = this.http.get(targetUrl, {
@@ -261,9 +261,12 @@ export class AppComponent {
         targetDocument.addEventListener("click", this.focusEventHandler);
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
-        this.messageSenderService.triggerEvent(TriggerableEvents.PAGES_COUNT, {
-            count: this.pagesCount
-        });
+        if (this.pagesCount) {
+            console.log(`Sending pages count: ${this.pagesCount}`);
+            this.messageSenderService.triggerEvent(TriggerableEvents.PAGES_COUNT, {
+                count: this.pagesCount
+            });
+        }
     }
 
     private ensureDocumentPropertiesReady() {

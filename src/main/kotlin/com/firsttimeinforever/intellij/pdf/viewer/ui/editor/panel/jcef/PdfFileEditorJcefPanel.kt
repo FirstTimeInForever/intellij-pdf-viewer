@@ -28,6 +28,7 @@ import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonDecodingException
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
@@ -122,8 +123,16 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 grabFocus()
             }
             addHandler(SubscribableEventType.PAGES_COUNT) {
-                val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
-                pagesCountHolder = result.count
+                try {
+                    val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
+                    pagesCountHolder = result.count
+                }
+                catch (exception: JsonDecodingException) {
+                    logger.warn(
+                        "Failed to parse PagesCount data object! (This should be fixed at message passing level)",
+                        exception
+                    )
+                }
             }
             addHandler(SubscribableEventType.DOCUMENT_LOAD_ERROR) {
                 // For some reason this event triggers with no data
