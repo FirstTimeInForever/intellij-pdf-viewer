@@ -1,6 +1,6 @@
 # Intellij PDF Viewer Plugin Changelog
 
-## Unreleased
+## 0.7
 - Added changelog
 - Fix incorrect IDE theme colors inheritance
 
