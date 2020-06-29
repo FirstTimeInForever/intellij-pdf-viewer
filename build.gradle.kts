@@ -1,8 +1,10 @@
 import org.jetbrains.intellij.tasks.*
 import com.moowork.gradle.node.npm.*
+import org.jetbrains.changelog.closure
 
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
+    id("org.jetbrains.changelog") version "0.3.2"
     kotlin("jvm") version "1.3.70"
     kotlin("plugin.serialization") version "1.3.70"
     java
@@ -10,7 +12,7 @@ plugins {
 }
 
 group = "com.firsttimeinforever.intellij.pdf.viewer"
-version = "0.0.6.1"
+version = "0.0.7"
 
 repositories {
     mavenCentral()
@@ -41,9 +43,19 @@ tasks {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+    changelog {
+        version = "${project.version}"
+        path = "${project.projectDir}/CHANGELOG.md"
+        headerFormat = "{0}"
+        headerArguments = listOf("${project.version}")
+        itemPrefix = "-"
+        keepUnreleasedSection = true
+        unreleasedTerm = "Unreleased"
+    }
     withType<PatchPluginXmlTask>() {
         sinceBuild("202")
         untilBuild("299.*")
+        changeNotes(closure { changelog.getLatest().withHeader(false).toHTML() })
     }
     node {
         download = true
