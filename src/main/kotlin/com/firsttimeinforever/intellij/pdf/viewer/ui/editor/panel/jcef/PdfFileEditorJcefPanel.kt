@@ -16,7 +16,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
-import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
@@ -25,6 +24,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileEvent
 import com.intellij.openapi.vfs.VirtualFileListener
 import com.intellij.ui.jcef.JCEFHtmlPanel
+import com.intellij.util.ui.UIUtil
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.cef.browser.CefBrowser
@@ -233,7 +233,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 }
                 eventReceiver.injectSubscriptions()
                 updatePageNumber(currentPageNumber)
-                setBackgroundColor(EditorColorsManager.getInstance().globalScheme.defaultBackground)
+                setThemeColors()
             }
         }, browserPanel.cefBrowser)
     }
@@ -242,21 +242,24 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         remove(documentLoadErrorPanel)
         browserPanel.component.isVisible = true
         val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path).toExternalForm()
-        logger.debug("Trying to load url: ${targetUrl}")
+        logger.debug("Trying to load url: $targetUrl")
         browserPanel.loadURL(targetUrl)
     }
 
-    private fun setBackgroundColor(color: Color) {
+    private fun setThemeColors(
+        background: Color = UIUtil.getPanelBackground(),
+        foreground: Color = UIUtil.getLabelForeground()
+    ) {
         eventSender.triggerWith(
-            TriggerableEventType.SET_BACKGROUND_COLOR,
-            SetBackgroundColorDataObject.from(color),
-            SetBackgroundColorDataObject.serializer()
+            TriggerableEventType.SET_THEME_COLORS,
+            SetThemeColorsDataObject.from(background, foreground),
+            SetThemeColorsDataObject.serializer()
         )
     }
 
     override var currentPageNumber: Int
         get() = currentPageNumberHolder
-        set(value: Int) {
+        set(value) {
             currentPageNumberHolder = value
             updatePageNumber(value)
         }
@@ -272,10 +275,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     override fun dispose() = Unit
 
     override fun globalSchemeChange(scheme: EditorColorsScheme?) {
-        if (scheme == null) {
-            return
-        }
-        setBackgroundColor(scheme.defaultBackground)
+        setThemeColors()
     }
 
     companion object {

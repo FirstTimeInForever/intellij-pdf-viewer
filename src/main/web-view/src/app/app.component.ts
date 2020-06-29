@@ -14,6 +14,11 @@ enum SpreadState {
     even
 }
 
+interface ThemeColors {
+    background: string;
+    foreground: string;
+}
+
 @Component({
     selector: 'app-root',
     template: `<ng2-pdfjs-viewer #viewer viewerId="__uniqueViewerId" (onPageChange)="pageChanged($event)" 
@@ -68,10 +73,14 @@ export class AppComponent {
         }
     }
 
-    private setBackgroundColor(color: string) {
+    private setThemeColors(colors: ThemeColors) {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
-        appConfig.appContainer.style.background = color;
-        appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style.background = color;
+        appConfig.appContainer.style.background = colors.background;
+        console.log(colors);
+        appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style.background = colors.background;
+        appConfig.sidebar.outerContainer.querySelectorAll("a").forEach(element => {
+            element.style.color = colors.foreground;
+        });
     }
 
     private collectDocumentInfo() {
@@ -81,7 +90,7 @@ export class AppComponent {
         return info;
     }
 
-    private delayedBackgroundColor: string;
+    private delayedThemeColors: ThemeColors;
     private fileName: string;
 
     private static parseFileName(url: string) {
@@ -242,7 +251,7 @@ export class AppComponent {
     }
 
     private onDocumentLoad() {
-        this.setBackgroundColor(this.delayedBackgroundColor);
+        this.setThemeColors(this.delayedThemeColors);
         this.hideToolbar();
         this.viewer.PDFViewerApplication.unbindWindowEvents();
         window["debugApplication"] = this.viewer.PDFViewerApplication;
@@ -295,13 +304,13 @@ export class AppComponent {
             this.viewer.PDFViewerApplication.appConfig.findBar.findPreviousButton.click();
         });
         this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleToolbar);
-        this.messageReceiverService.subscribe(SubscriptableEvents.SET_BACKGROUND_COLOR, (data: {color: string}) => {
-            this.delayedBackgroundColor = data.color;
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_THEME_COLORS, (data: ThemeColors) => {
+            this.delayedThemeColors = data;
             try {
-                this.setBackgroundColor(this.delayedBackgroundColor);
+                this.setThemeColors(this.delayedThemeColors);
             }
             catch (error) {
-                console.warn("Could not set background color!");
+                console.warn("Could not set theme color!");
             }
         });
         this.messageReceiverService.subscribe(SubscriptableEvents.GET_DOCUMENT_INFO, () => {

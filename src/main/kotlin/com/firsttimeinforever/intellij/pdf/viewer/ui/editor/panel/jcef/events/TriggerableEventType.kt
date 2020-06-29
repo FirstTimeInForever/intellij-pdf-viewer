@@ -18,6 +18,6 @@ enum class TriggerableEventType(val displayName: String) {
     TOGGLE_PRESENTATION_MODE("togglePresentationMode"),
     FIND_NEXT("findNext"),
     FIND_PREVIOUS("findPrevious"),
-    SET_BACKGROUND_COLOR("setBackgroundColor"),
+    SET_THEME_COLORS("setThemeColors"),
     SET_PAGE("pageSet")
 }
