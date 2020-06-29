@@ -38,6 +38,8 @@
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer"/>
         <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
+        <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
+        <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfVieverConfigurable"/>
     </extensions>
 
     <applicationListeners>

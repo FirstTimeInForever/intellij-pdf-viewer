@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -90,6 +91,16 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         override fun keyReleased(event: KeyEvent?) = Unit
     }
 
+    private val settingsChangeListener = { settings: PdfViewerSettings ->
+        setThemeColors()
+        if (!settings.enableDocumentAutoReload) {
+            removeFileUpdateHandler()
+        }
+        else if (watchRequest == null) {
+            addFileUpdateHandler()
+        }
+    }
+
     init {
         Disposer.register(this, browserPanel)
         Disposer.register(this, eventReceiver)
@@ -136,6 +147,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 false
             }
         }
+        PdfViewerSettings.instance.addChangeListener(settingsChangeListener)
     }
 
     override fun increaseScale() = eventSender.trigger(TriggerableEventType.INCREASE_SCALE)
@@ -197,21 +209,36 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         )
     }
 
-    private fun addUpdateHandler() {
-        val fileSystem = LocalFileSystem.getInstance()
-        fileSystem.addRootToWatch(virtualFile.path, false)
-        fileSystem.addVirtualFileListener(object: VirtualFileListener {
-            override fun contentsChanged(event: VirtualFileEvent) {
-                logger.debug("Got some events batch")
-                if (event.file != virtualFile) {
-                    logger.debug("Seems like target file (${virtualFile.path}) is not changed")
-                    return
-                }
-                logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-                val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
-                browserPanel.loadURL(targetUrl.toExternalForm())
+    private val fileListener = object: VirtualFileListener {
+        override fun contentsChanged(event: VirtualFileEvent) {
+            logger.debug("Got some events batch")
+            if (event.file != virtualFile) {
+                logger.debug("Seems like target file (${virtualFile.path}) is not changed")
+                return
             }
-        })
+            logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
+            val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
+            browserPanel.loadURL(targetUrl.toExternalForm())
+        }
+    }
+
+    private var watchRequest: LocalFileSystem.WatchRequest? = null
+
+    private fun addFileUpdateHandler() {
+        LocalFileSystem.getInstance().run {
+            watchRequest = addRootToWatch(virtualFile.path, false)
+            addVirtualFileListener(fileListener)
+        }
+    }
+
+    private fun removeFileUpdateHandler() {
+        LocalFileSystem.getInstance().run {
+            watchRequest?.also {
+                removeWatchedRoot(it)
+                watchRequest = null
+            }
+            removeVirtualFileListener(fileListener)
+        }
     }
 
     private fun showDocumentInfoDialog(documentInfo: DocumentInfoDataObject) =
@@ -219,7 +246,9 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
 
     override fun openDocument(file: VirtualFile) {
         virtualFile = file
-        addUpdateHandler()
+        if (PdfViewerSettings.instance.enableDocumentAutoReload) {
+            addFileUpdateHandler()
+        }
         addReloadHandler()
         reloadDocument()
     }
@@ -252,7 +281,17 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     ) {
         eventSender.triggerWith(
             TriggerableEventType.SET_THEME_COLORS,
-            SetThemeColorsDataObject.from(background, foreground),
+            PdfViewerSettings.instance.run {
+                if (useCustomColors) {
+                    SetThemeColorsDataObject.from(
+                        Color(customBackgroundColor),
+                        Color(customForegroundColor)
+                    )
+                }
+                else {
+                    SetThemeColorsDataObject.from(background, foreground)
+                }
+            },
             SetThemeColorsDataObject.serializer()
         )
     }
@@ -272,7 +311,9 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         )
     }
 
-    override fun dispose() = Unit
+    override fun dispose() {
+        PdfViewerSettings.instance.removeChangeListener(settingsChangeListener)
+    }
 
     override fun globalSchemeChange(scheme: EditorColorsScheme?) {
         setThemeColors()
