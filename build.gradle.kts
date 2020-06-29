@@ -23,6 +23,11 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     // testCompile("junit", "junit", "4.12")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("io.sentry:sentry:1.7.30") {
+        // IntelliJ already bundles it and will report a classloader
+        // problem if this isn't excluded
+        exclude("org.slf4j")
+    }
 }
 
 intellij {
