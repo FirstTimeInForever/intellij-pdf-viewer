@@ -17,7 +17,7 @@ class PdfFileEditorProvider: WeighedFileEditorProvider() {
         return file.fileType == PdfFileType.INSTANCE
     }
 
-    override fun createEditor(project: Project, file: VirtualFile) = PdfFileEditor(file)
+    override fun createEditor(project: Project, file: VirtualFile) = PdfFileEditor(project, file)
 
     override fun getPolicy() = FileEditorPolicy.HIDE_DEFAULT_EDITOR
 }

@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -112,6 +113,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.parse(PageChangeDataObject.serializer(), it)
                 currentPageNumberHolder = result.pageNumber
+                pageStateChanged()
             }
             addHandler(SubscribableEventType.DOCUMENT_INFO) {
                 val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
@@ -126,6 +128,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 try {
                     val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
                     pagesCountHolder = result.count
+                    pageStateChanged()
                 }
                 catch (exception: JsonDecodingException) {
                     logger.warn(

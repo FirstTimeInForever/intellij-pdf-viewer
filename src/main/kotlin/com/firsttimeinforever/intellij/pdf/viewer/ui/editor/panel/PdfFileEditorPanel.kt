@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.BorderLayout
@@ -22,4 +23,21 @@ abstract class PdfFileEditorPanel: JPanel(), Disposable {
 
     open var currentPageNumber: Int = 0
     open val pagesCount: Int = 0
+
+    protected val pageStateChangeListeners =
+        mutableListOf<(DocumentPageState) -> Unit>()
+
+    fun addPageChangeListener(listener: (DocumentPageState) -> Unit) {
+        pageStateChangeListeners.add(listener)
+    }
+
+    fun removePageChangeListener(listener: (DocumentPageState) -> Unit): Boolean {
+        return pageStateChangeListeners.remove(listener)
+    }
+
+    fun pageStateChanged() {
+        pageStateChangeListeners.forEach {
+            it(DocumentPageState(currentPageNumber, pagesCount))
+        }
+    }
 }

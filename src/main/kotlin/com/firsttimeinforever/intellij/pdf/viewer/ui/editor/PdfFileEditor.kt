@@ -6,21 +6,23 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorLocation
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
-    companion object {
-        private const val NAME = "Pdf Viewer File Editor"
-    }
-
+class PdfFileEditor(project: Project, virtualFile: VirtualFile): FileEditor {
     val viewPanel: PdfFileEditorPanel = PdfEditorPanelProvider.createPanel()
 
     init {
         Disposer.register(this, viewPanel)
+        viewPanel.addPageChangeListener {
+            project.messageBus.syncPublisher(DocumentPageStateListener.DOCUMENT_PAGE_STATE).run {
+                pageStateChanged(it)
+            }
+        }
         viewPanel.openDocument(virtualFile)
     }
 
@@ -31,6 +33,11 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
     fun previousPage() = viewPanel.previousPage()
     fun findNext() = viewPanel.findNext()
     fun findPrevious() = viewPanel.findPrevious()
+
+    val pageState
+        get() = viewPanel.run {
+            DocumentPageState(currentPageNumber, pagesCount)
+        }
 
     override fun isModified(): Boolean = false
 
@@ -64,4 +71,8 @@ class PdfFileEditor(virtualFile: VirtualFile): FileEditor {
     override fun removePropertyChangeListener(listener: PropertyChangeListener) = Unit
 
     override fun dispose() = Unit
+
+    companion object {
+        private const val NAME = "Pdf Viewer File Editor"
+    }
 }

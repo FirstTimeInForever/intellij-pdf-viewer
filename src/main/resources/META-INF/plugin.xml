@@ -41,6 +41,7 @@
         <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
         <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfVieverConfigurable"/>
         <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.util.SentryErrorReportSubmitter"/>
+        <statusBarWidgetFactory implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.DocumentPageStatusBarWidgetFactory"/>
     </extensions>
 
     <applicationListeners>
@@ -48,6 +49,8 @@
                   topic="com.intellij.ide.ui.UISettingsListener"/>
         <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel"
                   topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+        <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.StatusBarProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 
     <actions>
