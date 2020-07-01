@@ -49,27 +49,31 @@ export class AppComponent {
         this.messageSenderService.triggerEvent(TriggerableEvents.FRAME_FOCUSED, {})
     }
 
-    private hideToolbar() {
+    private hideSidebar() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.toolbar.container.parentElement.parentElement.style.display = "none";
         appConfig.viewerContainer.parentElement.style['top'] = 0;
         appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = 0;
     }
 
-    private showToolbar() {
+    private showSidebar() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.toolbar.container.parentElement.parentElement.style.display = "block";
         appConfig.viewerContainer.parentElement.style['top'] = "32px";
         appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = "32px";
     }
 
-    private toggleToolbar() {
+    private isSidebarActive() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
-        if (appConfig.toolbar.container.parentElement.parentElement.style.display == "block") {
-            this.hideToolbar();
+        return appConfig.toolbar.container.parentElement.parentElement.style.display == "block";
+    }
+
+    private toggleSidebar() {
+        if (this.isSidebarActive()) {
+            this.hideSidebar();
         }
         else {
-            this.showToolbar();
+            this.showSidebar();
         }
     }
 
@@ -252,7 +256,7 @@ export class AppComponent {
 
     private onDocumentLoad() {
         this.setThemeColors(this.delayedThemeColors);
-        this.hideToolbar();
+        this.hideSidebar();
         this.viewer.PDFViewerApplication.unbindWindowEvents();
         window["debugApplication"] = this.viewer.PDFViewerApplication;
         this.createPresentationModeController();
@@ -306,7 +310,7 @@ export class AppComponent {
             this.viewer.PDFViewerApplication.appConfig.findBar.findField.value = data.searchTarget;
             this.viewer.PDFViewerApplication.appConfig.findBar.findPreviousButton.click();
         });
-        this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleToolbar);
+        this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleSidebar);
         this.messageReceiverService.subscribe(SubscriptableEvents.SET_THEME_COLORS, (data: ThemeColors) => {
             this.delayedThemeColors = data;
             try {
