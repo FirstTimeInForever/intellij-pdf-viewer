@@ -12,7 +12,9 @@ abstract class PdfEditorPdfjsToggleActionAdapter(
         isDisabledInIdePresentationMode,
         isDisabledInPresentationMode
     ) {
-        override fun actionPerformed(event: AnActionEvent) = Unit
+        override fun actionPerformed(event: AnActionEvent) {
+            throw IllegalAccessException("This method should not be called")
+        }
     }
 
     val disabledInPresentationMode
