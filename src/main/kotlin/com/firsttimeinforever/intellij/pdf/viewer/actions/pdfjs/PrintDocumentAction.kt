@@ -3,8 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PrintDocumentAction: PdfEditorPdfjsAction() {
-    override val disabledInPresentationMode = false
-
     override fun actionPerformed(event: AnActionEvent) {
         getPanel(event)?.printDocument()
     }

@@ -3,9 +3,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ToggleDocumentPresentationModeAction: PdfEditorPdfjsAction() {
-    override val disableInIdePresentationMode: Boolean = false
-
+class ToggleDocumentPresentationModeAction: PdfEditorPdfjsAction(
+    disabledInIdePresentationMode = false
+) {
     override fun actionPerformed(event: AnActionEvent) {
         val panel = getPanel(event)?: return
         panel.presentationModeController.togglePresentationMode()

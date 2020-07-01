@@ -7,9 +7,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 
-abstract class PdfEditorAction: AnAction() {
-    open val disableInIdePresentationMode = true
-
+abstract class PdfEditorAction(
+    val disableInIdePresentationMode: Boolean = true
+): AnAction() {
     override fun update(event: AnActionEvent) {
         event.presentation.isEnabledAndVisible = haveVisibleEditor(event)
         if (UISettings.instance.presentationMode && disableInIdePresentationMode) {
@@ -23,17 +23,11 @@ abstract class PdfEditorAction: AnAction() {
         }
     }
 
-    fun haveVisibleEditor(event: AnActionEvent, predicate: (FileEditor) -> Boolean): Boolean {
+    fun haveVisibleEditor(
+        event: AnActionEvent,
+        predicate: (FileEditor) -> Boolean
+    ): Boolean {
         val project = event.project?: return false
         return FileEditorManager.getInstance(project).selectedEditors.any(predicate)
-    }
-
-    fun getEditor(event: AnActionEvent): PdfFileEditor? {
-        val project = event.project?: return null
-        val editor = FileEditorManager.getInstance(project).selectedEditor?: return null
-        if (editor !is PdfFileEditor) {
-            return null
-        }
-        return editor
     }
 }

@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorAction
+import com.firsttimeinforever.intellij.pdf.viewer.actions.findPdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel
 import com.intellij.notification.Notification
@@ -8,9 +9,10 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-abstract class PdfEditorPdfjsAction: PdfEditorAction() {
-    open val disabledInPresentationMode = false
-
+abstract class PdfEditorPdfjsAction(
+    disabledInIdePresentationMode: Boolean = true,
+    val disabledInPresentationMode: Boolean = false
+): PdfEditorAction(disabledInIdePresentationMode) {
     override fun haveVisibleEditor(event: AnActionEvent): Boolean {
         return haveVisibleEditor(event) {
             it is PdfFileEditor && it.viewPanel is PdfFileEditorJcefPanel
@@ -18,12 +20,13 @@ abstract class PdfEditorPdfjsAction: PdfEditorAction() {
     }
 
     fun getPanel(event: AnActionEvent): PdfFileEditorJcefPanel? {
-        val editor = getEditor(event)?: return null
-        return when (editor.viewPanel) {
-            is PdfFileEditorJcefPanel -> editor.viewPanel
-            else -> {
-                showUnsupportedActionNotification(event)
-                null
+        return findPdfFileEditor(event)?.let { editor ->
+            when (editor.viewPanel) {
+                is PdfFileEditorJcefPanel -> editor.viewPanel
+                else -> {
+                    showUnsupportedActionNotification(event)
+                    null
+                }
             }
         }
     }
