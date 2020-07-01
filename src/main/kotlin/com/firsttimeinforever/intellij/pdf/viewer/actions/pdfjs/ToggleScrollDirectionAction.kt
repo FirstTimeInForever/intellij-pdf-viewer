@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PageSpreadState
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 
@@ -22,7 +23,11 @@ class ToggleScrollDirectionAction: PdfEditorPdfjsAction(
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        getPanel(event)?.toggleScrollDirection()
+        getPanel(event)?.run {
+            // This is needed to prevent weird behaviour
+            pageSpreadState = PageSpreadState.NONE
+            toggleScrollDirection()
+        }
     }
 
     companion object {
