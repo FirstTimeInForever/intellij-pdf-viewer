@@ -144,10 +144,27 @@
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleFullscreenAction"
                     text="Toggle Fullscreen Mode" description="Toggles fullscreen mode"
                     icon="AllIcons.General.FitContent"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarThumbnailsViewModeAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarThumbnailsViewModeAction"
+                text="Thumbnails View" description="Set sidebar view mode to thumbnails"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarAttachmentsViewModeAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarAttachmentsViewModeAction"
+                text="Attachments View" description="Set sidebar view mode to attachments"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarBookmarksViewModeAction"
+                class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarBookmarksViewModeAction"
+                text="Bookmarks View" description="Set sidebar view mode to bookmarks"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
-               id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" popup="true" compact="true">
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction"/>
+               id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" compact="true">
+            <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorSidebarViewModeActionGroup"
+                id="PdfEditorSidebarViewModeActionGroup" text="Pdf Viewer Sidebar View Mode Actions"
+                popup="true" icon="AllIcons.Actions.PreviewDetails">
+                <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleSidebarAction"/>
+                <separator/>
+                <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarThumbnailsViewModeAction"/>
+                <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarBookmarksViewModeAction"/>
+                <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarAttachmentsViewModeAction"/>
+            </group>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PreviousPageAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.NextPageAction"/>

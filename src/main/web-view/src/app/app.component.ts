@@ -5,6 +5,7 @@ import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
 import {MessageReceiverService, SubscriptableEvents} from "./message-receiver.service";
 import {MessageSenderService, TriggerableEvents} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
+import {SidebarController, SidebarViewMode} from "./SidebarController";
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
@@ -33,6 +34,7 @@ export class AppComponent {
     private viewer: PdfJsViewerComponent;
 
     private presentationModeController: PresentationModeController = null;
+    private sidebarController: SidebarController = null;
 
     actualPage: number;
 
@@ -49,31 +51,42 @@ export class AppComponent {
         this.messageSenderService.triggerEvent(TriggerableEvents.FRAME_FOCUSED, {})
     }
 
-    private hideSidebar() {
+    private hideToolbar() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.toolbar.container.parentElement.parentElement.style.display = "none";
         appConfig.viewerContainer.parentElement.style['top'] = 0;
         appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = 0;
     }
 
-    private showSidebar() {
+    private showToolbar() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.toolbar.container.parentElement.parentElement.style.display = "block";
         appConfig.viewerContainer.parentElement.style['top'] = "32px";
         appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = "32px";
     }
 
-    private isSidebarActive() {
+    // private fixSidebar() {
+    //     const appConfig = this.viewer.PDFViewerApplication.appConfig;
+    //     const sidebarContainer = appConfig.sidebar.outerContainer.querySelector("#sidebarContainer");
+    //     // Hide weird dark top border
+    //     sidebarContainer.style["border-top"] = "none";
+    //     // Hide sidebar view buttons
+    //     sidebarContainer.querySelector("#toolbarSidebar").style.display = "none";
+    //     // Move sidebar content 32px up due to removal of view buttons
+    //     sidebarContainer.querySelector("#sidebarContent").style.top = "0px";
+    // }
+
+    private isToolbarActive() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         return appConfig.toolbar.container.parentElement.parentElement.style.display == "block";
     }
 
-    private toggleSidebar() {
-        if (this.isSidebarActive()) {
-            this.hideSidebar();
+    private toggleToolbar() {
+        if (this.isToolbarActive()) {
+            this.hideToolbar();
         }
         else {
-            this.showSidebar();
+            this.showToolbar();
         }
     }
 
@@ -189,6 +202,9 @@ export class AppComponent {
             config.toolbar.zoomOut,
             config.toolbar.zoomIn,
             this.viewer.PDFViewerApplication.pdfSidebar.toggleButton,
+            this.viewer.PDFViewerApplication.pdfSidebar.thumbnailButton,
+            this.viewer.PDFViewerApplication.pdfSidebar.outlineButton,
+            this.viewer.PDFViewerApplication.pdfSidebar.attachmentsButton,
             config.secondaryToolbar.scrollHorizontalButton,
             config.secondaryToolbar.scrollVerticalButton,
             config.secondaryToolbar.pageRotateCcwButton,
@@ -256,9 +272,24 @@ export class AppComponent {
 
     private onDocumentLoad() {
         this.setThemeColors(this.delayedThemeColors);
-        this.hideSidebar();
+        this.hideToolbar();
         this.viewer.PDFViewerApplication.unbindWindowEvents();
         window["debugApplication"] = this.viewer.PDFViewerApplication;
+        this.sidebarController = new SidebarController(this.viewer);
+        this.sidebarController.fixSidebar();
+        this.sidebarController.availableViewsInfoChanged.subscribe(info => {
+            console.log(`Available views info changed: ${JSON.stringify(info)}`);
+            this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_AVAILABLE_VIEWS_CHANGED, info);
+        });
+        this.sidebarController.viewStateChanged.subscribe(state => {
+            console.log(`Sending view state: ${JSON.stringify(state)}`);
+            this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED, state);
+        });
+        // Send initial state
+        this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED,
+            this.sidebarController.getCurrentState());
+        this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_AVAILABLE_VIEWS_CHANGED,
+            this.sidebarController.getAvailableViewsInfo());
         this.createPresentationModeController();
         const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
         this.buildIgnoreClickTargetsList();
@@ -283,7 +314,14 @@ export class AppComponent {
             this.actualPage = data.pageNumber;
         });
         this.messageReceiverService.subscribe(SubscriptableEvents.TOGGLE_SIDEBAR, () => {
-            this.viewer.PDFViewerApplication.pdfSidebar.toggleButton.click();
+            this.sidebarController.toggle();
+        });
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_SIDEBAR_VIEW_MODE, data => {
+            console.log(`Setting view mode: ${data.mode}`);
+            if (!this.sidebarController) {
+                return;
+            }
+            this.sidebarController.setMode(data.mode, true);
         });
         this.messageReceiverService.subscribe(SubscriptableEvents.INCREASE_SCALE, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.zoomIn.click();
@@ -310,7 +348,7 @@ export class AppComponent {
             this.viewer.PDFViewerApplication.appConfig.findBar.findField.value = data.searchTarget;
             this.viewer.PDFViewerApplication.appConfig.findBar.findPreviousButton.click();
         });
-        this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleSidebar);
+        this.subscribeTo(SubscriptableEvents.TOGGLE_PDFJS_TOOLBAR, this.toggleToolbar);
         this.messageReceiverService.subscribe(SubscriptableEvents.SET_THEME_COLORS, (data: ThemeColors) => {
             this.delayedThemeColors = data;
             try {

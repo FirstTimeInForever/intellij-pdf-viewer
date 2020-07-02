@@ -13,7 +13,6 @@ export enum SubscriptableEvents {
     TOGGLE_PDFJS_TOOLBAR = "toggleToolbar",
     GET_DOCUMENT_INFO = "getDocumentInfo",
     PRINT_DOCUMENT = "printDocument",
-    TOGGLE_SIDEBAR = "toggleSidebar",
     TOGGLE_SCROLL_DIRECTION = "toggleScrollDirection",
     SPREAD_NONE = "spreadNonePages",
     SPREAD_EVEN_PAGES = "spreadEvenPages",
@@ -24,7 +23,9 @@ export enum SubscriptableEvents {
     FIND_NEXT = "findNext",
     FIND_PREVIOUS = "findPrevious",
     SET_THEME_COLORS = "setThemeColors",
-    SET_PAGE = "pageSet"
+    SET_PAGE = "pageSet",
+    TOGGLE_SIDEBAR = "toggleSidebar",
+    SET_SIDEBAR_VIEW_MODE = "setSidebarViewState"
 }
 
 @Injectable({

@@ -9,3 +9,5 @@ class PdfEditorLeftToolbarActionGroup: DefaultActionGroup() {}
 class PdfEditorToolbarSearchActionGroup: DefaultActionGroup() {}
 
 class PdfEditorRightToolbarActionGroup: DefaultActionGroup() {}
+
+class PdfEditorSidebarViewModeActionGroup: DefaultActionGroup() {}

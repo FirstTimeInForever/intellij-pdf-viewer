@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -54,12 +53,29 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private var pagesCountHolder = 0
     private var pageSpreadStateHolder = PageSpreadState.NONE
     private val documentLoadErrorPanel = DocumentLoadErrorPanel()
+    private var sidebarViewStateHolder = SidebarViewState()
+    private var sidebarAvailableViewModesHolder = SidebarAvailableViewModes()
+
+    val sidebarAvailableViewModes
+        get() = sidebarAvailableViewModesHolder
 
     val isCurrentScrollDirectionHorizontal
         get() = currentScrollDirectionHorizontal
 
     override val pagesCount
         get() = pagesCountHolder
+
+    val sidebarViewState: SidebarViewState
+        get() = sidebarViewStateHolder
+
+    fun setSidebarViewMode(mode: SidebarViewMode) {
+        sidebarViewStateHolder = SidebarViewState(mode, sidebarViewStateHolder.hidden)
+        eventSender.triggerWith(
+            TriggerableEventType.SET_SIDEBAR_VIEW_MODE,
+            SidebarViewModeChangeDataObject.from(mode),
+            SidebarViewModeChangeDataObject.serializer()
+        )
+    }
 
     private fun showDocumentLoadErrorNotification() {
         val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
@@ -146,6 +162,18 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                     add(documentLoadErrorPanel)
                     showDocumentLoadErrorNotification()
                 }
+            }
+            addHandler(SubscribableEventType.SIDEBAR_VIEW_STATE_CHANGED) {
+                val result = jsonSerializer.parse(
+                    SidebarViewStateChangeDataObject.serializer(), it
+                )
+                sidebarViewStateHolder = result.state
+            }
+            addHandler(SubscribableEventType.SIDEBAR_AVAILABLE_VIEWS_CHANGED) {
+                val result = jsonSerializer.parse(
+                    SidebarAvailableViewModesChangedDataObject.serializer(), it
+                )
+                sidebarAvailableViewModesHolder = result
             }
         }
         addKeyListener(pageNavigationKeyListener)

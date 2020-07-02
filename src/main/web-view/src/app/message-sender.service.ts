@@ -14,7 +14,9 @@ export enum TriggerableEvents {
     FRAME_FOCUSED = "frameFocused",
     PAGES_COUNT = "pagesCount",
     DOCUMENT_LOAD_ERROR = "documentLoadError",
-    UNHANDLED_ERROR = "unhandledError"
+    UNHANDLED_ERROR = "unhandledError",
+    SIDEBAR_VIEW_STATE_CHANGED = "sidebarViewStateChanged",
+    SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged"
 }
 
 @Injectable({
