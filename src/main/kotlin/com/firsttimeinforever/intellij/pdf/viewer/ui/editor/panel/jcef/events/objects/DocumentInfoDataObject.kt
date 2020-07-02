@@ -18,5 +18,4 @@ data class DocumentInfoDataObject(
     val subject: String = "",
     val title: String = "",
     val version: String = ""
-) {
-}
+)

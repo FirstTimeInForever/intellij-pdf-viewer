@@ -6,13 +6,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.fileEditor.FileEditorManager
 
-class PdfFileEditorActionGroup: DefaultActionGroup() {}
+class PdfFileEditorActionGroup: DefaultActionGroup()
 
-class PdfEditorLeftToolbarActionGroup: DefaultActionGroup() {}
+class PdfEditorLeftToolbarActionGroup: DefaultActionGroup()
 
-class PdfEditorToolbarSearchActionGroup: DefaultActionGroup() {}
+class PdfEditorToolbarSearchActionGroup: DefaultActionGroup()
 
-class PdfEditorRightToolbarActionGroup: DefaultActionGroup() {}
+class PdfEditorRightToolbarActionGroup: DefaultActionGroup()
 
 class PdfEditorSidebarViewModeActionGroup: DefaultActionGroup() {
     override fun isPopup(): Boolean = true

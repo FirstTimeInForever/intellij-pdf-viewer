@@ -3,5 +3,4 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.o
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PagesCountDataObject(val count: Int) {
-}
+data class PagesCountDataObject(val count: Int)

@@ -3,5 +3,4 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.o
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PageChangeDataObject(val pageNumber: Int) {
-}
+data class PageChangeDataObject(val pageNumber: Int)
