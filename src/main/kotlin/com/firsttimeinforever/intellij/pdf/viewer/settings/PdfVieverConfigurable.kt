@@ -18,7 +18,9 @@ class PdfVieverConfigurable: Configurable {
             settings.customBackgroundColor != customBackgroundColor?.rgb
                     ?: settings.customBackgroundColor ||
             settings.customForegroundColor != customForegroundColor?.rgb
-                    ?: settings.customForegroundColor
+                    ?: settings.customForegroundColor ||
+            settings.customIconColor != customIconColor?.rgb
+                    ?: settings.customIconColor
         }
     }
 
@@ -31,6 +33,7 @@ class PdfVieverConfigurable: Configurable {
             useCustomColors = settingsForm?.useCustomColors ?: useCustomColors
             customBackgroundColor = settingsForm?.customBackgroundColor?.rgb ?: customBackgroundColor
             customForegroundColor = settingsForm?.customForegroundColor?.rgb ?: customForegroundColor
+            customIconColor = settingsForm?.customIconColor?.rgb ?: customIconColor
         }
         if (wasModified) {
             settings.changeListeners.forEach { it(settings) }

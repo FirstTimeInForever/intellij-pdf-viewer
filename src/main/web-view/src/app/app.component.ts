@@ -7,6 +7,9 @@ import {MessageSenderService, TriggerableEvents} from "./message-sender.service"
 import {PresentationModeController} from "./PresentationModeController";
 import {SidebarController, SidebarViewMode} from "./SidebarController";
 
+// @ts-ignore
+const iframeCssOverrides = require("./iframe-overrides.css").default;
+
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
 enum SpreadState {
@@ -18,6 +21,7 @@ enum SpreadState {
 interface ThemeColors {
     background: string;
     foreground: string;
+    icons: string;
 }
 
 @Component({
@@ -65,17 +69,6 @@ export class AppComponent {
         appConfig.sidebar.outerContainer.querySelector("#sidebarContainer").style['top'] = "32px";
     }
 
-    // private fixSidebar() {
-    //     const appConfig = this.viewer.PDFViewerApplication.appConfig;
-    //     const sidebarContainer = appConfig.sidebar.outerContainer.querySelector("#sidebarContainer");
-    //     // Hide weird dark top border
-    //     sidebarContainer.style["border-top"] = "none";
-    //     // Hide sidebar view buttons
-    //     sidebarContainer.querySelector("#toolbarSidebar").style.display = "none";
-    //     // Move sidebar content 32px up due to removal of view buttons
-    //     sidebarContainer.querySelector("#sidebarContent").style.top = "0px";
-    // }
-
     private isToolbarActive() {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         return appConfig.toolbar.container.parentElement.parentElement.style.display == "block";
@@ -94,10 +87,37 @@ export class AppComponent {
         const appConfig = this.viewer.PDFViewerApplication.appConfig;
         appConfig.appContainer.style.background = colors.background;
         console.log(colors);
-        appConfig.sidebar.outerContainer.querySelector("#toolbarSidebar").style.background = colors.background;
-        appConfig.sidebar.outerContainer.querySelectorAll("a").forEach(element => {
-            element.style.color = colors.foreground;
-        });
+        console.log(this.viewer);
+        this.attachStylesheet(this.generateStylesheet(colors));
+    }
+
+    private generateStylesheet(colors: ThemeColors) {
+        return `
+        .outlineItemToggler.outlineItemsHidden::after {
+            background-color: ${colors.icons};
+        }
+        .outlineItemToggler::after {
+            background-color: ${colors.icons};
+        }
+        .outlineItem > a {
+            color: ${colors.foreground};
+        }
+        #toolbarSidebar {
+            background-color: ${colors.background};
+        }
+        `;
+    }
+
+    private attachStylesheet(stylesheet: string) {
+        const targetDocument = this.viewer.PDFViewerApplication.appConfig.appContainer.ownerDocument;
+        const head = targetDocument.head;
+        const link = targetDocument.createElement("link");
+        link.setAttribute("rel", "stylesheet");
+        link.setAttribute("type", "text/css");
+        const content = `data:text/css;charset=UTF-8,${stylesheet}`;
+        link.setAttribute("href", content);
+        head.append(link);
+        return link;
     }
 
     private collectDocumentInfo() {
@@ -271,6 +291,7 @@ export class AppComponent {
     }
 
     private onDocumentLoad() {
+        this.attachStylesheet(iframeCssOverrides);
         this.setThemeColors(this.delayedThemeColors);
         this.hideToolbar();
         this.viewer.PDFViewerApplication.unbindWindowEvents();

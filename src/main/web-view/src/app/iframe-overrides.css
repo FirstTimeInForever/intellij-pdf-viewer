@@ -1,0 +1,48 @@
+/*
+This stylesheet will be dynamically attached to head element
+in the iframe document.
+*/
+
+/*Replace outline expand/collapse triangles with ours svg ones*/
+.outlineItemToggler::before {
+    content: "";
+}
+.outlineItemToggler::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    -webkit-mask: url(/64fa8636-e686-4c63-9956-132d9471ce77/assets/treeitem-triangle.svg);
+    mask: url(/64fa8636-e686-4c63-9956-132d9471ce77/assets/treeitem-triangle.svg);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    right: 0;
+    transform: scale(0.5);
+}
+
+.outlineItemToggler.outlineItemsHidden::before {
+    content: "" !important;
+}
+.outlineItemToggler.outlineItemsHidden::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    -webkit-mask: url(/64fa8636-e686-4c63-9956-132d9471ce77/assets/treeitem-triangle-hidden.svg);
+    mask: url(/64fa8636-e686-4c63-9956-132d9471ce77/assets/treeitem-triangle-hidden.svg);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    display: inline-block;
+    position: absolute;
+    top: 1px;
+    right: 0;
+    transform: scale(0.5);
+}
+
+/*Shadow can be added with filter: drop-shadow(...);*/
+/*
+.treeitem-triangle {
+    color: red;
+}
+*/

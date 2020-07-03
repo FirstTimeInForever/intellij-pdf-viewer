@@ -23,11 +23,13 @@ class PdfViewerSettingsForm: JPanel() {
         it.addItemListener { _ ->
             backgroundColorPanel.isEnabled = it.isSelected
             foregroundColorPanel.isEnabled = it.isSelected
+            iconColorPanel.isEnabled = it.isSelected
         }
     }
 
     private val backgroundColorPanel = ColorPanel()
     private val foregroundColorPanel = ColorPanel()
+    private val iconColorPanel = ColorPanel()
 
     val enableDocumentAutoReload
         get() = enableDocumentAutoReloadCheckBox.isSelected
@@ -41,13 +43,20 @@ class PdfViewerSettingsForm: JPanel() {
     val customForegroundColor
         get() = foregroundColorPanel.selectedColor
 
+    val customIconColor
+        get() = iconColorPanel.selectedColor
+
     fun loadSettings() {
         enableDocumentAutoReloadCheckBox.isSelected = settings.enableDocumentAutoReload
         useCustomColorsCheckBox.isSelected = settings.useCustomColors
         backgroundColorPanel.selectedColor = Color(settings.customBackgroundColor)
         foregroundColorPanel.selectedColor = Color(settings.customForegroundColor)
-        backgroundColorPanel.isEnabled = useCustomColorsCheckBox.isSelected
-        foregroundColorPanel.isEnabled = useCustomColorsCheckBox.isSelected
+        iconColorPanel.selectedColor = Color(settings.customIconColor)
+        useCustomColorsCheckBox.run {
+            backgroundColorPanel.isEnabled = isSelected
+            foregroundColorPanel.isEnabled = isSelected
+            iconColorPanel.isEnabled = isSelected
+        }
     }
 
     init {
@@ -69,6 +78,10 @@ class PdfViewerSettingsForm: JPanel() {
                 row {
                     label("Foreground:")
                     foregroundColorPanel()
+                }
+                row {
+                    label("Icons:")
+                    iconColorPanel()
                 }
             }
         })

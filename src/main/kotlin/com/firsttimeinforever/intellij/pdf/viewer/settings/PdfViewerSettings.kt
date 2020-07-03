@@ -13,6 +13,7 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     var useCustomColors = false
     var customBackgroundColor: Int = Color.GRAY.rgb
     var customForegroundColor: Int = Color.GRAY.rgb
+    var customIconColor: Int = Color.GRAY.rgb
     var enableDocumentAutoReload = true
 
     @Transient

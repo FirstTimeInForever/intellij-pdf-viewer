@@ -17,6 +17,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
@@ -325,11 +326,18 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 if (useCustomColors) {
                     SetThemeColorsDataObject.from(
                         Color(customBackgroundColor),
-                        Color(customForegroundColor)
+                        Color(customForegroundColor),
+                        Color(customIconColor)
                     )
                 }
                 else {
-                    SetThemeColorsDataObject.from(background, foreground)
+                    val iconColor = if (EditorColorsManager.getInstance().isDarkEditor) {
+                        Color(98, 98, 98)
+                    }
+                    else {
+                        Color(60, 63, 65)
+                    }
+                    SetThemeColorsDataObject.from(background, foreground, iconColor)
                 }
             },
             SetThemeColorsDataObject.serializer()

@@ -48,7 +48,8 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
-              { "glob": "**/*", "input": "node_modules/ng2-pdfjs-viewer/pdfjs", "output": "/assets/pdfjs" }
+              { "glob": "**/*", "input": "node_modules/ng2-pdfjs-viewer/pdfjs", "output": "/assets/pdfjs" },
+              { "glob": "**/*", "input": "./assets", "output": "/assets" }
             ],
             "styles": [
               "src/styles.less"
