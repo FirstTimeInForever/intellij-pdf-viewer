@@ -47,6 +47,14 @@ export class SidebarController {
             thumbnails: true,
             bookmarks: this.viewer.PDFViewerApplication.pdfOutlineViewer.outline != null
         };
+        // Ensure we aren't missing bookmarks in current document
+        this.viewer.PDFViewerApplication.pdfDocument.getOutline().then(outline => {
+            if (!outline) {
+                return;
+            }
+            this.availableViewsInfo.bookmarks = true;
+            this.availableViewsInfoChanged.next(this.availableViewsInfo);
+        });
         // There is no point for notifying subscribers as there are none of them yet
         // this.availableViewsInfoChanged.next(this.availableViewsInfo);
         console.log(this.availableViewsInfo);
