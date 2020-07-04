@@ -227,7 +227,6 @@ class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
     override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 
-    fun togglePdfjsToolbar() = eventSender.trigger(TriggerableEventType.TOGGLE_PDFJS_TOOLBAR)
     fun getDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
     fun toggleSidebar() = eventSender.trigger(TriggerableEventType.TOGGLE_SIDEBAR)
     fun printDocument() = eventSender.trigger(TriggerableEventType.PRINT_DOCUMENT)

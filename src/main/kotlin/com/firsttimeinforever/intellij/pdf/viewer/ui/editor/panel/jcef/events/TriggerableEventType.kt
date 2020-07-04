@@ -5,7 +5,6 @@ enum class TriggerableEventType(val displayName: String) {
     DECREASE_SCALE("decreaseScale"),
     GOTO_NEXT_PAGE("nextPage"),
     GOTO_PREVIOUS_PAGE("previousPage"),
-    TOGGLE_PDFJS_TOOLBAR("toggleToolbar"),
     GET_DOCUMENT_INFO("getDocumentInfo"),
     PRINT_DOCUMENT("printDocument"),
     TOGGLE_SCROLL_DIRECTION("toggleScrollDirection"),

@@ -103,9 +103,6 @@
                 <keyboard-shortcut keymap="$default" first-keystroke="shift meta F"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
             </action>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.TogglePdfjsToolbarAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.TogglePdfjsToolbarAction"
-                    text="Toggle Pdfjs Toolbar" icon="AllIcons.Actions.MoveToWindow"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
                     text="Show Document Info" icon="AllIcons.General.Information"/>
