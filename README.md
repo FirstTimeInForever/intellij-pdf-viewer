@@ -23,6 +23,13 @@
 
 ** Document should define sections list. Otherwise, sections view won't be active.
 
+## Use cases
+
+- Split-view code and documentation
+- Previewing latex documents
+- Presentations with live-coding
+- ...
+
 ## How it looks
 
 ![Plugin screenshot](images/plugin-screenshot.png)
