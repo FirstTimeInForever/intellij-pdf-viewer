@@ -1,8 +1,8 @@
-package com.firsttimeinforever.intellij.pdf.viewer.settings.form;
+package com.firsttimeinforever.intellij.pdf.viewer.settings;
 
-import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.layout.panel
+import com.intellij.ui.layout.selected
 import java.awt.*
 import javax.swing.JCheckBox
 import javax.swing.JLabel
@@ -96,6 +96,18 @@ class PdfViewerSettingsForm: JPanel() {
                             }
                         }
                     }()
+                }
+                row {
+                    link("Set current theme colors") {
+                        PdfViewerSettings.run {
+                            backgroundColorPanel.selectedColor = defaultBackgroundColor
+                            foregroundColorPanel.selectedColor = defaultForegroundColor
+                            iconColorPanel.selectedColor = defaultIconColor
+                        }
+                    }.enableIf(useCustomColorsCheckBox.selected)
+                }
+                row {
+                    label("Please pay extra attention to icons color, as it can be incorrectly inherited from the current theme.")
                 }
             }
         })

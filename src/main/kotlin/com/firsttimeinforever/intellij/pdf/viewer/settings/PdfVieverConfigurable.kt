@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
-import com.firsttimeinforever.intellij.pdf.viewer.settings.form.PdfViewerSettingsForm
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
