@@ -17,7 +17,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
-import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
@@ -38,10 +37,11 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.BoxLayout
 
-class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
+class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
+    PdfFileEditorPanel(virtualFile), EditorColorsListener
+{
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
-    private lateinit var virtualFile: VirtualFile
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
     private val eventReceiver =
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
@@ -56,27 +56,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private val documentLoadErrorPanel = DocumentLoadErrorPanel()
     private var sidebarViewStateHolder = SidebarViewState()
     private var sidebarAvailableViewModesHolder = SidebarAvailableViewModes()
-
-    val sidebarAvailableViewModes
-        get() = sidebarAvailableViewModesHolder
-
-    val isCurrentScrollDirectionHorizontal
-        get() = currentScrollDirectionHorizontal
-
-    override val pagesCount
-        get() = pagesCountHolder
-
-    val sidebarViewState: SidebarViewState
-        get() = sidebarViewStateHolder
-
-    fun setSidebarViewMode(mode: SidebarViewMode) {
-        sidebarViewStateHolder = SidebarViewState(mode, sidebarViewStateHolder.hidden)
-        eventSender.triggerWith(
-            TriggerableEventType.SET_SIDEBAR_VIEW_MODE,
-            SidebarViewModeChangeDataObject.from(mode),
-            SidebarViewModeChangeDataObject.serializer()
-        )
-    }
 
     private fun showDocumentLoadErrorNotification() {
         val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
@@ -117,6 +96,21 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         }
         else if (watchRequest == null) {
             addFileUpdateHandler()
+        }
+    }
+
+    private var watchRequest: LocalFileSystem.WatchRequest? = null
+
+    private val fileListener = object: VirtualFileListener {
+        override fun contentsChanged(event: VirtualFileEvent) {
+            logger.debug("Got some events batch")
+            if (event.file != virtualFile) {
+                logger.debug("Seems like target file (${virtualFile.path}) is not changed")
+                return
+            }
+            logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
+            val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
+            browserPanel.loadURL(targetUrl.toExternalForm())
         }
     }
 
@@ -189,6 +183,43 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
             }
         }
         PdfViewerSettings.instance.addChangeListener(settingsChangeListener)
+        openDocument()
+    }
+
+    val sidebarAvailableViewModes
+        get() = sidebarAvailableViewModesHolder
+
+    val isCurrentScrollDirectionHorizontal
+        get() = currentScrollDirectionHorizontal
+
+    override val pagesCount
+        get() = pagesCountHolder
+
+    val sidebarViewState: SidebarViewState
+        get() = sidebarViewStateHolder
+
+    fun setSidebarViewMode(mode: SidebarViewMode) {
+        sidebarViewStateHolder = SidebarViewState(mode, sidebarViewStateHolder.hidden)
+        eventSender.triggerWith(
+            TriggerableEventType.SET_SIDEBAR_VIEW_MODE,
+            SidebarViewModeChangeDataObject.from(mode),
+            SidebarViewModeChangeDataObject.serializer()
+        )
+    }
+
+    override var currentPageNumber: Int
+        get() = currentPageNumberHolder
+        set(value) {
+            currentPageNumberHolder = value
+            updatePageNumber(value)
+        }
+
+    private fun updatePageNumber(value: Int) {
+        eventSender.triggerWith(
+            TriggerableEventType.SET_PAGE,
+            PageChangeDataObject(value),
+            PageChangeDataObject.serializer()
+        )
     }
 
     override fun increaseScale() = eventSender.trigger(TriggerableEventType.INCREASE_SCALE)
@@ -200,6 +231,8 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     fun getDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
     fun toggleSidebar() = eventSender.trigger(TriggerableEventType.TOGGLE_SIDEBAR)
     fun printDocument() = eventSender.trigger(TriggerableEventType.PRINT_DOCUMENT)
+    fun rotateClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_CLOCKWISE)
+    fun rotateCounterclockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
 
     var pageSpreadState
         get() = pageSpreadStateHolder
@@ -214,9 +247,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 PageSpreadState.ODD -> TriggerableEventType.SPREAD_ODD_PAGES
             })
         }
-
-    fun rotateClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_CLOCKWISE)
-    fun rotateCounterclockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
 
     fun toggleScrollDirection(): Boolean {
         eventSender.trigger(TriggerableEventType.TOGGLE_SCROLL_DIRECTION)
@@ -250,21 +280,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         )
     }
 
-    private val fileListener = object: VirtualFileListener {
-        override fun contentsChanged(event: VirtualFileEvent) {
-            logger.debug("Got some events batch")
-            if (event.file != virtualFile) {
-                logger.debug("Seems like target file (${virtualFile.path}) is not changed")
-                return
-            }
-            logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-            val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
-            browserPanel.loadURL(targetUrl.toExternalForm())
-        }
-    }
-
-    private var watchRequest: LocalFileSystem.WatchRequest? = null
-
     private fun addFileUpdateHandler() {
         LocalFileSystem.getInstance().run {
             watchRequest = addRootToWatch(virtualFile.path, false)
@@ -285,8 +300,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
     private fun showDocumentInfoDialog(documentInfo: DocumentInfoDataObject) =
         DialogBuilder().centerPanel(DocumentInfoPanel(documentInfo)).showModal(true)
 
-    override fun openDocument(file: VirtualFile) {
-        virtualFile = file
+    private fun openDocument() {
         if (PdfViewerSettings.instance.enableDocumentAutoReload) {
             addFileUpdateHandler()
         }
@@ -298,7 +312,7 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
         val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path).toExternalForm()
         browserPanel.jbCefClient.addLoadHandler(object: CefLoadHandlerAdapter() {
             override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-                if (browser!!.url != targetUrl) {
+                if (browser == null || browser.url != targetUrl) {
                     return
                 }
                 eventReceiver.injectSubscriptions()
@@ -339,21 +353,6 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                 }
             },
             SetThemeColorsDataObject.serializer()
-        )
-    }
-
-    override var currentPageNumber: Int
-        get() = currentPageNumberHolder
-        set(value) {
-            currentPageNumberHolder = value
-            updatePageNumber(value)
-        }
-
-    private fun updatePageNumber(value: Int) {
-        eventSender.triggerWith(
-            TriggerableEventType.SET_PAGE,
-            PageChangeDataObject(value),
-            PageChangeDataObject.serializer()
         )
     }
 

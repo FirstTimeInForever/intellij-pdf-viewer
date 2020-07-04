@@ -6,12 +6,12 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-abstract class PdfFileEditorPanel: JPanel(), Disposable {
+abstract class PdfFileEditorPanel(
+    val virtualFile: VirtualFile
+): JPanel(), Disposable {
     init {
         layout = BorderLayout()
     }
-
-    open fun openDocument(file: VirtualFile) = Unit
 
     open fun reloadDocument() = Unit
     open fun increaseScale() = Unit

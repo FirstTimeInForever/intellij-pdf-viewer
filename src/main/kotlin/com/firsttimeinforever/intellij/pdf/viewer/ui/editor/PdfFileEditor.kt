@@ -13,17 +13,22 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class PdfFileEditor(project: Project, virtualFile: VirtualFile): FileEditor {
-    val viewPanel: PdfFileEditorPanel = PdfEditorPanelProvider.createPanel()
+class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): FileEditor {
+    val viewPanel: PdfFileEditorPanel =
+        PdfEditorPanelProvider.createPanel(virtualFile)
 
     init {
         Disposer.register(this, viewPanel)
         viewPanel.addPageChangeListener {
-            project.messageBus.syncPublisher(DocumentPageStateListener.DOCUMENT_PAGE_STATE).run {
-                pageStateChanged(it)
-            }
+            notifyPageChanged(it)
         }
-        viewPanel.openDocument(virtualFile)
+        notifyPageChanged(pageState)
+    }
+
+    private fun notifyPageChanged(pageState: DocumentPageState) {
+        project.messageBus.syncPublisher(DocumentPageStateListener.DOCUMENT_PAGE_STATE).run {
+            pageStateChanged(pageState)
+        }
     }
 
     fun reloadDocument() = viewPanel.reloadDocument()
