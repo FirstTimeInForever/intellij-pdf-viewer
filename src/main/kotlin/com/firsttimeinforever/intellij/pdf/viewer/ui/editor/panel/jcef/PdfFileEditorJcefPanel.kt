@@ -331,13 +331,11 @@ class PdfFileEditorJcefPanel: PdfFileEditorPanel(), EditorColorsListener {
                     )
                 }
                 else {
-                    val iconColor = if (EditorColorsManager.getInstance().isDarkEditor) {
-                        Color(98, 98, 98)
-                    }
-                    else {
-                        Color(60, 63, 65)
-                    }
-                    SetThemeColorsDataObject.from(background, foreground, iconColor)
+                    SetThemeColorsDataObject.from(
+                        background,
+                        foreground,
+                        PdfViewerSettings.defaultIconColor
+                    )
                 }
             },
             SetThemeColorsDataObject.serializer()

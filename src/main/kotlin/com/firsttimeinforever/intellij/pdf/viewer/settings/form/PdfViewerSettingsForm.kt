@@ -3,9 +3,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.settings.form;
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.layout.panel
-import java.awt.BorderLayout
-import java.awt.Color
+import java.awt.*
 import javax.swing.JCheckBox
+import javax.swing.JLabel
 import javax.swing.JPanel
 
 class PdfViewerSettingsForm: JPanel() {
@@ -72,16 +72,30 @@ class PdfViewerSettingsForm: JPanel() {
                     useCustomColorsCheckBox()
                 }
                 row {
-                    label("Background:")
-                    backgroundColorPanel()
-                }
-                row {
-                    label("Foreground:")
-                    foregroundColorPanel()
-                }
-                row {
-                    label("Icons:")
-                    iconColorPanel()
+                    object: JPanel(GridBagLayout()) {
+                        init {
+                            GridBagConstraints().also {
+                                it.anchor = GridBagConstraints.LINE_START
+                                it.ipadx = 8
+                                add(JLabel("Background:"), it)
+                                add(backgroundColorPanel, it)
+                            }
+                            GridBagConstraints().also {
+                                it.gridy = 1
+                                it.anchor = GridBagConstraints.LINE_START
+                                it.ipadx = 8
+                                add(JLabel("Foreground:"), it)
+                                add(foregroundColorPanel, it)
+                            }
+                            GridBagConstraints().also {
+                                it.gridy = 2
+                                it.anchor = GridBagConstraints.LINE_START
+                                it.ipadx = 8
+                                add(JLabel("Icons:"), it)
+                                add(iconColorPanel, it)
+                            }
+                        }
+                    }()
                 }
             }
         })

@@ -4,16 +4,16 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager.getService
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.util.xmlb.XmlSerializerUtil.copyBean
 import com.intellij.util.xmlb.annotations.Transient
-import java.awt.Color
 
 @State(name = "PdfViewerSettings", storages = [(Storage("pdf_viewer.xml"))])
 class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     var useCustomColors = false
-    var customBackgroundColor: Int = Color.GRAY.rgb
-    var customForegroundColor: Int = Color.GRAY.rgb
-    var customIconColor: Int = Color.GRAY.rgb
+    var customBackgroundColor: Int = defaultBackgroundColor.rgb
+    var customForegroundColor: Int = defaultForegroundColor.rgb
+    var customIconColor: Int = defaultIconColor.rgb
     var enableDocumentAutoReload = true
 
     @Transient
@@ -39,5 +39,14 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     companion object {
         val instance: PdfViewerSettings
             get() = getService(PdfViewerSettings::class.java)
+
+        val defaultBackgroundColor
+            get() = EditorColorsManager.getInstance().globalScheme.defaultBackground
+
+        val defaultForegroundColor
+            get() = EditorColorsManager.getInstance().globalScheme.defaultForeground
+
+        val defaultIconColor
+            get() = defaultForegroundColor
     }
 }
