@@ -1,5 +1,13 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## Unreleased
+- Added plugin settings
+- Added error reporter
+- Added status bar widget for displaying current page number
+- Removed sidebar view mode buttons
+- Fixed possibly unavailable bookmarks view for large documents
+- Fixed incorrect inheritance of IDE colors
+
 ## 0.7
 - Added changelog
 - Fix incorrect IDE theme colors inheritance
