@@ -8,7 +8,7 @@ import {PresentationModeController} from "./PresentationModeController";
 import {SidebarController, SidebarViewMode} from "./SidebarController";
 
 // @ts-ignore
-const iframeCssOverrides = require("./iframe-overrides.css").default;
+const iframeCssOverrides = require("./iframe-overrides.less").default;
 
 // const viewerFolder = '64fa8636-e686-4c63-9956-132d9471ce77/assets/pdfjs'
 
