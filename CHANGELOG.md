@@ -1,6 +1,6 @@
 # Intellij PDF Viewer Plugin Changelog
 
-## Unreleased
+## 0.8
 - Added plugin settings
 - Added error reporter
 - Added status bar widget for displaying current page number
