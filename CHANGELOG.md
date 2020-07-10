@@ -1,5 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.8.1
+- Fixed listeners issues
+
 ## 0.8
 - Added plugin settings
 - Added error reporter
