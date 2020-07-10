@@ -17,7 +17,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -37,11 +39,12 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.BoxLayout
 
-class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
+class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     PdfFileEditorPanel(virtualFile), EditorColorsListener
 {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
+    private val messageBusConnection = project.messageBus.connect()
     private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
     private val eventReceiver =
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
@@ -49,7 +52,7 @@ class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
     val presentationModeController =
         PresentationModeController(this, browserPanel.component, eventReceiver, eventSender)
     private var currentPageNumberHolder: Int = 1
-    private val controlPanel = ControlPanel()
+    private val controlPanel = ControlPanel(project.messageBus)
     private var currentScrollDirectionHorizontal = true
     private var pagesCountHolder = 0
     private var pageSpreadStateHolder = PageSpreadState.NONE
@@ -117,6 +120,7 @@ class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
     init {
         Disposer.register(this, browserPanel)
         Disposer.register(this, eventReceiver)
+        Disposer.register(this, controlPanel)
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
@@ -183,6 +187,7 @@ class PdfFileEditorJcefPanel(virtualFile: VirtualFile):
             }
         }
         PdfViewerSettings.instance.addChangeListener(settingsChangeListener)
+        messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
         openDocument()
     }
 

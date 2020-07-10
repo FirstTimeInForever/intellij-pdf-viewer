@@ -15,7 +15,7 @@ import javax.swing.JComponent
 
 class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): FileEditor {
     val viewPanel: PdfFileEditorPanel =
-        PdfEditorPanelProvider.createPanel(virtualFile)
+        PdfEditorPanelProvider.createPanel(project, virtualFile)
 
     init {
         Disposer.register(this, viewPanel)
