@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings;
 
+import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.layout.panel
 import com.intellij.ui.layout.selected
@@ -12,12 +13,12 @@ class PdfViewerSettingsForm: JPanel() {
     private val settings = PdfViewerSettings.instance
 
     private val enableDocumentAutoReloadCheckBox = JCheckBox(
-        "Reload document on change",
+        PDFViewerBundle.message("pdf.viewer.settings.reloaddocument"),
         settings.enableDocumentAutoReload
     )
 
     private val useCustomColorsCheckBox: JCheckBox = JCheckBox(
-        "Use custom colors",
+        PDFViewerBundle.message("pdf.viewer.settings.usecustomcolors"),
         settings.useCustomColors
     ).also {
         it.addItemListener { _ ->
@@ -62,12 +63,12 @@ class PdfViewerSettingsForm: JPanel() {
     init {
         layout = BorderLayout()
         add(panel {
-            titledRow("General") {
+            titledRow( PDFViewerBundle.message("pdf.viewer.settings.general")) {
                 row {
                     enableDocumentAutoReloadCheckBox()
                 }
             }
-            titledRow("Viewer colors") {
+            titledRow( PDFViewerBundle.message("pdf.viewer.settings.viewercolors")) {
                 row {
                     useCustomColorsCheckBox()
                 }
@@ -77,28 +78,28 @@ class PdfViewerSettingsForm: JPanel() {
                             GridBagConstraints().also {
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel("Background:"), it)
+                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.background")), it)
                                 add(backgroundColorPanel, it)
                             }
                             GridBagConstraints().also {
                                 it.gridy = 1
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel("Foreground:"), it)
+                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.foreground")), it)
                                 add(foregroundColorPanel, it)
                             }
                             GridBagConstraints().also {
                                 it.gridy = 2
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel("Icons:"), it)
+                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.icons")), it)
                                 add(iconColorPanel, it)
                             }
                         }
                     }()
                 }
                 row {
-                    link("Set current theme colors") {
+                    link( PDFViewerBundle.message("pdf.viewer.settings.setcurrenttheme")) {
                         PdfViewerSettings.run {
                             backgroundColorPanel.selectedColor = defaultBackgroundColor
                             foregroundColorPanel.selectedColor = defaultForegroundColor
@@ -107,7 +108,7 @@ class PdfViewerSettingsForm: JPanel() {
                     }.enableIf(useCustomColorsCheckBox.selected)
                 }
                 row {
-                    label("Please pay extra attention to icons color, as it can be incorrectly inherited from the current theme.")
+                    label( PDFViewerBundle.message("pdf.viewer.settings.attentiontocolor"))
                 }
             }
         })
