@@ -10,7 +10,7 @@ class PDFViewerBundle private constructor(): DynamicBundle(BUNDLE) {
 
         fun message(
             @PropertyKey(resourceBundle = BUNDLE) key: String,
-            vararg params: Object
+            vararg params: Any
         ): String =
             INSTANCE.getMessage(key, params)
     }

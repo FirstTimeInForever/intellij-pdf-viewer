@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.util
 
+import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
 import com.intellij.AbstractBundle
 import com.intellij.diagnostic.IdeaReportingEvent
 import com.intellij.diagnostic.ReportMessages
@@ -33,7 +34,7 @@ import java.lang.Exception
 import java.util.*
 
 class SentryErrorReportSubmitter: ErrorReportSubmitter() {
-    override fun getReportActionText(): String = "Report to Author"
+    override fun getReportActionText(): String = PDFViewerBundle.message("pdf.viewer.util.reporttoauthor")
 
     private class SendReportBackgroundTask(
         project: Project?,
@@ -41,7 +42,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
         private val consumer: Consumer<SubmittedReportInfo>
     ): Task.Backgroundable(
         project,
-        "Sending Error Report"
+        PDFViewerBundle.message("pdf.viewer.util.sendingerrorreport")
     ) {
         override fun run(indicator: ProgressIndicator) {
             sentryClient.sendEvent(event)
@@ -49,7 +50,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
                 override fun onSuccess(event: Event?) {
                     ApplicationManager.getApplication().invokeLater {
                         ReportMessages.GROUP.createNotification(
-                            "Thank you for submitting your error report!",
+                            PDFViewerBundle.message("pdf.viewer.util.thankyouforsubmittingyourerrorreport"),
                             NotificationType.INFORMATION
                         ).notify(project)
                         consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.NEW_ISSUE))
@@ -59,7 +60,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
                 override fun onFailure(event: Event?, exception: Exception?) {
                     ApplicationManager.getApplication().invokeLater {
                         ReportMessages.GROUP.createNotification(
-                            "Failed to submit error report!",
+                            PDFViewerBundle.message("pdf.viewer.util.failedtosubmiterrorreport"),
                             NotificationType.ERROR
                         ).notify(project)
                         logger<SentryErrorReportSubmitter>().error(exception)

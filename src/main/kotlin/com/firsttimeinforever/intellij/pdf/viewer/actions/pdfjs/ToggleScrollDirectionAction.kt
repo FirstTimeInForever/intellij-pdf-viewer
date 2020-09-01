@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
+import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PageSpreadState
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -30,10 +31,10 @@ class ToggleScrollDirectionAction: PdfEditorPdfjsAction(
         }
     }
 
-    companion object {
-        const val VERTICAL_TEXT = "Set Vertical Scrolling"
-        const val HORIZONTAL_TEXT = "Set Horizontal Scrolling"
-        const val VERTICAL_DESCRIPTION = "Sets vertical scrolling for document pages"
-        const val HORIZONTAL_DESCRIPTION = "Sets horizontal scrolling for document pages"
+    private companion object {
+        val VERTICAL_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setverticalscrolling")
+        val HORIZONTAL_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.sethorizontalscrolling")
+        val VERTICAL_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setsverticalscrollingfordocumentpages")
+        val HORIZONTAL_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setshorizontalscrollingfordocumentpages")
     }
 }

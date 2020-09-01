@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
+import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 
@@ -26,10 +27,10 @@ class ToggleDocumentPresentationModeAction: PdfEditorPdfjsAction(
         }
     }
 
-    companion object {
-        private const val NORMAL_TEXT = "Enter PDF Presentation Mode"
-        private const val NORMAL_DESCRIPTION = "Enters document presentation mode"
-        private const val ACTIVE_TEXT = "Exit PDF Presentation Mode"
-        private const val ACTIVE_DESCRIPTION = "Exits document presentation mode"
+    private companion object {
+        val NORMAL_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.enterpdfpresentationmode")
+        val NORMAL_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.entersdocumentpresentationmode")
+        val ACTIVE_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.exitpdfpresentationmode")
+        val ACTIVE_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.exitsdocumentpresentationmode")
     }
 }
