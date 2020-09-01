@@ -7,6 +7,6 @@ interface DocumentPageStateListener {
 
     companion object {
         val DOCUMENT_PAGE_STATE =
-            Topic.create("some name", DocumentPageStateListener::class.java)
+            Topic.create("DocumentPageStateTopic", DocumentPageStateListener::class.java)
     }
 }

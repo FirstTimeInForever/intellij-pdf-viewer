@@ -18,4 +18,4 @@ data class SidebarAvailableViewModes(
     }
 }
 
-typealias SidebarAvailableViewModesChangedDataObject = SidebarAvailableViewModes;
+typealias SidebarAvailableViewModesChangedDataObject = SidebarAvailableViewModes

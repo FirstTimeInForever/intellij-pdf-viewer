@@ -1,6 +1,6 @@
-package com.firsttimeinforever.intellij.pdf.viewer.settings;
+package com.firsttimeinforever.intellij.pdf.viewer.settings
 
-import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.layout.panel
 import com.intellij.ui.layout.selected
@@ -13,12 +13,12 @@ class PdfViewerSettingsForm: JPanel() {
     private val settings = PdfViewerSettings.instance
 
     private val enableDocumentAutoReloadCheckBox = JCheckBox(
-        PDFViewerBundle.message("pdf.viewer.settings.reloaddocument"),
+        PdfViewerBundle.message("pdf.viewer.settings.reload.document"),
         settings.enableDocumentAutoReload
     )
 
     private val useCustomColorsCheckBox: JCheckBox = JCheckBox(
-        PDFViewerBundle.message("pdf.viewer.settings.usecustomcolors"),
+        PdfViewerBundle.message("pdf.viewer.settings.use.custom.colors"),
         settings.useCustomColors
     ).also {
         it.addItemListener { _ ->
@@ -63,12 +63,12 @@ class PdfViewerSettingsForm: JPanel() {
     init {
         layout = BorderLayout()
         add(panel {
-            titledRow( PDFViewerBundle.message("pdf.viewer.settings.general")) {
+            titledRow( PdfViewerBundle.message("pdf.viewer.settings.general")) {
                 row {
                     enableDocumentAutoReloadCheckBox()
                 }
             }
-            titledRow( PDFViewerBundle.message("pdf.viewer.settings.viewercolors")) {
+            titledRow( PdfViewerBundle.message("pdf.viewer.settings.viewer.colors")) {
                 row {
                     useCustomColorsCheckBox()
                 }
@@ -78,28 +78,28 @@ class PdfViewerSettingsForm: JPanel() {
                             GridBagConstraints().also {
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.background")), it)
+                                add(JLabel( PdfViewerBundle.message("pdf.viewer.settings.background")), it)
                                 add(backgroundColorPanel, it)
                             }
                             GridBagConstraints().also {
                                 it.gridy = 1
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.foreground")), it)
+                                add(JLabel( PdfViewerBundle.message("pdf.viewer.settings.foreground")), it)
                                 add(foregroundColorPanel, it)
                             }
                             GridBagConstraints().also {
                                 it.gridy = 2
                                 it.anchor = GridBagConstraints.LINE_START
                                 it.ipadx = 8
-                                add(JLabel( PDFViewerBundle.message("pdf.viewer.settings.icons")), it)
+                                add(JLabel( PdfViewerBundle.message("pdf.viewer.settings.icons")), it)
                                 add(iconColorPanel, it)
                             }
                         }
                     }()
                 }
                 row {
-                    link( PDFViewerBundle.message("pdf.viewer.settings.setcurrenttheme")) {
+                    link( PdfViewerBundle.message("pdf.viewer.settings.set.current.theme")) {
                         PdfViewerSettings.run {
                             backgroundColorPanel.selectedColor = defaultBackgroundColor
                             foregroundColorPanel.selectedColor = defaultForegroundColor
@@ -108,7 +108,7 @@ class PdfViewerSettingsForm: JPanel() {
                     }.enableIf(useCustomColorsCheckBox.selected)
                 }
                 row {
-                    label( PDFViewerBundle.message("pdf.viewer.settings.attentiontocolor"))
+                    label( PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
                 }
             }
         })

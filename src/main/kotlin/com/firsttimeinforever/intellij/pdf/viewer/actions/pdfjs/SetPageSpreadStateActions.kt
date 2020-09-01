@@ -20,11 +20,8 @@ abstract class SetPageSpreadStateActionBase(
     }
 }
 
-class SpreadEvenPagesAction: SetPageSpreadStateActionBase(PageSpreadState.EVEN) {
-}
+class SpreadEvenPagesAction: SetPageSpreadStateActionBase(PageSpreadState.EVEN)
 
-class SpreadNonePagesAction: SetPageSpreadStateActionBase(PageSpreadState.NONE) {
-}
+class SpreadNonePagesAction: SetPageSpreadStateActionBase(PageSpreadState.NONE)
 
-class SpreadOddPagesAction: SetPageSpreadStateActionBase(PageSpreadState.ODD) {
-}
+class SpreadOddPagesAction: SetPageSpreadStateActionBase(PageSpreadState.ODD)

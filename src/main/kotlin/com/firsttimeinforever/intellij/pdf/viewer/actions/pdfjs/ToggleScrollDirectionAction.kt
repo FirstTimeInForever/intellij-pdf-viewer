@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
-import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PageSpreadState
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -32,9 +32,9 @@ class ToggleScrollDirectionAction: PdfEditorPdfjsAction(
     }
 
     private companion object {
-        val VERTICAL_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setverticalscrolling")
-        val HORIZONTAL_TEXT = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.sethorizontalscrolling")
-        val VERTICAL_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setsverticalscrollingfordocumentpages")
-        val HORIZONTAL_DESCRIPTION = PDFViewerBundle.message("pdf.viewer.actions.pdfjs.setshorizontalscrollingfordocumentpages")
+        val VERTICAL_TEXT = PdfViewerBundle.message("pdf.viewer.actions.pdfjs.set.vertical.scrolling.name")
+        val VERTICAL_DESCRIPTION = PdfViewerBundle.message("pdf.viewer.actions.pdfjs.set.vertical.scrolling.description")
+        val HORIZONTAL_TEXT = PdfViewerBundle.message("pdf.viewer.actions.pdfjs.set.horizontal.scrolling.name")
+        val HORIZONTAL_DESCRIPTION = PdfViewerBundle.message("pdf.viewer.actions.pdfjs.set.horizontal.scrolling.description")
     }
 }

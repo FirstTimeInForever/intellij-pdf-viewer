@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.widgets
 
-import com.firsttimeinforever.intellij.pdf.viewer.PDFViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageStateListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
@@ -68,7 +68,7 @@ class DocumentPageStatusBarWidget(val project: Project): StatusBarWidget {
     override fun dispose() = Unit
 
     private inner class Presentation: StatusBarWidget.TextPresentation {
-        override fun getTooltipText() = PDFViewerBundle.message("pdf.viewer.widgets.document.page.statusbar.widget")
+        override fun getTooltipText() = PdfViewerBundle.message("pdf.viewer.widgets.document.page.statusbar.widget.tooltip")
 
         override fun getClickConsumer(): Consumer<MouseEvent>? = null
 
