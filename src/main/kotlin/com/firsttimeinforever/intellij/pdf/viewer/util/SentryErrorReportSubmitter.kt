@@ -101,7 +101,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
     }
 
     private fun attachExtraInfo(event: EventBuilder) {
-        event.run {
+        with (event) {
             (pluginDescriptor as? IdeaPluginDescriptor)?.let { withRelease(it.version) }
             withExtra("last_action", IdeaLogger.ourLastActionId)
             withTag("OS Name", SystemInfo.OS_NAME)

@@ -9,19 +9,13 @@ class PdfVieverConfigurable: Configurable {
     private val settings = PdfViewerSettings.instance
 
     override fun isModified(): Boolean {
-        if (settingsForm == null) {
-            return false
-        }
-        return settingsForm!!.run {
+        return settingsForm?.run {
             settings.enableDocumentAutoReload != enableDocumentAutoReload ||
             settings.useCustomColors != useCustomColors ||
-            settings.customBackgroundColor != customBackgroundColor?.rgb
-                    ?: settings.customBackgroundColor ||
-            settings.customForegroundColor != customForegroundColor?.rgb
-                    ?: settings.customForegroundColor ||
-            settings.customIconColor != customIconColor?.rgb
-                    ?: settings.customIconColor
-        }
+            settings.customBackgroundColor != customBackgroundColor?.rgb ?: settings.customBackgroundColor ||
+            settings.customForegroundColor != customForegroundColor?.rgb ?: settings.customForegroundColor ||
+            settings.customIconColor != customIconColor?.rgb ?: settings.customIconColor
+        } ?: false
     }
 
     override fun getDisplayName(): String = PdfViewerBundle.message("pdf.viewer.settings.display.name")

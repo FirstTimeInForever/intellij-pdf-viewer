@@ -125,7 +125,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
-        eventReceiver.run {
+        with (eventReceiver) {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.parse(PageChangeDataObject.serializer(), it)
                 currentPageNumberHolder = result.pageNumber
