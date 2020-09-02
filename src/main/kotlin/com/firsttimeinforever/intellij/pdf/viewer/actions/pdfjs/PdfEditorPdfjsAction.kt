@@ -21,13 +21,12 @@ abstract class PdfEditorPdfjsAction(
     }
 
     fun getPanel(event: AnActionEvent): PdfFileEditorJcefPanel? {
-        return findPdfFileEditor(event)?.let { editor ->
-            when (editor.viewPanel) {
-                is PdfFileEditorJcefPanel -> editor.viewPanel
-                else -> {
-                    showUnsupportedActionNotification(event)
-                    null
-                }
+        val editor = findPdfFileEditor(event) ?: return null
+        return when (editor.viewPanel) {
+            is PdfFileEditorJcefPanel -> editor.viewPanel
+            else -> {
+                showUnsupportedActionNotification(event)
+                null
             }
         }
     }

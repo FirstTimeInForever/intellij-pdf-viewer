@@ -15,15 +15,17 @@ class ToggleDocumentPresentationModeAction: PdfEditorPdfjsAction(
     override fun update(event: AnActionEvent) {
         super.update(event)
         val panel = getPanel(event)?: return
-        if (panel.presentationModeController.isPresentationModeActive()) {
-            event.presentation.text = ACTIVE_TEXT
-            event.presentation.description = ACTIVE_DESCRIPTION
-            event.presentation.icon = AllIcons.General.CollapseComponentHover
-        }
-        else {
-            event.presentation.text = NORMAL_TEXT
-            event.presentation.description = NORMAL_DESCRIPTION
-            event.presentation.icon = AllIcons.General.ExpandComponentHover
+        with (event.presentation) {
+            if (panel.presentationModeController.isPresentationModeActive()) {
+                text = ACTIVE_TEXT
+                description = ACTIVE_DESCRIPTION
+                icon = AllIcons.General.CollapseComponentHover
+            }
+            else {
+                text = NORMAL_TEXT
+                description = NORMAL_DESCRIPTION
+                icon = AllIcons.General.ExpandComponentHover
+            }
         }
     }
 

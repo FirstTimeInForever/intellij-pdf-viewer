@@ -19,13 +19,11 @@ class PdfEditorSidebarViewModeActionGroup: DefaultActionGroup() {
 
     override fun update(event: AnActionEvent) {
         event.presentation.isEnabled = false
-        event.project?.let { project ->
-            FileEditorManager.getInstance(project).selectedEditor?.also {
-                if (it is PdfFileEditor && it.viewPanel is PdfFileEditorJcefPanel) {
-                    event.presentation.isEnabled =
-                        !it.viewPanel.presentationModeController.isPresentationModeActive()
-                }
-            }
+        val project = event.project ?: return
+        val editor = FileEditorManager.getInstance(project).selectedEditor ?: return
+        if (editor is PdfFileEditor && editor.viewPanel is PdfFileEditorJcefPanel) {
+            event.presentation.isEnabled =
+                !editor.viewPanel.presentationModeController.isPresentationModeActive()
         }
     }
 }
