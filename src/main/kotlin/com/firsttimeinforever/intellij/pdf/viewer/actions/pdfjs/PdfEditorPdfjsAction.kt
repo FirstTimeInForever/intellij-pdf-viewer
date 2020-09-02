@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs
 
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorAction
 import com.firsttimeinforever.intellij.pdf.viewer.actions.findPdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
@@ -41,9 +42,9 @@ abstract class PdfEditorPdfjsAction(
         fun showUnsupportedActionNotification(event: AnActionEvent) {
             Notifications.Bus.notify(
                 Notification(
-                    "PDF Viewer",
-                    "Usupported action",
-                    "${event.presentation.text} action is not supported for this type of view!",
+                    PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
+                    PdfViewerBundle.message("pdf.viewer.actions.pdfjs.notifications.usupported.action.title"),
+                    PdfViewerBundle.message("pdf.viewer.actions.pdfjs.notifications.unsupported.action.content", event.presentation.text),
                     NotificationType.ERROR
                 )
             )

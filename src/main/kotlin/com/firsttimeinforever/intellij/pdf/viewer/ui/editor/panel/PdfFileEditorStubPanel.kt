@@ -14,7 +14,9 @@ class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel(virtu
     init {
         textPane.isEditable = false
         textPane.contentType = "text/html"
-        textPane.text = """
+        textPane.text =
+            // language=HTML
+            """
             <html>
             <h2>JCEF is not available!</h2>
             <p>

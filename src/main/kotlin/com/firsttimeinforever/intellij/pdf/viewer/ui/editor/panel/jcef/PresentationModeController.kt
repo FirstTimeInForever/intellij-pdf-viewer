@@ -80,8 +80,8 @@ class PresentationModeController(
         val xcenter = browserComponent.width / 2
         val ycenter = browserComponent.height / 2
         robot.mouseMove(location.x + xcenter, location.y + ycenter)
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
         robot.mouseMove(originalPosition.x, originalPosition.y)
         originalFocusOwner?.requestFocus()
     }

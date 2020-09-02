@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
@@ -64,9 +65,9 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
             error("Could not get document reload action")
         val notification = Notification(
-            "PDF Viewer",
-            "Could not open document!",
-            "Failed to open selected document!",
+            PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
+            PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.title"),
+            PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.content"),
             NotificationType.ERROR
         ).addAction(reloadAction.templatePresentation.run {
             object: AnAction(text, description, icon) {

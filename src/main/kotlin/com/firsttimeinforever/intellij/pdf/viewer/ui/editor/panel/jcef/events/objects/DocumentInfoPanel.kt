@@ -1,6 +1,7 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects
 
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.DocumentInfoDataObject
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.InfoEntryPanel
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 import javax.swing.JSeparator
@@ -9,19 +10,26 @@ import javax.swing.SwingConstants
 class DocumentInfoPanel(documentInfo: DocumentInfoDataObject) : JPanel() {
     init {
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(InfoEntryPanel("File Name", documentInfo.fileName))
-        add(InfoEntryPanel("File Size", documentInfo.fileSize))
-        add(JSeparator(SwingConstants.HORIZONTAL))
-        add(InfoEntryPanel("Title", documentInfo.title))
-        add(InfoEntryPanel("Subject", documentInfo.subject))
-        add(InfoEntryPanel("Author", documentInfo.author))
-        add(InfoEntryPanel("Creator", documentInfo.creator))
-        add(InfoEntryPanel("Creation Date", documentInfo.creationDate))
-        add(InfoEntryPanel("Modification Date", documentInfo.modificationDate))
-        add(InfoEntryPanel("Producer", documentInfo.producer))
-        add(InfoEntryPanel("Version", documentInfo.version))
-        add(JSeparator(SwingConstants.HORIZONTAL))
-        add(InfoEntryPanel("Page Size", documentInfo.pageSize))
-        add(InfoEntryPanel("Linearized", documentInfo.linearized))
+        with (documentInfo) {
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.filename"), fileName))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.file.size"), fileSize))
+            add(JSeparator(SwingConstants.HORIZONTAL))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.title"), title))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.subject"), subject))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.author"), author))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.creator"), creator))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.creation.date"), creationDate))
+            add(
+                InfoEntryPanel(
+                    PdfViewerBundle.message("pdf.viewer.document.info.modification.date"),
+                    modificationDate
+                )
+            )
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.producer"), producer))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.version"), version))
+            add(JSeparator(SwingConstants.HORIZONTAL))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.page.size"), pageSize))
+            add(InfoEntryPanel(PdfViewerBundle.message("pdf.viewer.document.info.linearized"), linearized))
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
@@ -23,7 +24,7 @@ class PdfVieverConfigurable: Configurable {
         }
     }
 
-    override fun getDisplayName(): String = "PDF Viewer"
+    override fun getDisplayName(): String = PdfViewerBundle.message("pdf.viewer.settings.display.name")
 
     override fun apply() {
         val wasModified = isModified

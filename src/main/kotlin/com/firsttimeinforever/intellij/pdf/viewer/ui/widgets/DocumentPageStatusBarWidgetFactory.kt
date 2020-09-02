@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.widgets
 
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -10,7 +11,7 @@ import com.intellij.openapi.wm.StatusBarWidgetFactory
 class DocumentPageStatusBarWidgetFactory: StatusBarWidgetFactory {
     override fun getId(): String = DocumentPageStatusBarWidget.ID
 
-    override fun getDisplayName(): String = "Current Page"
+    override fun getDisplayName(): String = PdfViewerBundle.message("pdf.viewer.widgets.document.page.statusbar.widget.display.name")
 
     override fun disposeWidget(widget: StatusBarWidget) = Unit
 
