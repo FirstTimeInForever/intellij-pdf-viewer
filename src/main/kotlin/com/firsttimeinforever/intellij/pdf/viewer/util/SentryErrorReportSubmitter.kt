@@ -3,10 +3,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.util
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.intellij.AbstractBundle
 import com.intellij.diagnostic.IdeaReportingEvent
-import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.idea.IdeaLogger
+import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
@@ -49,7 +49,8 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
             sentryClient.addEventSendCallback(object: EventSendCallback {
                 override fun onSuccess(event: Event?) {
                     ApplicationManager.getApplication().invokeLater {
-                        ReportMessages.GROUP.createNotification(
+                        val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
+                        group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.success"),
                             NotificationType.INFORMATION
                         ).notify(project)
@@ -59,7 +60,8 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
 
                 override fun onFailure(event: Event?, exception: Exception?) {
                     ApplicationManager.getApplication().invokeLater {
-                        ReportMessages.GROUP.createNotification(
+                        val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
+                        group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
                             NotificationType.ERROR
                         ).notify(project)
