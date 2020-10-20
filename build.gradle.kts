@@ -3,10 +3,10 @@ import com.moowork.gradle.node.npm.*
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.21"
+    id("org.jetbrains.intellij") version "0.5.0"
     id("org.jetbrains.changelog") version "0.3.2"
-    kotlin("jvm") version "1.3.70"
-    kotlin("plugin.serialization") version "1.3.70"
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     java
     id("com.github.node-gradle.node") version "2.2.3"
 }
@@ -22,7 +22,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     // testCompile("junit", "junit", "4.12")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation("io.sentry:sentry:1.7.30") {
         // IntelliJ already bundles it and will report a classloader
         // problem if this isn't excluded
@@ -36,7 +36,8 @@ intellij {
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
