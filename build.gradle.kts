@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.firsttimeinforever.intellij.pdf.viewer"
-version = "0.8.1"
+version = "0.9"
 
 repositories {
     mavenCentral()
