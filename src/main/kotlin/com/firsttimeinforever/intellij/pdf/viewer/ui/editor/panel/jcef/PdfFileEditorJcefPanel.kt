@@ -23,6 +23,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileEvent
@@ -325,6 +326,11 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         background: Color = UIUtil.getPanelBackground(),
         foreground: Color = UIUtil.getLabelForeground()
     ) {
+        val colorInvertIntensity = if (Registry.`is`("pdf.viewer.enableExperimentalFeatures") &&
+                PdfViewerSettings.instance.invertDocumentColors)
+        {
+            PdfViewerSettings.instance.documentColorsInvertIntensity
+        } else 0
         eventSender.triggerWith(
             TriggerableEventType.SET_THEME_COLORS,
             PdfViewerSettings.instance.run {
@@ -332,14 +338,16 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                     SetThemeColorsDataObject.from(
                         Color(customBackgroundColor),
                         Color(customForegroundColor),
-                        Color(customIconColor)
+                        Color(customIconColor),
+                        colorInvertIntensity
                     )
                 }
                 else {
                     SetThemeColorsDataObject.from(
                         background,
                         foreground,
-                        PdfViewerSettings.defaultIconColor
+                        PdfViewerSettings.defaultIconColor,
+                        colorInvertIntensity
                     )
                 }
             }
