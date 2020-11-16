@@ -30,7 +30,8 @@ dependencies {
 }
 
 intellij {
-    version = "LATEST-EAP-SNAPSHOT"
+//    version = "LATEST-EAP-SNAPSHOT"
+    version = "IC-2020.2.3"
 }
 
 java {
@@ -58,7 +59,7 @@ tasks {
     }
     withType<PatchPluginXmlTask>() {
         sinceBuild("202")
-        untilBuild("299.*")
+        untilBuild("204")
         changeNotes(closure { changelog.getLatest().withHeader(false).toHTML() })
     }
     node {
