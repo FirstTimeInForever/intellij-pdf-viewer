@@ -32,7 +32,7 @@ dependencies {
 
 intellij {
     // Should be changed to explicit version after 2020.2 release
-    version = "LATEST-EAP-SNAPSHOT"
+    version = "2020.2"
 }
 
 configure<JavaPluginConvention> {
