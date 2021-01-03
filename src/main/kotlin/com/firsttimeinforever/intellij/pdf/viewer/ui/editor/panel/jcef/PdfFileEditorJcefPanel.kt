@@ -39,6 +39,8 @@ import java.awt.Color
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import javax.swing.BoxLayout
+import kotlin.math.max
+import kotlin.math.min
 
 class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     PdfFileEditorPanel(virtualFile), EditorColorsListener
@@ -228,8 +230,17 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         )
     }
 
-    override fun increaseScale() = eventSender.trigger(TriggerableEventType.INCREASE_SCALE)
-    override fun decreaseScale() = eventSender.trigger(TriggerableEventType.DECREASE_SCALE)
+    override fun increaseScale() = setScale(currentScaleValue * 1.1)
+    override fun decreaseScale() = setScale(currentScaleValue / 1.1)
+    override fun setScale(value: Double) {
+        currentScaleValue = min(max(value, 0.25), 10.0)
+        eventSender.triggerWith(
+            TriggerableEventType.SET_SCALE,
+            ScaleChangeDataObject(currentScaleValue),
+            ScaleChangeDataObject.serializer()
+        )
+    }
+
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
     override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 
@@ -323,6 +334,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 eventReceiver.injectSubscriptions()
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
+                setScale(currentScaleValue)
             }
         }, browserPanel.cefBrowser)
     }

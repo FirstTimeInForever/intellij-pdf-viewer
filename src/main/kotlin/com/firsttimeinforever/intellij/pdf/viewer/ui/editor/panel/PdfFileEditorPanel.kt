@@ -16,12 +16,14 @@ abstract class PdfFileEditorPanel(
     open fun reloadDocument() = Unit
     open fun increaseScale() = Unit
     open fun decreaseScale() = Unit
+    open fun setScale(value: Double) = Unit
     open fun nextPage() = Unit
     open fun previousPage() = Unit
     open fun findNext() = Unit
     open fun findPrevious() = Unit
 
     open var currentPageNumber: Int = 0
+    open var currentScaleValue: Double = 1.0
     open val pagesCount: Int = 0
 
     protected val pageStateChangeListeners =
