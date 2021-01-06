@@ -229,11 +229,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     override fun decreaseScale() = setScale(currentScaleValue / 1.1)
     override fun setScale(value: Double) {
         currentScaleValue = min(max(value, 0.25), 10.0)
-        eventSender.triggerWith(
-            TriggerableEventType.SET_SCALE,
-            ScaleChangeDataObject(currentScaleValue),
-            ScaleChangeDataObject.serializer()
-        )
+        eventSender.triggerWith(TriggerableEventType.SET_SCALE, ScaleChangeDataObject(currentScaleValue))
     }
 
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
