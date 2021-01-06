@@ -40,7 +40,7 @@ class PresentationModeController(
     }
 
     init {
-        eventReceiver.run {
+        with (eventReceiver) {
             addHandler(SubscribableEventType.PRESENTATION_MODE_ENTER_READY) {
                 SwingUtilities.invokeLater {
                     clickInBrowserWindow()
@@ -60,9 +60,9 @@ class PresentationModeController(
 
     private fun invokeListeners(listeners: MutableList<PresentationModeListenerType>) {
         val shouldBeRemoved = mutableListOf<PresentationModeListenerType>()
-        listeners.forEach {
-            if (it(this)) {
-                shouldBeRemoved.add(it)
+        for (listener in listeners) {
+            if (listener(this)) {
+                shouldBeRemoved.add(listener)
             }
         }
         listeners.removeAll(shouldBeRemoved)
@@ -75,14 +75,15 @@ class PresentationModeController(
     private fun clickInBrowserWindow() {
         val originalPosition = MouseInfo.getPointerInfo().location
         val originalFocusOwner = FocusManager.getCurrentManager().focusOwner
-        val robot = Robot()
         val location = browserComponent.locationOnScreen
         val xcenter = browserComponent.width / 2
         val ycenter = browserComponent.height / 2
-        robot.mouseMove(location.x + xcenter, location.y + ycenter)
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK)
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
-        robot.mouseMove(originalPosition.x, originalPosition.y)
+        with (Robot()) {
+            mouseMove(location.x + xcenter, location.y + ycenter)
+            mousePress(InputEvent.BUTTON1_DOWN_MASK)
+            mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
+            mouseMove(originalPosition.x, originalPosition.y)
+        }
         originalFocusOwner?.requestFocus()
     }
 

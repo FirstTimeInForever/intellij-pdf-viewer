@@ -23,15 +23,15 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileEvent
 import com.intellij.openapi.vfs.VirtualFileListener
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import kotlinx.serialization.json.JsonDecodingException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
@@ -48,7 +48,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val logger = logger<PdfFileEditorJcefPanel>()
     private val messageBusConnection = project.messageBus.connect()
-    private val jsonSerializer = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true))
+    private val jsonSerializer = Json { ignoreUnknownKeys = true }
     private val eventReceiver =
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
     private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
@@ -127,14 +127,14 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
-        eventReceiver.run {
+        with (eventReceiver) {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
-                val result = jsonSerializer.parse(PageChangeDataObject.serializer(), it)
+                val result = jsonSerializer.decodeFromString<PageChangeDataObject>(it)
                 currentPageNumberHolder = result.pageNumber
                 pageStateChanged()
             }
             addHandler(SubscribableEventType.DOCUMENT_INFO) {
-                val result = jsonSerializer.parse(DocumentInfoDataObject.serializer(), it)
+                val result = jsonSerializer.decodeFromString<DocumentInfoDataObject>(it)
                 ApplicationManager.getApplication().invokeLater {
                     showDocumentInfoDialog(result)
                 }
@@ -144,11 +144,12 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
-                    val result = jsonSerializer.parse(PagesCountDataObject.serializer(), it)
+                    val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
                     pagesCountHolder = result.count
                     pageStateChanged()
                 }
-                catch (exception: JsonDecodingException) {
+                catch (exception: Exception) {
+                    // FIXME: Find out proper way of handling new exceptions
                     logger.warn(
                         "Failed to parse PagesCount data object! (This should be fixed at message passing level)",
                         exception
@@ -166,15 +167,11 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 }
             }
             addHandler(SubscribableEventType.SIDEBAR_VIEW_STATE_CHANGED) {
-                val result = jsonSerializer.parse(
-                    SidebarViewStateChangeDataObject.serializer(), it
-                )
+                val result = jsonSerializer.decodeFromString<SidebarViewStateChangeDataObject>(it)
                 sidebarViewStateHolder = result.state
             }
             addHandler(SubscribableEventType.SIDEBAR_AVAILABLE_VIEWS_CHANGED) {
-                val result = jsonSerializer.parse(
-                    SidebarAvailableViewModesChangedDataObject.serializer(), it
-                )
+                val result = jsonSerializer.decodeFromString<SidebarAvailableViewModesChangedDataObject>(it)
                 sidebarAvailableViewModesHolder = result
             }
         }
@@ -210,8 +207,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         sidebarViewStateHolder = SidebarViewState(mode, sidebarViewStateHolder.hidden)
         eventSender.triggerWith(
             TriggerableEventType.SET_SIDEBAR_VIEW_MODE,
-            SidebarViewModeChangeDataObject.from(mode),
-            SidebarViewModeChangeDataObject.serializer()
+            SidebarViewModeChangeDataObject.from(mode)
         )
     }
 
@@ -225,8 +221,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     private fun updatePageNumber(value: Int) {
         eventSender.triggerWith(
             TriggerableEventType.SET_PAGE,
-            PageChangeDataObject(value),
-            PageChangeDataObject.serializer()
+            PageChangeDataObject(value)
         )
     }
 
@@ -277,11 +272,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             controlPanel.searchTextField.grabFocus()
         }
         val searchTarget = controlPanel.searchTextField.text ?: return
-        eventSender.triggerWith(
-            TriggerableEventType.FIND_NEXT,
-            SearchDataObject(searchTarget),
-            SearchDataObject.serializer()
-        )
+        eventSender.triggerWith(TriggerableEventType.FIND_NEXT, SearchDataObject(searchTarget))
     }
 
     override fun findPrevious() {
@@ -289,11 +280,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             controlPanel.searchTextField.grabFocus()
         }
         val searchTarget = controlPanel.searchTextField.text ?: return
-        eventSender.triggerWith(
-            TriggerableEventType.FIND_PREVIOUS,
-            SearchDataObject(searchTarget),
-            SearchDataObject.serializer()
-        )
+        eventSender.triggerWith(TriggerableEventType.FIND_PREVIOUS, SearchDataObject(searchTarget))
     }
 
     private fun addFileUpdateHandler() {
@@ -351,6 +338,11 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         background: Color = UIUtil.getPanelBackground(),
         foreground: Color = UIUtil.getLabelForeground()
     ) {
+        val colorInvertIntensity = if (Registry.`is`("pdf.viewer.enableExperimentalFeatures") &&
+                PdfViewerSettings.instance.invertDocumentColors)
+        {
+            PdfViewerSettings.instance.documentColorsInvertIntensity
+        } else 0
         eventSender.triggerWith(
             TriggerableEventType.SET_THEME_COLORS,
             PdfViewerSettings.instance.run {
@@ -358,18 +350,19 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                     SetThemeColorsDataObject.from(
                         Color(customBackgroundColor),
                         Color(customForegroundColor),
-                        Color(customIconColor)
+                        Color(customIconColor),
+                        colorInvertIntensity
                     )
                 }
                 else {
                     SetThemeColorsDataObject.from(
                         background,
                         foreground,
-                        PdfViewerSettings.defaultIconColor
+                        PdfViewerSettings.defaultIconColor,
+                        colorInvertIntensity
                     )
                 }
-            },
-            SetThemeColorsDataObject.serializer()
+            }
         )
     }
 

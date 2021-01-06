@@ -13,14 +13,10 @@ class NextPageAction: PdfEditorAction(
 
     override fun update(event: AnActionEvent) {
         super.update(event)
-        findPdfFileEditor(event)?.also {
-            if (it.viewPanel.pagesCount == 0) {
-                event.presentation.isEnabled = false
-            }
-            else {
-                event.presentation.isEnabled =
-                    (it.viewPanel.currentPageNumber != it.viewPanel.pagesCount)
-            }
+        val editor = findPdfFileEditor(event) ?: return
+        event.presentation.isEnabled = if (editor.viewPanel.pagesCount != 0) {
+            editor.viewPanel.currentPageNumber != editor.viewPanel.pagesCount
         }
+        else false
     }
 }

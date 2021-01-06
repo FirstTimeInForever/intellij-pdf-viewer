@@ -9,19 +9,14 @@ class PdfVieverConfigurable: Configurable {
     private val settings = PdfViewerSettings.instance
 
     override fun isModified(): Boolean {
-        if (settingsForm == null) {
-            return false
-        }
-        return settingsForm!!.run {
+        return settingsForm?.run {
             settings.enableDocumentAutoReload != enableDocumentAutoReload ||
             settings.useCustomColors != useCustomColors ||
-            settings.customBackgroundColor != customBackgroundColor?.rgb
-                    ?: settings.customBackgroundColor ||
-            settings.customForegroundColor != customForegroundColor?.rgb
-                    ?: settings.customForegroundColor ||
-            settings.customIconColor != customIconColor?.rgb
-                    ?: settings.customIconColor
-        }
+            settings.customBackgroundColor != customBackgroundColor?.rgb ?: settings.customBackgroundColor ||
+            settings.customForegroundColor != customForegroundColor?.rgb ?: settings.customForegroundColor ||
+            settings.customIconColor != customIconColor?.rgb ?: settings.customIconColor ||
+            settings.documentColorsInvertIntensity != documentColorsInvertIntensity
+        } ?: false
     }
 
     override fun getDisplayName(): String = PdfViewerBundle.message("pdf.viewer.settings.display.name")
@@ -34,9 +29,10 @@ class PdfVieverConfigurable: Configurable {
             customBackgroundColor = settingsForm?.customBackgroundColor?.rgb ?: customBackgroundColor
             customForegroundColor = settingsForm?.customForegroundColor?.rgb ?: customForegroundColor
             customIconColor = settingsForm?.customIconColor?.rgb ?: customIconColor
+            documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity ?: documentColorsInvertIntensity
         }
         if (wasModified) {
-            settings.changeListeners.forEach { it(settings) }
+            settings.callChangeListeners()
         }
     }
 

@@ -15,19 +15,25 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     var customForegroundColor: Int = defaultForegroundColor.rgb
     var customIconColor: Int = defaultIconColor.rgb
     var enableDocumentAutoReload = true
+    var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
+    var invertDocumentColors = false
 
     @Transient
     private val changeListenersHolder = mutableListOf<(PdfViewerSettings) -> Unit>()
 
     val changeListeners
         get() = changeListenersHolder.toList()
-    
+
     fun addChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
         changeListenersHolder.add(listener)
     }
 
     fun removeChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
         changeListenersHolder.remove(listener)
+    }
+
+    fun callChangeListeners() {
+        changeListeners.forEach { it(this) }
     }
 
     override fun getState() = this
@@ -48,5 +54,7 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
 
         val defaultIconColor
             get() = defaultForegroundColor
+
+        const val defaultDocumentColorsInvertIntensity = 85
     }
 }

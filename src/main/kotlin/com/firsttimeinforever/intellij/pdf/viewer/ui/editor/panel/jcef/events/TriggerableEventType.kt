@@ -18,5 +18,6 @@ enum class TriggerableEventType(val displayName: String) {
     SET_THEME_COLORS("setThemeColors"),
     SET_PAGE("pageSet"),
     TOGGLE_SIDEBAR("toggleSidebar"),
-    SET_SIDEBAR_VIEW_MODE("setSidebarViewState")
+    SET_SIDEBAR_VIEW_MODE("setSidebarViewState"),
+    INVERT_DOCUMENT_COLORS("invertDocumentColors")
 }

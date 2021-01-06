@@ -38,6 +38,7 @@
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer"/>
         <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
+        <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>
         <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
         <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfVieverConfigurable"/>
         <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.util.SentryErrorReportSubmitter"/>
@@ -146,6 +147,9 @@
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarBookmarksViewModeAction"
                 class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SetSidebarBookmarksViewModeAction"
                 text="Bookmarks View" description="Set sidebar view mode to bookmarks"/>
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleInvertDocumentColorsAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ToggleInvertDocumentColorsAction"
+                    text="Invert Document Colors" description="Applies invert filter to every document page (experimental)"/>
         </group>
         <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup"
                id="PdfEditorLeftToolbarActionGroup" text="Pdf Viewer Left Toolbar Actions" compact="true">

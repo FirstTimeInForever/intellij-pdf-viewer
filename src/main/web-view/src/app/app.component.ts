@@ -6,6 +6,7 @@ import {MessageReceiverService, SubscriptableEvents} from "./message-receiver.se
 import {MessageSenderService, TriggerableEvents} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
 import {SidebarController, SidebarViewMode} from "./SidebarController";
+import {style} from "@angular/animations";
 
 // @ts-ignore
 const iframeCssOverrides = require("./iframe-overrides.less").default;
@@ -22,6 +23,7 @@ interface ThemeColors {
     background: string;
     foreground: string;
     icons: string;
+    documentColorInvertIntensity: number;
 }
 
 @Component({
@@ -96,7 +98,9 @@ export class AppComponent {
         pdfViewer.currentScaleValue = Math.min(Math.max(value, 0.25), 10.0);
     }
 
+    // https://github.com/allefeld/atom-pdfjs-viewer/issues/4#issuecomment-622942606
     private generateStylesheet(colors: ThemeColors) {
+        // language=CSS
         return `
         .outlineItemToggler.outlineItemsHidden::after {
             background-color: ${colors.icons};
@@ -110,19 +114,19 @@ export class AppComponent {
         #toolbarSidebar {
             background-color: ${colors.background};
         }
-        `;
+        .page, .thumbnailImage {
+            filter: invert(${colors.documentColorInvertIntensity}%);
+        }`;
     }
 
+    // FIXME: Save reference to generated stylesheet to prevent creating of new stylesheet for each request
     private attachStylesheet(stylesheet: string) {
         const targetDocument = this.viewer.PDFViewerApplication.appConfig.appContainer.ownerDocument;
         const head = targetDocument.head;
-        const link = targetDocument.createElement("link");
-        link.setAttribute("rel", "stylesheet");
-        link.setAttribute("type", "text/css");
-        const content = `data:text/css;charset=UTF-8,${stylesheet}`;
-        link.setAttribute("href", content);
-        head.append(link);
-        return link;
+        const element = targetDocument.createElement("style");
+        element.textContent = stylesheet;
+        head.append(element);
+        return element;
     }
 
     private collectDocumentInfo() {
@@ -214,7 +218,7 @@ export class AppComponent {
             this.messageSenderService.triggerEvent(TriggerableEvents.PRESENTATION_MODE_EXIT, {});
         });
     }
-    
+
     private ignoredClickTargets = [];
 
     private buildIgnoreClickTargetsList() {

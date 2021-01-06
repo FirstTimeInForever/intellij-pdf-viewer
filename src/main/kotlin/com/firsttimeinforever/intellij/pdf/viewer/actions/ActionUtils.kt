@@ -6,10 +6,9 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 
 fun findPdfFileEditor(event: AnActionEvent): PdfFileEditor? {
     val project = event.project?: return null
-    return FileEditorManager.getInstance(project).selectedEditor?.let {
-        when (it) {
-            is PdfFileEditor -> it
-            else -> null
-        }
+    val editor = FileEditorManager.getInstance(project).selectedEditor ?: return null
+    return when (editor) {
+        is PdfFileEditor -> editor
+        else -> null
     }
 }

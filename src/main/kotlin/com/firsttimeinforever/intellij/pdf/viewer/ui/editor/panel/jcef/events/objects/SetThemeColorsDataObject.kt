@@ -8,14 +8,16 @@ import java.awt.Color
 class SetThemeColorsDataObject(
     val background: String,
     val foreground: String,
-    val icons: String
+    val icons: String,
+    val documentColorInvertIntensity: Int
 ) {
     companion object {
-        fun from(background: Color, foreground: Color, icons: Color) =
+        fun from(background: Color, foreground: Color, icons: Color, invertIntensity: Int) =
             SetThemeColorsDataObject(
                 transformColorRgba(background),
                 transformColorRgba(foreground),
-                transformColorRgba(icons)
+                transformColorRgba(icons),
+                invertIntensity
             )
     }
 }

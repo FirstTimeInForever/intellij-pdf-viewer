@@ -39,7 +39,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
     private class SendReportBackgroundTask(
         project: Project?,
         private val event: EventBuilder,
-        private val consumer: Consumer<SubmittedReportInfo>
+        private val consumer: Consumer<in SubmittedReportInfo>
     ): Task.Backgroundable(
         project,
         PdfViewerBundle.message("pdf.viewer.error.report.sending")
@@ -49,7 +49,8 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
             sentryClient.addEventSendCallback(object: EventSendCallback {
                 override fun onSuccess(event: Event?) {
                     ApplicationManager.getApplication().invokeLater {
-                        ReportMessages.GROUP.createNotification(
+                        val group = ReportMessages.GROUP
+                        group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.success"),
                             NotificationType.INFORMATION
                         ).notify(project)
@@ -59,7 +60,8 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
 
                 override fun onFailure(event: Event?, exception: Exception?) {
                     ApplicationManager.getApplication().invokeLater {
-                        ReportMessages.GROUP.createNotification(
+                        val group = ReportMessages.GROUP
+                        group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
                             NotificationType.ERROR
                         ).notify(project)
@@ -72,10 +74,10 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
     }
 
     override fun submit(
-        events: Array<IdeaLoggingEvent>,
-        additionalInfo: String?,
-        parentComponent: Component,
-        consumer: Consumer<SubmittedReportInfo>
+            events: Array<out IdeaLoggingEvent>,
+            additionalInfo: @org.jetbrains.annotations.Nullable String?,
+            parentComponent: @org.jetbrains.annotations.NotNull Component,
+            consumer: Consumer<SubmittedReportInfo>
     ): Boolean {
         val context = DataManager.getInstance().getDataContext(parentComponent)
         SendReportBackgroundTask(
@@ -88,7 +90,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
         return true
     }
 
-    private fun createEvent(events: Array<IdeaLoggingEvent>): EventBuilder {
+    private fun createEvent(events: Array<out IdeaLoggingEvent>): EventBuilder {
         val errors = events
             .filterIsInstance<IdeaReportingEvent>()
             .mapTo(ArrayDeque(events.size)) {
@@ -101,7 +103,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
     }
 
     private fun attachExtraInfo(event: EventBuilder) {
-        event.run {
+        with (event) {
             (pluginDescriptor as? IdeaPluginDescriptor)?.let { withRelease(it.version) }
             withExtra("last_action", IdeaLogger.ourLastActionId)
             withTag("OS Name", SystemInfo.OS_NAME)

@@ -1,5 +1,9 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.9
+- [Added "Invert Document Colors" action](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/10)
+- Updated project dependencies
+
 ## 0.8.1
 - Fixed listeners issues
 

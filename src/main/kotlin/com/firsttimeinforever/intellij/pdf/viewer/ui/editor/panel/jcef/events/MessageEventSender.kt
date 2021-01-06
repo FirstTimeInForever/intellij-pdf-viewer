@@ -2,10 +2,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.ui.jcef.JBCefBrowser
-import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class MessageEventSender(private val browser: JBCefBrowser, private val jsonSerializer: Json) {
+class MessageEventSender(private val browser: JBCefBrowser, val jsonSerializer: Json) {
     companion object {
         private const val TRIGGER_FUNCTION = "triggerMessageEvent"
     }
@@ -17,9 +17,12 @@ class MessageEventSender(private val browser: JBCefBrowser, private val jsonSeri
         browser.cefBrowser.executeJavaScript("$TRIGGER_FUNCTION('${event.displayName}', $data)", null, 0)
     }
 
-    fun <DataType> triggerWith(event: TriggerableEventType, data: DataType, strategy: SerializationStrategy<DataType>) {
-        val targetData = jsonSerializer.toJson(strategy, data).toString()
-        logger.debug("Triggering event: $event with payload: $targetData")
-        trigger(event, targetData)
+    fun triggerWith(event: TriggerableEventType, data: String) {
+        logger.debug("Triggering event: $event with payload: $data")
+        trigger(event, data)
+    }
+
+    inline fun <reified DataType : Any> triggerWith(event: TriggerableEventType, data: DataType) {
+        triggerWith(event, jsonSerializer.encodeToString(data))
     }
 }

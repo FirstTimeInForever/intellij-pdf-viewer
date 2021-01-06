@@ -3,16 +3,16 @@ import com.moowork.gradle.node.npm.*
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.21"
+    id("java")
+    id("org.jetbrains.intellij") version "0.5.0"
     id("org.jetbrains.changelog") version "0.3.2"
-    kotlin("jvm") version "1.3.70"
-    kotlin("plugin.serialization") version "1.3.70"
-    java
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     id("com.github.node-gradle.node") version "2.2.3"
 }
 
 group = "com.firsttimeinforever.intellij.pdf.viewer"
-version = "0.8.1"
+version = "0.9"
 
 repositories {
     mavenCentral()
@@ -20,9 +20,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    // testCompile("junit", "junit", "4.12")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation("io.sentry:sentry:1.7.30") {
         // IntelliJ already bundles it and will report a classloader
         // problem if this isn't excluded
@@ -31,12 +30,12 @@ dependencies {
 }
 
 intellij {
-    // Should be changed to explicit version after 2020.2 release
-    version = "2020.2"
+    version = "IC-2020.2.3"
 }
 
-configure<JavaPluginConvention> {
+java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
@@ -59,7 +58,7 @@ tasks {
     }
     withType<PatchPluginXmlTask>() {
         sinceBuild("202")
-        untilBuild("299.*")
+        untilBuild("204")
         changeNotes(closure { changelog.getLatest().withHeader(false).toHTML() })
     }
     node {

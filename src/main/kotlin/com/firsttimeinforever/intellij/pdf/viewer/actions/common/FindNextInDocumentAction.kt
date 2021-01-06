@@ -12,16 +12,10 @@ class FindNextInDocumentAction: PdfEditorAction() {
 
     override fun update(event: AnActionEvent) {
         super.update(event)
-        findPdfFileEditor(event)?.also {
-            when (it.viewPanel) {
-                is PdfFileEditorJcefPanel -> {
-                    event.presentation.isEnabled =
-                        !it.viewPanel.presentationModeController.isPresentationModeActive()
-                }
-                else -> {
-                    event.presentation.isEnabled = true
-                }
-            }
+        val editor = findPdfFileEditor(event) ?: return
+        event.presentation.isEnabled = if (editor.viewPanel is PdfFileEditorJcefPanel) {
+            !editor.viewPanel.presentationModeController.isPresentationModeActive()
         }
+        else true
     }
 }

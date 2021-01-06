@@ -13,13 +13,14 @@ import javax.swing.event.DocumentListener
 
 class SearchTextField: JTextField() {
     init {
-        val inputMap = getInputMap(JComponent.WHEN_FOCUSED)
-        inputMap.put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, true),
-            ENTER_SHIFT_KEY_EVENT
-        )
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ENTER_KEY_EVENT)
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE_KEY_EVENT)
+        with (getInputMap(JComponent.WHEN_FOCUSED)) {
+            put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, true),
+                ENTER_SHIFT_KEY_EVENT
+            )
+            put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ENTER_KEY_EVENT)
+            put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ESCAPE_KEY_EVENT)
+        }
         putAction(actionMap, ESCAPE_KEY_EVENT) {
             text = ""
             transferFocusUpCycle()

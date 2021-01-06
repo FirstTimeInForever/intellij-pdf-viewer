@@ -75,7 +75,7 @@ class DocumentPageStatusBarWidget(val project: Project): StatusBarWidget {
         override fun getAlignment(): Float = Component.CENTER_ALIGNMENT
 
         override fun getText(): String {
-            return currentPageState.run {
+            return with (currentPageState) {
                 "$current/$pagesCount"
             }
         }
