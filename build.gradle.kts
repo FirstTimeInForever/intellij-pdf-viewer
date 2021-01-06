@@ -30,7 +30,6 @@ dependencies {
 }
 
 intellij {
-//    version = "LATEST-EAP-SNAPSHOT"
     version = "IC-2020.2.3"
 }
 

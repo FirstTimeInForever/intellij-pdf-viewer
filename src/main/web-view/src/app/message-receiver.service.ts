@@ -6,8 +6,7 @@ interface SubscriptionsList {
 }
 
 export enum SubscriptableEvents {
-    INCREASE_SCALE = "increaseScale",
-    DECREASE_SCALE = "decreaseScale",
+    SET_SCALE = "setScale",
     GOTO_NEXT_PAGE = "nextPage",
     GOTO_PREVIOUS_PAGE = "previousPage",
     TOGGLE_PDFJS_TOOLBAR = "toggleToolbar",

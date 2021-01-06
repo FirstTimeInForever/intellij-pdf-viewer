@@ -93,6 +93,11 @@ export class AppComponent {
         this.attachStylesheet(this.generateStylesheet(colors));
     }
 
+    private setScaleValue(value: number) {
+        const pdfViewer = this.viewer.PDFViewerApplication.pdfViewer;
+        pdfViewer.currentScaleValue = Math.min(Math.max(value, 0.25), 10.0);
+    }
+
     // https://github.com/allefeld/atom-pdfjs-viewer/issues/4#issuecomment-622942606
     private generateStylesheet(colors: ThemeColors) {
         // language=CSS
@@ -132,6 +137,7 @@ export class AppComponent {
     }
 
     private delayedThemeColors: ThemeColors;
+    private delayedScaleValue: number;
     private fileName: string;
 
     private static parseFileName(url: string) {
@@ -297,6 +303,7 @@ export class AppComponent {
     private onDocumentLoad() {
         this.attachStylesheet(iframeCssOverrides);
         this.setThemeColors(this.delayedThemeColors);
+        this.setScaleValue(this.delayedScaleValue);
         this.hideToolbar();
         this.viewer.PDFViewerApplication.unbindWindowEvents();
         window["debugApplication"] = this.viewer.PDFViewerApplication;
@@ -348,13 +355,9 @@ export class AppComponent {
             }
             this.sidebarController.setMode(data.mode, true);
         });
-        this.messageReceiverService.subscribe(SubscriptableEvents.INCREASE_SCALE, () => {
-            this.viewer.PDFViewerApplication.appConfig.toolbar.zoomIn.click();
-            // this.viewer.PDFViewerApplication.zoomIn(2);
-        });
-        this.messageReceiverService.subscribe(SubscriptableEvents.DECREASE_SCALE, () => {
-            this.viewer.PDFViewerApplication.appConfig.toolbar.zoomOut.click();
-            // this.viewer.PDFViewerApplication.zoomOut(2);
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_SCALE, (data: any) => {
+            this.delayedScaleValue = data.value;
+            this.setScaleValue(this.delayedScaleValue);
         });
         this.messageReceiverService.subscribe(SubscriptableEvents.PRINT_DOCUMENT, () => {
             this.viewer.PDFViewerApplication.appConfig.toolbar.print.click();
