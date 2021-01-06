@@ -1,5 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.9.1
+- [Fixed page scale reset on document reload](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/13) by [Adam Zambrzycki](https://github.com/Adikso)
+
 ## 0.9
 - [Added "Invert Document Colors" action](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/10)
 - Updated project dependencies
