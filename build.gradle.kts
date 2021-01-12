@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.intellij") version "0.6.5"
     id("org.jetbrains.changelog") version "0.6.2"
     id("com.github.node-gradle.node") version "2.2.3"
+    id("com.github.ben-manes.versions") version "0.36.0"
 }
 
 val kotlinVersion: String by project
@@ -70,8 +71,7 @@ tasks.register("ensureNodeModulesInstalled") {
     dependsOn("npmSetup")
     if (!file(File(webviewSourceDirectory, "node_modules")).exists()) {
         dependsOn("npm_ci")
-    }
-    else {
+    } else {
         println("Skipping npm_ci step")
     }
 }
@@ -106,7 +106,7 @@ tasks.getByName("processResources") {
     dependsOn("webViewBuild")
 }
 
-tasks.withType<RunIdeTask>() {
+tasks.withType<RunIdeTask> {
     systemProperties["ide.browser.jcef.enabled"] = true
     systemProperties["pdf.viewer.debug"] = true
     jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
