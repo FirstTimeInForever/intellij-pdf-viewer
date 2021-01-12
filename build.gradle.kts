@@ -60,7 +60,7 @@ tasks {
     }
     node {
         download = true
-        version = "13.2.0"
+        version = project.properties["nodeVersion"].toString()
         nodeModulesDir = webviewSourceDirectory
     }
 }
