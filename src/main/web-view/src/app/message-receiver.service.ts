@@ -49,7 +49,7 @@ export class MessageReceiverService {
             this.subscriptions[eventName] = [callback];
         }
         else {
-            if (this.subscriptions[eventName].includes(callback)) {
+            if (this.subscriptions[eventName].indexOf(callback) !== -1) {
                 console.warn(`${callback} already registered for ${eventName}`);
                 return;
             }

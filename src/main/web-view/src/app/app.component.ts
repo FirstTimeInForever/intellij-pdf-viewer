@@ -247,7 +247,7 @@ export class AppComponent {
 
     private focusEventHandler = (event) => {
         console.log(event.target);
-        if (this.ignoredClickTargets.includes(event.target)) {
+        if (this.ignoredClickTargets.indexOf(event.target) !== -1) {
             return;
         }
         this.sendFocusTransferNotification();
