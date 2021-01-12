@@ -64,6 +64,9 @@ tasks {
         version = project.properties["nodeVersion"].toString()
         nodeModulesDir = webviewSourceDirectory
     }
+    runPluginVerifier {
+        ideVersions(project.properties["pluginVerifierIdeVersions"].toString())
+    }
 }
 
 tasks.register("ensureNodeModulesInstalled") {
