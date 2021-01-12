@@ -62,43 +62,20 @@ jobs:
       - name: Build Plugin
         run: ./gradlew buildPlugin
 
+      - name: Verify Plugin
+        run: ./gradlew runPluginVerifier
+
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
           name: plugin-artifact
           path: ./build/distributions/${{ steps.properties.outputs.name }}-${{ steps.properties.outputs.version }}.zip
 
-  verify-plugin:
-    name: Run Intellij Plugin Verifier
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: plugin-artifact
-
-      # TODO: Add explicit IDE versions after 2020.2 release
-      - name: Verify Plugin
-        id: verify
-        uses: ChrisCarini/intellij-platform-plugin-verifier-action@v0.0.2
-        with:
-          plugin-location: plugin-artifact/${{ needs.build.outputs.artifact }}
-          ide-versions: |
-            ideaIC:LATEST-EAP-SNAPSHOT
-
-      - name: Print Verification Results
-        env:
-          OUTPUT_LOG: ${{ steps.verify.outputs.verification-output-log-filename }}
-        run: |
-          echo "The verifier log file [$OUTPUT_LOG] contents : " ;
-          cat $OUTPUT_LOG
-
   # If accepted and published, release workflow would be triggered
   release-draft:
     name: Create Release Draft
     if: github.ref == 'refs/heads/master'
-    needs: [build, verify-plugin]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Fetch Sources
