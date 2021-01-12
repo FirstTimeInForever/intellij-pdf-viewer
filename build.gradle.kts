@@ -13,6 +13,8 @@ plugins {
 }
 
 val kotlinVersion: String by project
+val pluginSinceVersion: String by project
+val pluginUntilVersion: String by project
 val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
 
 repositories {
@@ -53,8 +55,8 @@ tasks {
         unreleasedTerm = "Unreleased"
     }
     withType<PatchPluginXmlTask>() {
-        sinceBuild("202")
-        untilBuild("204")
+        sinceBuild(pluginSinceVersion)
+        untilBuild(pluginUntilVersion)
         changeNotes(closure {
             changelog.getLatest().withHeader(false).toHTML()
         })
