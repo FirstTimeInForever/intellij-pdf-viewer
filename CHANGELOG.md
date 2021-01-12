@@ -3,14 +3,14 @@
 ## 0.9.1
 - [Fixed page scale reset on document reload](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/13) by [Adam Zambrzycki](https://github.com/Adikso)
 
-## 0.9
+## 0.9.0
 - [Added "Invert Document Colors" action](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/10)
 - Updated project dependencies
 
 ## 0.8.1
 - Fixed listeners issues
 
-## 0.8
+## 0.8.0
 - Added plugin settings
 - Added error reporter
 - Added status bar widget for displaying current page number
@@ -18,11 +18,11 @@
 - Fixed possibly unavailable bookmarks view for large documents
 - Fixed incorrect inheritance of IDE colors
 
-## 0.7
+## 0.7.0
 - Added changelog
 - Fix incorrect IDE theme colors inheritance
 
-## 0.0.6.1
+## 0.0.6+1
 - Fix marketplace review
 - Update web-view dependencies
 

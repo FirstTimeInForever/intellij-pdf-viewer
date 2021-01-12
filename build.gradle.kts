@@ -7,7 +7,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.intellij") version "0.6.5"
-    id("org.jetbrains.changelog") version "0.3.2"
+    id("org.jetbrains.changelog") version "0.6.2"
     id("com.github.node-gradle.node") version "2.2.3"
 }
 
@@ -46,8 +46,7 @@ tasks {
     changelog {
         version = "${project.version}"
         path = "${project.projectDir}/CHANGELOG.md"
-        headerFormat = "{0}"
-        headerArguments = listOf("${project.version}")
+        header = closure { project.version }
         itemPrefix = "-"
         keepUnreleasedSection = true
         unreleasedTerm = "Unreleased"
