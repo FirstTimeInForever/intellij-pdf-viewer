@@ -1,5 +1,10 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.10.0
+- Updated deprecated platform code
+- Updated project dependencies
+- Dropped support for `2020.2` builds
+
 ## 0.9.1
 - [Fixed page scale reset on document reload](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/13) by [Adam Zambrzycki](https://github.com/Adikso)
 
