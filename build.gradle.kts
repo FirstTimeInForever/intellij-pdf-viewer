@@ -4,15 +4,15 @@ import org.jetbrains.changelog.closure
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "0.5.0"
+    kotlin("jvm")
+    kotlin("plugin.serialization")
+    id("org.jetbrains.intellij") version "0.6.5"
     id("org.jetbrains.changelog") version "0.3.2"
-    kotlin("jvm") version "1.4.10"
-    kotlin("plugin.serialization") version "1.4.10"
     id("com.github.node-gradle.node") version "2.2.3"
 }
 
-group = "com.firsttimeinforever.intellij.pdf.viewer"
-version = "0.9.1"
+val kotlinVersion: String by project
+val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
 
 repositories {
     mavenCentral()
@@ -20,11 +20,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("io.sentry:sentry:1.7.30") {
-        // IntelliJ already bundles it and will report a classloader
-        // problem if this isn't excluded
+        // IntelliJ already bundles it and will report a classloader problem if this isn't excluded
         exclude("org.slf4j")
     }
 }
@@ -33,14 +32,11 @@ intellij {
     version = "IC-2020.2.3"
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
-
 tasks {
+    compileJava {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -59,7 +55,9 @@ tasks {
     withType<PatchPluginXmlTask>() {
         sinceBuild("202")
         untilBuild("204")
-        changeNotes(closure { changelog.getLatest().withHeader(false).toHTML() })
+        changeNotes(closure {
+            changelog.getLatest().withHeader(false).toHTML()
+        })
     }
     node {
         download = true
@@ -68,10 +66,10 @@ tasks {
     }
 }
 
-tasks.register("ensureNodeModulesInstalled"){
+tasks.register("ensureNodeModulesInstalled") {
     dependsOn("nodeSetup")
     dependsOn("npmSetup")
-    if (!file("${projectDir}/src/main/web-view/node_modules").exists()) {
+    if (!file(File(webviewSourceDirectory, "node_modules")).exists()) {
         dependsOn("npm_ci")
     }
     else {
@@ -80,12 +78,16 @@ tasks.register("ensureNodeModulesInstalled"){
 }
 
 fun cacheWebviewBuildTask(task: NpmTask) {
-    task.run {
-        inputs.file(File(webviewSourceDirectory, "package.json")).withPathSensitivity(PathSensitivity.RELATIVE)
-        inputs.dir(File(webviewSourceDirectory, "src")).withPathSensitivity(PathSensitivity.RELATIVE)
-        inputs.file(File(webviewSourceDirectory, "package-lock.json")).withPathSensitivity(PathSensitivity.RELATIVE)
-        outputs.dir("${projectDir}/build/resources/main/web-view")
-        outputs.cacheIf { true }
+    with(task.inputs) {
+        files(
+            File(webviewSourceDirectory, "package.json"),
+            File(webviewSourceDirectory, "package-lock.json")
+        ).withPathSensitivity(PathSensitivity.RELATIVE)
+        dir(File(webviewSourceDirectory, "src")).withPathSensitivity(PathSensitivity.RELATIVE)
+    }
+    with(task.outputs) {
+        dir("${projectDir}/build/resources/main/web-view")
+        cacheIf { true }
     }
 }
 
