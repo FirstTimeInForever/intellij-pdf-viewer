@@ -7,6 +7,7 @@ import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.idea.IdeaLogger
+import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
@@ -49,7 +50,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
             sentryClient.addEventSendCallback(object: EventSendCallback {
                 override fun onSuccess(event: Event?) {
                     ApplicationManager.getApplication().invokeLater {
-                        val group = ReportMessages.GROUP
+                        val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
                         group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.success"),
                             NotificationType.INFORMATION
@@ -60,7 +61,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
 
                 override fun onFailure(event: Event?, exception: Exception?) {
                     ApplicationManager.getApplication().invokeLater {
-                        val group = ReportMessages.GROUP
+                        val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
                         group.createNotification(
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
                             NotificationType.ERROR
@@ -74,19 +75,16 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
     }
 
     override fun submit(
-            events: Array<out IdeaLoggingEvent>,
-            additionalInfo: @org.jetbrains.annotations.Nullable String?,
-            parentComponent: @org.jetbrains.annotations.NotNull Component,
-            consumer: Consumer<SubmittedReportInfo>
+        events: Array<out IdeaLoggingEvent>?,
+        additionalInfo: String?,
+        parentComponent: Component,
+        consumer: Consumer<in SubmittedReportInfo>
     ): Boolean {
         val context = DataManager.getInstance().getDataContext(parentComponent)
-        SendReportBackgroundTask(
-            CommonDataKeys.PROJECT.getData(context),
-            createEvent(events).withMessage(additionalInfo).also {
-                attachExtraInfo(it)
-            },
-            consumer
-        ).queue()
+        val event = createEvent(events ?: emptyArray())
+            .withMessage(additionalInfo ?: "No additional info were provided")
+            .also { attachExtraInfo(it) }
+        SendReportBackgroundTask(CommonDataKeys.PROJECT.getData(context), event, consumer).queue()
         return true
     }
 

@@ -1,4 +1,5 @@
 import org.jetbrains.intellij.tasks.*
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.moowork.gradle.node.npm.*
 import org.jetbrains.changelog.closure
 
@@ -15,7 +16,7 @@ plugins {
 val kotlinVersion: String by project
 val pluginSinceVersion: String by project
 val pluginUntilVersion: String by project
-val webviewSourceDirectory = file("${projectDir}/src/main/web-view")
+val webViewSourceDirectory = file("$projectDir/src/main/web-view")
 
 repositories {
     mavenCentral()
@@ -23,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("io.sentry:sentry:1.7.30") {
         // IntelliJ already bundles it and will report a classloader problem if this isn't excluded
@@ -32,19 +33,14 @@ dependencies {
 }
 
 intellij {
-    version = "IC-2020.2.3"
+    version = "IC-2020.3"
 }
 
 tasks {
-    compileJava {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
-    }
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
     }
     changelog {
         version = "${project.version}"
@@ -64,30 +60,32 @@ tasks {
     node {
         download = true
         version = project.properties["nodeVersion"].toString()
-        nodeModulesDir = webviewSourceDirectory
+        nodeModulesDir = webViewSourceDirectory
     }
     runPluginVerifier {
         ideVersions(project.properties["pluginVerifierIdeVersions"].toString())
+    }
+    // https://youtrack.jetbrains.com/issue/KTIJ-782
+    buildSearchableOptions {
+        enabled = false
     }
 }
 
 tasks.register("ensureNodeModulesInstalled") {
     dependsOn("nodeSetup")
     dependsOn("npmSetup")
-    if (!file(File(webviewSourceDirectory, "node_modules")).exists()) {
+    if (!file(File(webViewSourceDirectory, "node_modules")).exists()) {
         dependsOn("npm_ci")
-    } else {
-        println("Skipping npm_ci step")
     }
 }
 
 fun cacheWebviewBuildTask(task: NpmTask) {
     with(task.inputs) {
         files(
-            File(webviewSourceDirectory, "package.json"),
-            File(webviewSourceDirectory, "package-lock.json")
+            File(webViewSourceDirectory, "package.json"),
+            File(webViewSourceDirectory, "package-lock.json")
         ).withPathSensitivity(PathSensitivity.RELATIVE)
-        dir(File(webviewSourceDirectory, "src")).withPathSensitivity(PathSensitivity.RELATIVE)
+        dir(File(webViewSourceDirectory, "src")).withPathSensitivity(PathSensitivity.RELATIVE)
     }
     with(task.outputs) {
         dir("${projectDir}/build/resources/main/web-view")
