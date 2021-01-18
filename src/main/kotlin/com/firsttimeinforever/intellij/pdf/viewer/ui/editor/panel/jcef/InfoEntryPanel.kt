@@ -12,8 +12,7 @@ class InfoEntryPanel(label: String, value: String): JPanel() {
         add(JLabel("$label:  "), BorderLayout.WEST)
         if (value == "-" || value.isEmpty()) {
             add(JLabel("unspecified"), BorderLayout.EAST)
-        }
-        else {
+        } else {
             add(JLabel(value), BorderLayout.EAST)
         }
     }

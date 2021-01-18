@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ActionToolbarUtils.createToolbarForGroup
 import com.intellij.ide.ui.UISettings
 import com.intellij.ide.ui.UISettingsListener
 import com.intellij.util.messages.MessageBus

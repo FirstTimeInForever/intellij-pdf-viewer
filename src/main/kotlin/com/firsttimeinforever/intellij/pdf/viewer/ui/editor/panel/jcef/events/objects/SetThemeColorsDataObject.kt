@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects
 
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.transformColorRgba
 import kotlinx.serialization.Serializable
 import java.awt.Color
 
@@ -12,6 +11,9 @@ class SetThemeColorsDataObject(
     val documentColorInvertIntensity: Int
 ) {
     companion object {
+        private fun transformColorRgba(color: Color): String =
+            color.run { "rgba($red, $green, $blue, $alpha)" }
+
         fun from(background: Color, foreground: Color, icons: Color, invertIntensity: Int) =
             SetThemeColorsDataObject(
                 transformColorRgba(background),
