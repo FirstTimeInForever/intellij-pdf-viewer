@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.util.Url
 import com.intellij.util.Urls.parseEncoded
 import io.netty.buffer.Unpooled
@@ -16,6 +16,8 @@ import java.io.File
 
 class StaticServer: HttpRequestHandler() {
     companion object {
+        private val logger = thisLogger()
+
         val instance
             get() = EP_NAME.findExtension(StaticServer::class.java)?:
                 error("Could not find StaticServer extension")
@@ -25,7 +27,6 @@ class StaticServer: HttpRequestHandler() {
     }
 
     private val serverUrl = "http://localhost:${BuiltInServerManager.getInstance().port}/$URL_UUID"
-    private val logger = logger<StaticServer>()
 
     init {
         logger.debug("Starting static server with url: $serverUrl")

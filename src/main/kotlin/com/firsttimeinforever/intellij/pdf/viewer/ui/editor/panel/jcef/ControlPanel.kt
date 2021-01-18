@@ -13,7 +13,10 @@ import java.awt.FlowLayout
 import java.awt.GridLayout
 import javax.swing.JPanel
 
-class ControlPanel(messageBus: MessageBus): JPanel(), UISettingsListener {
+class ControlPanel(
+    messageBus: MessageBus,
+    presentationModeController: PresentationModeController
+): JPanel(), UISettingsListener {
     private val leftToolbar =
         createToolbarForGroup<PdfEditorLeftToolbarActionGroup>("PdfEditorLeftToolbarActionGroup")
     private val searchToolbar =
@@ -45,6 +48,16 @@ class ControlPanel(messageBus: MessageBus): JPanel(), UISettingsListener {
         rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
         add(rightPanel, Component.RIGHT_ALIGNMENT)
         messageBus.connect().subscribe(UISettingsListener.TOPIC, this)
+        with(presentationModeController) {
+            addEnterListener {
+                presentationModeEnabled = true
+                false
+            }
+            addExitListener {
+                presentationModeEnabled = false
+                false
+            }
+        }
     }
 
     private var presentationModeState = false

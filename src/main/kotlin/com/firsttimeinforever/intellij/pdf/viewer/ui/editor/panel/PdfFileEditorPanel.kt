@@ -25,9 +25,10 @@ abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFil
 
     open var currentPageNumber: Int = 0
     open val currentScaleValue: Double = 1.0
-    open val pagesCount: Int = 0
 
     open val previewState: PreviewState? = null
+
+    open val properties: PdfEditorPanelPreviewProperties = defaultProperties
 
     open fun updatePreviewState(state: PreviewState) = Unit
 
@@ -44,7 +45,7 @@ abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFil
 
     fun pageStateChanged() {
         pageStateChangeListeners.forEach {
-            it(DocumentPageState(currentPageNumber, pagesCount))
+            it(DocumentPageState(currentPageNumber, properties.pagesCount))
         }
     }
 
@@ -52,5 +53,9 @@ abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFil
 
     companion object {
         const val SCALE_MULTIPLIER = 1.1
+
+        private val defaultProperties = object: PdfEditorPanelPreviewProperties {
+            override val pagesCount: Int = 0
+        }
     }
 }

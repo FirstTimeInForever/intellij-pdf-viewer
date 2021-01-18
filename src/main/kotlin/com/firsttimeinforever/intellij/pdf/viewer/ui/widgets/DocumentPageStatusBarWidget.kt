@@ -4,7 +4,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageStateListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -16,7 +16,6 @@ import java.awt.Component
 import java.awt.event.MouseEvent
 
 class DocumentPageStatusBarWidget(val project: Project): StatusBarWidget {
-    private val logger = logger<DocumentPageStatusBarWidget>()
     private lateinit var actualStatusBar: StatusBar
     private var currentPageState = DocumentPageState(0, 0)
     private val messageBusConnection = project.messageBus.connect(this)
@@ -82,6 +81,8 @@ class DocumentPageStatusBarWidget(val project: Project): StatusBarWidget {
     }
 
     companion object {
+        private val logger = thisLogger()
+
         const val ID = "PdfViewer.DocumentPageStatusBarWidget"
     }
 }

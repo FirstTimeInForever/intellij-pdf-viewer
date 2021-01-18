@@ -59,7 +59,7 @@ class PresentationModeController(
     private fun invokeListeners(listeners: MutableList<PresentationModeListener>) {
         val shouldBeRemoved = mutableListOf<PresentationModeListener>()
         for (listener in listeners) {
-            if (listener.handle(this)) {
+            if (listener.presentationModeChanged(this)) {
                 shouldBeRemoved.add(listener)
             }
         }
@@ -76,7 +76,7 @@ class PresentationModeController(
         val location = browserComponent.locationOnScreen
         val xcenter = browserComponent.width / 2
         val ycenter = browserComponent.height / 2
-        with (Robot()) {
+        with(Robot()) {
             mouseMove(location.x + xcenter, location.y + ycenter)
             mousePress(InputEvent.BUTTON1_DOWN_MASK)
             mouseRelease(InputEvent.BUTTON1_DOWN_MASK)

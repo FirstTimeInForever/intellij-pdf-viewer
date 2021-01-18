@@ -17,15 +17,16 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import kotlinx.serialization.decodeFromString
@@ -34,8 +35,9 @@ import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
 import java.awt.Color
+import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
+import java.util.concurrent.atomic.AtomicReference
 import javax.swing.BoxLayout
 import kotlin.math.max
 import kotlin.math.min
@@ -44,8 +46,8 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     PdfFileEditorPanel<JcefPanelPreviewState>(virtualFile), EditorColorsListener, PdfViewerSettingsListener
 {
     private val browserPanel = JCEFHtmlPanel("about:blank")
-    private val controlPanel = ControlPanel(project.messageBus)
     private val documentLoadErrorPanel by lazy { DocumentLoadErrorPanel() }
+    private val messageBusConnection = project.messageBus.connect(this)
 
     private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
     private val eventReceiver = MessageEventReceiver.fromList(
@@ -60,37 +62,14 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         eventSender
     )
 
-    private var currentScrollDirectionHorizontal = true
-    private var pagesCountHolder = 0
-    private var sidebarAvailableViewModesHolder = SidebarAvailableViewModes()
+    private val controlPanel = ControlPanel(project.messageBus, presentationModeController)
+
+    private val propertiesHolder = AtomicReference(JcefPanelPreviewProperties())
+    override val properties: JcefPanelPreviewProperties
+        get() = propertiesHolder.get()
 
     private var state = JcefPanelPreviewState()
-
-    private val pageNavigationKeyListener = object: KeyListener {
-        override fun keyPressed(event: KeyEvent?) {
-            when (event?.keyCode) {
-                KeyEvent.VK_LEFT -> previousPage()
-                KeyEvent.VK_RIGHT -> nextPage()
-            }
-        }
-        override fun keyTyped(event: KeyEvent?) = Unit
-        override fun keyReleased(event: KeyEvent?) = Unit
-    }
-
-    private var watchRequest: LocalFileSystem.WatchRequest? = null
-
-    private val fileListener = object: VirtualFileListener {
-        override fun contentsChanged(event: VirtualFileEvent) {
-            logger.debug("Got some events batch")
-            if (event.file != virtualFile) {
-                logger.debug("Seems like target file (${virtualFile.path}) is not changed")
-                return
-            }
-            logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
-            val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
-            browserPanel.loadURL(targetUrl.toExternalForm())
-        }
-    }
+    private val fileListener = FileListener()
 
     init {
         Disposer.register(this, browserPanel)
@@ -98,7 +77,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
-        with (eventReceiver) {
+        with(eventReceiver) {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.decodeFromString<PageChangeDataObject>(it)
                 state.pageNumber = result.pageNumber
@@ -116,7 +95,9 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
-                    pagesCountHolder = result.count
+                    updateAtomicReference(propertiesHolder) { current ->
+                        JcefPanelPreviewProperties(result.count, current.sidebarAvailableViewModes)
+                    }
                     pageStateChanged()
                 } catch (exception: Exception) {
                     // FIXME: Find out proper way of handling new exceptions
@@ -142,33 +123,29 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             }
             addHandler(SubscribableEventType.SIDEBAR_AVAILABLE_VIEWS_CHANGED) {
                 val result = jsonSerializer.decodeFromString<SidebarAvailableViewModesChangedDataObject>(it)
-                sidebarAvailableViewModesHolder = result
+                updateAtomicReference(propertiesHolder) { current ->
+                    JcefPanelPreviewProperties(current.pagesCount, result)
+                }
             }
         }
-        addKeyListener(pageNavigationKeyListener)
-        presentationModeController.run {
-            addEnterListener {
-                controlPanel.presentationModeEnabled = true
-                false
+        addKeyListener(object: KeyAdapter() {
+            override fun keyPressed(event: KeyEvent?) {
+                when (event?.keyCode) {
+                    KeyEvent.VK_LEFT -> previousPage()
+                    KeyEvent.VK_RIGHT -> nextPage()
+                }
             }
-            addExitListener {
-                controlPanel.presentationModeEnabled = false
-                false
-            }
-        }
-        PdfViewerSettings.instance.addChangeListener(this)
-        project.messageBus.connect().subscribe(EditorColorsManager.TOPIC, this)
+        })
+        messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
+        messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
         openDocument()
     }
 
     val sidebarAvailableViewModes
-        get() = sidebarAvailableViewModesHolder
+        get() = properties.sidebarAvailableViewModes
 
     val isCurrentScrollDirectionHorizontal
-        get() = currentScrollDirectionHorizontal
-
-    override val pagesCount
-        get() = pagesCountHolder
+        get() = state.currentScrollDirectionHorizontal
 
     val sidebarViewState: SidebarViewState
         get() = state.sidebarViewState
@@ -228,8 +205,8 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
 
     fun toggleScrollDirection(): Boolean {
         eventSender.trigger(TriggerableEventType.TOGGLE_SCROLL_DIRECTION)
-        currentScrollDirectionHorizontal = !currentScrollDirectionHorizontal
-        return currentScrollDirectionHorizontal
+        state.currentScrollDirectionHorizontal = !state.currentScrollDirectionHorizontal
+        return state.currentScrollDirectionHorizontal
     }
 
     fun openDevtools() = browserPanel.openDevtools()
@@ -250,30 +227,11 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         eventSender.triggerWith(TriggerableEventType.FIND_PREVIOUS, SearchDataObject(searchTarget))
     }
 
-    private fun addFileUpdateHandler() {
-        LocalFileSystem.getInstance().run {
-            watchRequest = addRootToWatch(virtualFile.path, false)
-            addVirtualFileListener(fileListener)
-        }
-    }
-
-    private fun removeFileUpdateHandler() {
-        LocalFileSystem.getInstance().run {
-            watchRequest?.also {
-                removeWatchedRoot(it)
-                watchRequest = null
-            }
-            removeVirtualFileListener(fileListener)
-        }
-    }
-
     private fun showDocumentInfoDialog(documentInfo: DocumentInfoDataObject) =
         DialogBuilder().centerPanel(DocumentInfoPanel(documentInfo)).showModal(true)
 
     private fun openDocument() {
-        if (PdfViewerSettings.instance.enableDocumentAutoReload) {
-            addFileUpdateHandler()
-        }
+        fileListener.enabled = PdfViewerSettings.instance.enableDocumentAutoReload
         addReloadHandler()
         reloadDocument()
     }
@@ -305,24 +263,21 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         background: Color = UIUtil.getPanelBackground(),
         foreground: Color = UIUtil.getLabelForeground()
     ) {
-        val colorInvertIntensity = if (Registry.`is`("pdf.viewer.enableExperimentalFeatures") &&
-                PdfViewerSettings.instance.invertDocumentColors)
-        {
+        val colorInvertIntensity = if(PdfViewerSettings.instance.invertDocumentColors) {
             PdfViewerSettings.instance.documentColorsInvertIntensity
         } else 0
         eventSender.triggerWith(
             TriggerableEventType.SET_THEME_COLORS,
             PdfViewerSettings.instance.run {
                 if (useCustomColors) {
-                    SetThemeColorsDataObject.from(
+                    SetThemeColorsDataObject(
                         Color(customBackgroundColor),
                         Color(customForegroundColor),
                         Color(customIconColor),
                         colorInvertIntensity
                     )
-                }
-                else {
-                    SetThemeColorsDataObject.from(
+                } else {
+                    SetThemeColorsDataObject(
                         background,
                         foreground,
                         PdfViewerSettings.defaultIconColor,
@@ -333,20 +288,28 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         )
     }
 
-    override fun dispose() {
-        PdfViewerSettings.instance.removeChangeListener(this)
-    }
-
     override fun globalSchemeChange(scheme: EditorColorsScheme?) {
         setThemeColors()
     }
 
     override fun settingsChanged(settings: PdfViewerSettings) {
         setThemeColors()
-        if (!settings.enableDocumentAutoReload) {
-            removeFileUpdateHandler()
-        } else if (watchRequest == null) {
-            addFileUpdateHandler()
+        fileListener.enabled = settings.enableDocumentAutoReload
+    }
+
+    private inner class FileListener: BulkFileListener {
+        var enabled = false
+
+        init {
+            messageBusConnection.subscribe(VirtualFileManager.VFS_CHANGES, this)
+        }
+
+        override fun after(events: MutableList<out VFileEvent>) {
+            if (enabled && events.any { it == virtualFile }) {
+                logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
+                val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
+                browserPanel.loadURL(targetUrl.toExternalForm())
+            }
         }
     }
 
@@ -354,7 +317,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         private const val MIN_SCALE = 0.25
         private const val MAX_SCALE = 10.0
 
-        private val logger = logger<PdfFileEditorJcefPanel>()
+        private val logger = thisLogger()
 
         private val jsonSerializer = Json {
             ignoreUnknownKeys = true
@@ -382,6 +345,15 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 }
             })
             Notifications.Bus.notify(notification)
+        }
+
+        private fun <T> updateAtomicReference(reference: AtomicReference<T>, transform: (T) -> T) {
+            while (true) {
+                val current = reference.get()
+                if (reference.compareAndSet(current, transform(current))) {
+                    break
+                }
+            }
         }
     }
 }

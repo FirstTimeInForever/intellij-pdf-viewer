@@ -11,7 +11,7 @@ class ToggleInvertDocumentColorsAction: PdfEditorPdfjsToggleActionAdapter(
 
     override fun setSelected(event: AnActionEvent, state: Boolean) {
         PdfViewerSettings.instance.invertDocumentColors = state
-        PdfViewerSettings.instance.callChangeListeners()
+        PdfViewerSettings.instance.notifyListeners()
     }
 
     override fun update(event: AnActionEvent) {

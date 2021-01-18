@@ -8,6 +8,7 @@ data class JcefPanelPreviewState(
     var scale: Double = 1.0,
     var verticalScroll: Double = 0.0,
     var horizontalScroll: Double = 0.0,
+    var currentScrollDirectionHorizontal: Boolean = true,
     var pageSpreadState: PageSpreadState = PageSpreadState.NONE,
     var sidebarViewState: SidebarViewState = SidebarViewState()
 )

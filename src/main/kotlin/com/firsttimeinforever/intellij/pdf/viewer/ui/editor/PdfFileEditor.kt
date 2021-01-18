@@ -31,7 +31,7 @@ class PdfFileEditor(private val project: Project, virtualFile: VirtualFile) : Fi
     }
 
     val pageState
-        get() = DocumentPageState(viewPanel.currentPageNumber, viewPanel.pagesCount)
+        get() = DocumentPageState(viewPanel.currentPageNumber, viewPanel.properties.pagesCount)
 
     override fun isModified(): Boolean = false
 

@@ -3,7 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.util
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.intellij.AbstractBundle
 import com.intellij.diagnostic.IdeaReportingEvent
-import com.intellij.diagnostic.ReportMessages
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.idea.IdeaLogger
@@ -13,10 +12,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationInfoEx
-import com.intellij.openapi.diagnostic.ErrorReportSubmitter
-import com.intellij.openapi.diagnostic.IdeaLoggingEvent
-import com.intellij.openapi.diagnostic.SubmittedReportInfo
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
@@ -66,7 +62,7 @@ class SentryErrorReportSubmitter: ErrorReportSubmitter() {
                             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
                             NotificationType.ERROR
                         ).notify(project)
-                        logger<SentryErrorReportSubmitter>().error(exception)
+                        thisLogger().error(exception)
                         consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED))
                     }
                 }

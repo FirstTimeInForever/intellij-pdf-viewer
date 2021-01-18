@@ -32,7 +32,7 @@ class PdfVieverConfigurable: Configurable {
             documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity ?: documentColorsInvertIntensity
         }
         if (wasModified) {
-            settings.callChangeListeners()
+            settings.notifyListeners()
         }
     }
 
