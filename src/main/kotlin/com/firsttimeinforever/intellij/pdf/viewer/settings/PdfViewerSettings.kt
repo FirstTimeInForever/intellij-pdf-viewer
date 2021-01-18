@@ -19,21 +19,21 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     var invertDocumentColors = false
 
     @Transient
-    private val changeListenersHolder = mutableListOf<(PdfViewerSettings) -> Unit>()
+    private val changeListenersHolder = mutableListOf<PdfViewerSettingsListener>()
 
     val changeListeners
         get() = changeListenersHolder.toList()
 
-    fun addChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
+    fun addChangeListener(listener: PdfViewerSettingsListener) {
         changeListenersHolder.add(listener)
     }
 
-    fun removeChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
+    fun removeChangeListener(listener: PdfViewerSettingsListener) {
         changeListenersHolder.remove(listener)
     }
 
     fun callChangeListeners() {
-        changeListeners.forEach { it(this) }
+        changeListeners.forEach { it.settingsChanged(this) }
     }
 
     override fun getState() = this
