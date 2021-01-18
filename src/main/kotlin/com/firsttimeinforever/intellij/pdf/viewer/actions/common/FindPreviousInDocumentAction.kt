@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class FindPreviousInDocumentAction: PdfEditorAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        findPdfFileEditor(event)?.findPrevious()
+        findPdfFileEditor(event)?.viewPanel?.findPrevious()
     }
 
     override fun update(event: AnActionEvent) {

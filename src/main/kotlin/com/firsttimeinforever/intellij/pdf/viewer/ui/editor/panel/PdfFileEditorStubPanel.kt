@@ -7,7 +7,7 @@ import javax.swing.BorderFactory
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
 
-class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel(virtualFile) {
+class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel<Any>(virtualFile) {
     private val textPane = JTextPane()
     private val scrollPane = JBScrollPane(textPane)
 
@@ -46,6 +46,4 @@ class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel(virtu
         scrollPane.setViewportView(textPane)
         add(scrollPane)
     }
-
-    override fun dispose() = Unit
 }

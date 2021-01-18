@@ -13,9 +13,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): FileEditor {
-    val viewPanel: PdfFileEditorPanel =
-        PdfEditorPanelProvider.createPanel(project, virtualFile)
+class PdfFileEditor(private val project: Project, virtualFile: VirtualFile) : FileEditor {
+    val viewPanel: PdfFileEditorPanel<*> = PdfEditorPanelProvider.createPanel(project, virtualFile)
 
     init {
         Disposer.register(this, viewPanel)
@@ -31,18 +30,8 @@ class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): Fil
         }
     }
 
-    fun reloadDocument() = viewPanel.reloadDocument()
-    fun increaseScale() = viewPanel.increaseScale()
-    fun decreaseScale() = viewPanel.decreaseScale()
-    fun nextPage() = viewPanel.nextPage()
-    fun previousPage() = viewPanel.previousPage()
-    fun findNext() = viewPanel.findNext()
-    fun findPrevious() = viewPanel.findPrevious()
-
     val pageState
-        get() = viewPanel.run {
-            DocumentPageState(currentPageNumber, pagesCount)
-        }
+        get() = DocumentPageState(viewPanel.currentPageNumber, viewPanel.pagesCount)
 
     override fun isModified(): Boolean = false
 
@@ -63,7 +52,7 @@ class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): Fil
 
     override fun getComponent(): JComponent = viewPanel
 
-    override fun getPreferredFocusedComponent(): JComponent? = viewPanel
+    override fun getPreferredFocusedComponent(): JComponent = viewPanel
 
     override fun <T : Any?> getUserData(key: Key<T>): T? = null
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class ReloadDocumentAction: PdfEditorAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        findPdfFileEditor(event)?.reloadDocument()
+        findPdfFileEditor(event)?.viewPanel?.reloadDocument()
     }
 
     override fun update(event: AnActionEvent) {

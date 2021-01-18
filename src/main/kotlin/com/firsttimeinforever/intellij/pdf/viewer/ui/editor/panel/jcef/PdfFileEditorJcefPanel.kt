@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -24,10 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
-import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileEvent
-import com.intellij.openapi.vfs.VirtualFileListener
+import com.intellij.openapi.vfs.*
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import kotlinx.serialization.decodeFromString
@@ -43,46 +41,30 @@ import kotlin.math.max
 import kotlin.math.min
 
 class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
-    PdfFileEditorPanel(virtualFile), EditorColorsListener
+    PdfFileEditorPanel<JcefPanelPreviewState>(virtualFile), EditorColorsListener, PdfViewerSettingsListener
 {
     private val browserPanel = JCEFHtmlPanel("about:blank")
-    private val logger = logger<PdfFileEditorJcefPanel>()
-    private val messageBusConnection = project.messageBus.connect()
-    private val jsonSerializer = Json { ignoreUnknownKeys = true }
-    private val eventReceiver =
-        MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
-    private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
-    val presentationModeController =
-        PresentationModeController(this, browserPanel.component, eventReceiver, eventSender)
-    private var currentPageNumberHolder: Int = 1
     private val controlPanel = ControlPanel(project.messageBus)
+    private val documentLoadErrorPanel by lazy { DocumentLoadErrorPanel() }
+
+    private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
+    private val eventReceiver = MessageEventReceiver.fromList(
+        browserPanel,
+        SubscribableEventType.values().asList()
+    )
+
+    val presentationModeController = PresentationModeController(
+        this,
+        browserPanel.component,
+        eventReceiver,
+        eventSender
+    )
+
     private var currentScrollDirectionHorizontal = true
     private var pagesCountHolder = 0
-    private var pageSpreadStateHolder = PageSpreadState.NONE
-    private val documentLoadErrorPanel = DocumentLoadErrorPanel()
-    private var sidebarViewStateHolder = SidebarViewState()
     private var sidebarAvailableViewModesHolder = SidebarAvailableViewModes()
 
-    private fun showDocumentLoadErrorNotification() {
-        val reloadAction =  ActionManager.getInstance().getAction(RELOAD_ACTION_ID)?:
-            error("Could not get document reload action")
-        val notification = Notification(
-            PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
-            PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.title"),
-            PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.content"),
-            NotificationType.ERROR
-        ).addAction(reloadAction.templatePresentation.run {
-            object: AnAction(text, description, icon) {
-                override fun actionPerformed(event: AnActionEvent) {
-                    if (browserPanel.isDisposed) {
-                        return
-                    }
-                    reloadDocument()
-                }
-            }
-        })
-        Notifications.Bus.notify(notification)
-    }
+    private var state = JcefPanelPreviewState()
 
     private val pageNavigationKeyListener = object: KeyListener {
         override fun keyPressed(event: KeyEvent?) {
@@ -93,16 +75,6 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         }
         override fun keyTyped(event: KeyEvent?) = Unit
         override fun keyReleased(event: KeyEvent?) = Unit
-    }
-
-    private val settingsChangeListener = { settings: PdfViewerSettings ->
-        setThemeColors()
-        if (!settings.enableDocumentAutoReload) {
-            removeFileUpdateHandler()
-        }
-        else if (watchRequest == null) {
-            addFileUpdateHandler()
-        }
     }
 
     private var watchRequest: LocalFileSystem.WatchRequest? = null
@@ -123,14 +95,13 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     init {
         Disposer.register(this, browserPanel)
         Disposer.register(this, eventReceiver)
-        Disposer.register(this, controlPanel)
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
         add(controlPanel)
         add(browserPanel.component)
         with (eventReceiver) {
             addHandler(SubscribableEventType.PAGE_CHANGED) {
                 val result = jsonSerializer.decodeFromString<PageChangeDataObject>(it)
-                currentPageNumberHolder = result.pageNumber
+                state.pageNumber = result.pageNumber
                 pageStateChanged()
             }
             addHandler(SubscribableEventType.DOCUMENT_INFO) {
@@ -147,8 +118,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
                     pagesCountHolder = result.count
                     pageStateChanged()
-                }
-                catch (exception: Exception) {
+                } catch (exception: Exception) {
                     // FIXME: Find out proper way of handling new exceptions
                     logger.warn(
                         "Failed to parse PagesCount data object! (This should be fixed at message passing level)",
@@ -163,12 +133,12 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 if (it.isNotEmpty()) {
                     browserPanel.component.isVisible = false
                     add(documentLoadErrorPanel)
-                    showDocumentLoadErrorNotification()
+                    showDocumentLoadErrorNotification(this@PdfFileEditorJcefPanel)
                 }
             }
             addHandler(SubscribableEventType.SIDEBAR_VIEW_STATE_CHANGED) {
                 val result = jsonSerializer.decodeFromString<SidebarViewStateChangeDataObject>(it)
-                sidebarViewStateHolder = result.state
+                state.sidebarViewState = result.state
             }
             addHandler(SubscribableEventType.SIDEBAR_AVAILABLE_VIEWS_CHANGED) {
                 val result = jsonSerializer.decodeFromString<SidebarAvailableViewModesChangedDataObject>(it)
@@ -186,8 +156,8 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 false
             }
         }
-        PdfViewerSettings.instance.addChangeListener(settingsChangeListener)
-        messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
+        PdfViewerSettings.instance.addChangeListener(this)
+        project.messageBus.connect().subscribe(EditorColorsManager.TOPIC, this)
         openDocument()
     }
 
@@ -201,10 +171,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         get() = pagesCountHolder
 
     val sidebarViewState: SidebarViewState
-        get() = sidebarViewStateHolder
+        get() = state.sidebarViewState
 
     fun setSidebarViewMode(mode: SidebarViewMode) {
-        sidebarViewStateHolder = SidebarViewState(mode, sidebarViewStateHolder.hidden)
+        state.sidebarViewState = SidebarViewState(mode, state.sidebarViewState.hidden)
         eventSender.triggerWith(
             TriggerableEventType.SET_SIDEBAR_VIEW_MODE,
             SidebarViewModeChangeDataObject.from(mode)
@@ -212,48 +182,49 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     }
 
     override var currentPageNumber: Int
-        get() = currentPageNumberHolder
+        get() = state.pageNumber
         set(value) {
-            currentPageNumberHolder = value
+            state.pageNumber = value
             updatePageNumber(value)
         }
 
     private fun updatePageNumber(value: Int) {
-        eventSender.triggerWith(
-            TriggerableEventType.SET_PAGE,
-            PageChangeDataObject(value)
-        )
+        eventSender.triggerWith(TriggerableEventType.SET_PAGE, PageChangeDataObject(value))
     }
 
-    override fun increaseScale() = setScale(currentScaleValue * 1.1)
-    override fun decreaseScale() = setScale(currentScaleValue / 1.1)
     override fun setScale(value: Double) {
-        currentScaleValue = min(max(value, 0.25), 10.0)
-        eventSender.triggerWith(TriggerableEventType.SET_SCALE, ScaleChangeDataObject(currentScaleValue))
+        state.scale = min(max(value, MIN_SCALE), MAX_SCALE)
+        eventSender.triggerWith(TriggerableEventType.SET_SCALE, ScaleChangeDataObject(state.scale))
     }
 
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
     override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 
-    fun getDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
+    fun showDocumentInfo() = eventSender.trigger(TriggerableEventType.GET_DOCUMENT_INFO)
     fun toggleSidebar() = eventSender.trigger(TriggerableEventType.TOGGLE_SIDEBAR)
     fun printDocument() = eventSender.trigger(TriggerableEventType.PRINT_DOCUMENT)
     fun rotateClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_CLOCKWISE)
-    fun rotateCounterclockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
+    fun rotateCounterClockwise() = eventSender.trigger(TriggerableEventType.ROTATE_COUNTERCLOCKWISE)
 
     var pageSpreadState
-        get() = pageSpreadStateHolder
-        set(state) {
-            if (pageSpreadStateHolder == state) {
+        get() = state.pageSpreadState
+        set(value) {
+            if (state.pageSpreadState == value) {
                 return
             }
-            pageSpreadStateHolder = state
-            eventSender.trigger(when (state) {
+            state.pageSpreadState = value
+            eventSender.trigger(when (value) {
                 PageSpreadState.NONE -> TriggerableEventType.SPREAD_NONE
                 PageSpreadState.EVEN -> TriggerableEventType.SPREAD_EVEN_PAGES
                 PageSpreadState.ODD -> TriggerableEventType.SPREAD_ODD_PAGES
             })
         }
+
+    override val previewState: JcefPanelPreviewState
+        get() = state
+
+    override val currentScaleValue: Double
+        get() = state.scale
 
     fun toggleScrollDirection(): Boolean {
         eventSender.trigger(TriggerableEventType.TOGGLE_SCROLL_DIRECTION)
@@ -363,15 +334,54 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     }
 
     override fun dispose() {
-        PdfViewerSettings.instance.removeChangeListener(settingsChangeListener)
+        PdfViewerSettings.instance.removeChangeListener(this)
     }
 
     override fun globalSchemeChange(scheme: EditorColorsScheme?) {
         setThemeColors()
     }
 
+    override fun settingsChanged(settings: PdfViewerSettings) {
+        setThemeColors()
+        if (!settings.enableDocumentAutoReload) {
+            removeFileUpdateHandler()
+        } else if (watchRequest == null) {
+            addFileUpdateHandler()
+        }
+    }
+
     companion object {
-        private const val RELOAD_ACTION_ID =
+        private const val MIN_SCALE = 0.25
+        private const val MAX_SCALE = 10.0
+
+        private val logger = logger<PdfFileEditorJcefPanel>()
+
+        private val jsonSerializer = Json {
+            ignoreUnknownKeys = true
+        }
+
+        private const val reloadActionId =
             "com.firsttimeinforever.intellij.pdf.viewer.actions.common.ReloadDocumentAction"
+
+        private fun showDocumentLoadErrorNotification(panel: PdfFileEditorJcefPanel) {
+            val reloadAction = ActionManager.getInstance().getAction(reloadActionId) ?:
+                error("Could not get document reload action")
+            val notification = Notification(
+                PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
+                PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.title"),
+                PdfViewerBundle.message("pdf.viewer.editor.panel.notifications.document.open.failed.content"),
+                NotificationType.ERROR
+            )
+            notification.addAction(with(reloadAction.templatePresentation) {
+                object: AnAction(text, description, icon) {
+                    override fun actionPerformed(event: AnActionEvent) {
+                        if (!panel.browserPanel.isDisposed) {
+                            panel.reloadDocument()
+                        }
+                    }
+                }
+            })
+            Notifications.Bus.notify(notification)
+        }
     }
 }

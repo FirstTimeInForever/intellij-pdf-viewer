@@ -8,7 +8,7 @@ class PreviousPageAction: PdfEditorAction(
     disableInIdePresentationMode = false
 ) {
     override fun actionPerformed(event: AnActionEvent) {
-        findPdfFileEditor(event)?.previousPage()
+        findPdfFileEditor(event)?.viewPanel?.previousPage()
     }
 
     override fun update(event: AnActionEvent) {

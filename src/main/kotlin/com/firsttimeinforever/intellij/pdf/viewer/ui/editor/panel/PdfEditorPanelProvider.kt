@@ -9,7 +9,7 @@ import com.intellij.ui.jcef.JBCefApp
 object PdfEditorPanelProvider {
     private val logger = logger<PdfEditorPanelProvider>()
 
-    fun createPanel(project: Project, virtualFile: VirtualFile): PdfFileEditorPanel {
+    fun createPanel(project: Project, virtualFile: VirtualFile): PdfFileEditorPanel<*> {
         return if (!JBCefApp.isSupported()) {
             logger.warn("JCEF is not supported in running IDE")
             PdfFileEditorStubPanel(virtualFile)

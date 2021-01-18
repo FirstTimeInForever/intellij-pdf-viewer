@@ -8,6 +8,6 @@ class IncreaseDocumentScaleAction: PdfEditorAction(
     disableInIdePresentationMode = false
 ) {
     override fun actionPerformed(event: AnActionEvent) {
-        findPdfFileEditor(event)?.increaseScale()
+        findPdfFileEditor(event)?.viewPanel?.increaseScale()
     }
 }

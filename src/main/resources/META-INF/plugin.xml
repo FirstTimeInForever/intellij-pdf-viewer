@@ -123,8 +123,8 @@
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
                     text="Rotate Document Clockwise" description="Rotates document clockwise"
                     icon="/icons/actions/rotateRight.svg"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"
                     text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"
                     icon="/icons/actions/rotateLeft.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.OpenDevtoolsAction"
@@ -169,7 +169,7 @@
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"/>
             <separator/>
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"/>
