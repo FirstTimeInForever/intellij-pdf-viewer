@@ -16,7 +16,8 @@ export enum TriggerableEvents {
     DOCUMENT_LOAD_ERROR = "documentLoadError",
     UNHANDLED_ERROR = "unhandledError",
     SIDEBAR_VIEW_STATE_CHANGED = "sidebarViewStateChanged",
-    SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged"
+    SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged",
+    CTRL_CLICK = "ctrlClick"
 }
 
 @Injectable({

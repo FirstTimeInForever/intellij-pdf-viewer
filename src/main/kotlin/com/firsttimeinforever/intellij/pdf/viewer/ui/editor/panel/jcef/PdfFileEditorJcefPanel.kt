@@ -142,6 +142,9 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
             }
+            addHandler(SubscribableEventType.CTRL_CLICK) {
+                println(it)
+            }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)

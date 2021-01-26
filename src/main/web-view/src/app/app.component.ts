@@ -325,6 +325,7 @@ export class AppComponent {
         this.createPresentationModeController();
         const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
         this.buildIgnoreClickTargetsList();
+        this.addCtrlClickListener(targetDocument);
         targetDocument.addEventListener("click", this.focusEventHandler);
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
@@ -334,6 +335,21 @@ export class AppComponent {
                 count: this.pagesCount
             });
         }
+    }
+
+    private ctrlDown: boolean = false;
+    private addCtrlClickListener(document: Document) {
+        document.addEventListener("keydown", event => { this.ctrlDown = event.ctrlKey });
+        document.addEventListener("keyup", event => { this.ctrlDown = event.ctrlKey });
+        document.addEventListener("click", event => {
+            if (this.ctrlDown) {
+                this.messageSenderService.triggerEvent(TriggerableEvents.CTRL_CLICK,
+                    // TODO page number might not be the number of the page you have clicked on.
+                    //  It currently is the page number you see in the bottom right corner.
+                    `${this.viewer.page}: ${event.offsetX * (1 / this.delayedScaleValue)}, ${event.offsetY * (1 / this.delayedScaleValue)}`
+                );
+            }
+        });
     }
 
     private ensureDocumentPropertiesReady() {
