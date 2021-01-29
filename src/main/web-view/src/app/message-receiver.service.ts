@@ -24,7 +24,8 @@ export enum SubscriptableEvents {
     SET_THEME_COLORS = "setThemeColors",
     SET_PAGE = "pageSet",
     TOGGLE_SIDEBAR = "toggleSidebar",
-    SET_SIDEBAR_VIEW_MODE = "setSidebarViewState"
+    SET_SIDEBAR_VIEW_MODE = "setSidebarViewState",
+    SET_SYNCTEX_AVAILABLE = 'setSynctexAvailable'
 }
 
 @Injectable({

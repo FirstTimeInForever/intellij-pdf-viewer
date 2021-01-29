@@ -41,6 +41,7 @@ export class AppComponent {
 
     private presentationModeController: PresentationModeController = null;
     private sidebarController: SidebarController = null;
+    private isSynctexAvailable: boolean;
 
     actualPage: number;
 
@@ -342,11 +343,18 @@ export class AppComponent {
         document.addEventListener("keydown", event => { this.ctrlDown = event.ctrlKey });
         document.addEventListener("keyup", event => { this.ctrlDown = event.ctrlKey });
         document.addEventListener("click", event => {
-            if (this.ctrlDown) {
-                this.messageSenderService.triggerEvent(TriggerableEvents.CTRL_CLICK,
+            console.log(this.isSynctexAvailable)
+            console.log("ctrl down: " + this.ctrlDown)
+            if (this.ctrlDown && this.isSynctexAvailable) {
+                console.log("synctex to editor")
+                this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
                     // TODO page number might not be the number of the page you have clicked on.
                     //  It currently is the page number you see in the bottom right corner.
-                    `${this.viewer.page}: ${event.offsetX * (1 / this.delayedScaleValue)}, ${event.offsetY * (1 / this.delayedScaleValue)}`
+                    {
+                        "page": this.viewer.page,
+                        "x": event.offsetX / this.delayedScaleValue,
+                        "y": event.offsetY / this.delayedScaleValue
+                    }
                 );
             }
         });
@@ -405,6 +413,11 @@ export class AppComponent {
         this.messageReceiverService.subscribe(SubscriptableEvents.GET_DOCUMENT_INFO, () => {
             this.messageSenderService.triggerEvent(TriggerableEvents.DOCUMENT_INFO, this.collectDocumentInfo());
         });
+
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_SYNCTEX_AVAILABLE, (available: boolean) => {
+            console.log("Synctex " + available)
+            this.isSynctexAvailable = available;
+        })
         this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
         this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);
         this.subscribeTo(SubscriptableEvents.ROTATE_COUNTERCLOCKWISE, this.rotateCounterclockwise);

@@ -9,6 +9,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
+import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexAvailable
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -142,8 +143,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
             }
-            addHandler(SubscribableEventType.CTRL_CLICK) {
-                println(it)
+            addHandler(SubscribableEventType.SYNC_EDITOR) {
+                val result = jsonSerializer.decodeFromString<SynctexInfoDataObject>(it)
+                println(result)
+                result.syncEditor(this@PdfFileEditorJcefPanel.virtualFile, project)
             }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
@@ -321,6 +324,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
                 setScale(currentScaleValue)
+                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexAvailable())
             }
         }, browserPanel.cefBrowser)
     }
