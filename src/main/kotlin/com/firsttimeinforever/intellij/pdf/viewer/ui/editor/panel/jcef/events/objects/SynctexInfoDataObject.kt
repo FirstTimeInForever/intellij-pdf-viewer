@@ -32,48 +32,45 @@ data class SynctexInfoDataObject(
     val x: Int,
     val y: Int
 ) {
-    fun syncEditor(pdfFile: VirtualFile, project: Project) {
-        val editorPath = PathManager.getBinPath()
-        val editorName = ApplicationNamesInfo.getInstance().scriptName
+
+    /**
+     * Use SyncTeX to open the corresponding tex file at page [page] and the line corresponding to [x].
+     *
+     * @param pdfFile The virtual file of the pdf file to be opened.
+     * @param project The project to which both the tex and the pdf file belong.
+     * @param requestFocus True iff the tex file should request focus after opening.
+     */
+    fun syncEditor(pdfFile: VirtualFile, project: Project, requestFocus: Boolean = true) {
         val pdfDir = File(pdfFile.parent.path)
 
         val command = arrayOf(
             "synctex", "edit", "-o", "$page:$x:$y:${pdfFile.nameWithoutExtension}.tex",
         )
         val synctexOutput = runCommand(*command, directory = pdfDir) ?: return
-        println(synctexOutput)
         val (texPath, line) = parseSynctexEditOutput(synctexOutput) ?: return
         val texFile = LocalFileSystem.getInstance().findFileByPath(texPath) ?: return
         val fileEditorManager = FileEditorManager.getInstance(project)
-//        val editors = EditorTracker.getInstance(project).activeEditors
-//        val editor = editors.firstOrNull { it.document.isWritable } ?: return // TODO do something if only pdf is open
-//        FileEditorManager.getInstance(project).openFiles.firstOrNull { it.extension != "pdf" }
         val openFileDescriptor = OpenFileDescriptor(project, texFile, line - 1, 0)
 
         runInEdt {
+            // If the file is already open, navigate to that file and move to the correct line.
             if (fileEditorManager.isFileOpen(texFile)) {
                 val editor = fileEditorManager.getSelectedEditor(texFile) as TextEditor
                 openFileDescriptor.navigateIn(editor.editor)
-                openFileDescriptor.navigate(true)
+                openFileDescriptor.navigate(requestFocus)
             }
-
+            // Otherwise check if there already is some other tex(t)file open and focus this editor before
+            // opening the tex file. It is likely that the user has the pdf file open in a split pane, and we
+            // don't want to open the tex file in the same pane as the pdf in that case.
             else {
-                val editor =
-                    FileEditorManager.getInstance(project).allEditors.filterIsInstance<PsiAwareTextEditorImpl>()
-                        .firstOrNull() as? TextEditor
+                val editor = fileEditorManager.allEditors.filterIsInstance<PsiAwareTextEditorImpl>()
+                    .firstOrNull() as? TextEditor
 
                 if (editor != null) {
-                    openFileDescriptor.navigateIn(editor.editor)
-//                    FileEditorManager.getInstance(project).openEditor(openFileDescriptor, true)
-                } else {
-                    val currentEditor =
-                        FileEditorManager.getInstance(project).openFile(texFile, true).first() as TextEditor
-                    currentEditor.editor.caretModel.primaryCaret.moveToLogicalPosition(LogicalPosition(line - 1, 0))
+                    val currentEditorDescriptor = OpenFileDescriptor(project, editor.file!!)
+                    currentEditorDescriptor.navigate(requestFocus)
                 }
-//            EditSourceUtil.navigate(openFileDescriptor, true, false)
-
-//            val editor = FileEditorManager.getInstance(project).openFile(texFile, true).firstOrNull() as TextEditor
-//            editor.caretModel.primaryCaret.moveToLogicalPosition(LogicalPosition(line - 1, 0))
+                fileEditorManager.openEditor(openFileDescriptor, requestFocus)
             }
         }
         println("$texPath: $line")
