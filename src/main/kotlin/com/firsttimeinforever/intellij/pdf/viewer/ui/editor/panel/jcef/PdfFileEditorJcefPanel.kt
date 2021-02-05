@@ -100,7 +100,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 try {
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
                     updateAtomicReference(propertiesHolder) { current ->
-                        JcefPanelPreviewProperties(result.count, current.sidebarAvailableViewModes)
+                        current.copy(pagesCount = result.count)
                     }
                     pageStateChanged()
                 } catch (exception: Exception) {
@@ -128,7 +128,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             addHandler(SubscribableEventType.SIDEBAR_AVAILABLE_VIEWS_CHANGED) {
                 val result = jsonSerializer.decodeFromString<SidebarAvailableViewModesChangedDataObject>(it)
                 updateAtomicReference(propertiesHolder) { current ->
-                    JcefPanelPreviewProperties(current.pagesCount, result)
+                    current.copy(sidebarAvailableViewModes = result)
                 }
             }
         }
