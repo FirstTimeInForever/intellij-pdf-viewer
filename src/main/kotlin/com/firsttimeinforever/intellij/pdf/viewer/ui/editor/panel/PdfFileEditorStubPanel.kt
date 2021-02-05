@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.ResourceLoader
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBScrollPane
 import java.awt.Desktop
@@ -10,7 +11,7 @@ import javax.swing.BorderFactory
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
 
-class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel<Any>(virtualFile) {
+class PdfFileEditorStubPanel(virtualFile: VirtualFile): PdfFileEditorPanel<Any>(virtualFile), DumbAware {
     private val textPane = JTextPane()
     private val scrollPane = JBScrollPane(textPane)
 

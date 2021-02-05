@@ -21,6 +21,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.colors.EditorColorsScheme
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
@@ -43,7 +44,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
-    PdfFileEditorPanel<JcefPanelPreviewState>(virtualFile), EditorColorsListener, PdfViewerSettingsListener
+    PdfFileEditorPanel<JcefPanelPreviewState>(virtualFile),
+    EditorColorsListener,
+    PdfViewerSettingsListener,
+    DumbAware
 {
     private val browserPanel = JCEFHtmlPanel("about:blank")
     private val documentLoadErrorPanel by lazy { DocumentLoadErrorPanel() }
