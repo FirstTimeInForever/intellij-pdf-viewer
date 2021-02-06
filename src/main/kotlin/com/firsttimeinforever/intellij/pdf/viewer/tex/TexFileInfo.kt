@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.synctex
+package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInfoDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand

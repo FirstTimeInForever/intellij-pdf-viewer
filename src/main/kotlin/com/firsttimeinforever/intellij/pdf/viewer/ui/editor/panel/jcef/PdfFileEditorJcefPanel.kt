@@ -2,7 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
-import com.firsttimeinforever.intellij.pdf.viewer.synctex.TexFileInfo
+import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver

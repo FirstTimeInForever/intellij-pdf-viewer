@@ -1,7 +1,8 @@
-import org.jetbrains.intellij.tasks.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.moowork.gradle.node.npm.*
+import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.changelog.closure
+import org.jetbrains.intellij.tasks.PatchPluginXmlTask
+import org.jetbrains.intellij.tasks.RunIdeTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("java")
@@ -34,6 +35,11 @@ dependencies {
 
 intellij {
     version = "IC-2020.3"
+
+    pluginsRepo {
+        custom("http://127.0.0.1:8000")
+    }
+    setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.2")
 }
 
 tasks {

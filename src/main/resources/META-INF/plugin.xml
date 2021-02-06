@@ -30,6 +30,7 @@
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="PDF" extensions="pdf" language="PDF"
