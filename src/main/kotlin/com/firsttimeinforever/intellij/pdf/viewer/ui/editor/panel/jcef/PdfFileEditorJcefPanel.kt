@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.synctex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -9,7 +10,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
-import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexAvailable
+import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexFileAvailable
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -145,8 +146,8 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             }
             addHandler(SubscribableEventType.SYNC_EDITOR) {
                 val result = jsonSerializer.decodeFromString<SynctexInfoDataObject>(it)
-                println(result)
-                result.syncEditor(this@PdfFileEditorJcefPanel.virtualFile, project)
+                TexFileInfo.fromSynctexInfoData(this@PdfFileEditorJcefPanel.virtualFile, result)
+                    ?.syncEditor(project)
             }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
@@ -324,7 +325,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
                 setScale(currentScaleValue)
-                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexAvailable())
+                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexFileAvailable())
             }
         }, browserPanel.cefBrowser)
     }
