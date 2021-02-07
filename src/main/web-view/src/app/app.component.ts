@@ -418,6 +418,9 @@ export class AppComponent {
             console.log("Synctex " + available)
             this.isSynctexAvailable = available;
         })
+        this.messageReceiverService.subscribe(SubscriptableEvents.FORWARD_SEARCH, () => {
+            console.log("Forward search")
+        })
         this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
         this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);
         this.subscribeTo(SubscriptableEvents.ROTATE_COUNTERCLOCKWISE, this.rotateCounterclockwise);

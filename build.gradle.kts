@@ -39,7 +39,7 @@ intellij {
     pluginsRepo {
         custom("http://127.0.0.1:8000")
     }
-    setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.2")
+    setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.3")
 }
 
 tasks {

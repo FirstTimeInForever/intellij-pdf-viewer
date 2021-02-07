@@ -53,7 +53,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
     private val jsonSerializer = Json { ignoreUnknownKeys = true }
     private val eventReceiver =
         MessageEventReceiver.fromList(browserPanel, SubscribableEventType.values().asList())
-    private val eventSender = MessageEventSender(browserPanel, jsonSerializer)
+    val eventSender = MessageEventSender(browserPanel, jsonSerializer)
     val presentationModeController =
         PresentationModeController(this, browserPanel.component, eventReceiver, eventSender)
     private var currentPageNumberHolder: Int = 1

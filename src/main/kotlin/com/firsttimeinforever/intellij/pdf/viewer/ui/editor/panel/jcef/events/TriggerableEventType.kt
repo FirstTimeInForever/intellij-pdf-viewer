@@ -21,4 +21,5 @@ enum class TriggerableEventType(val displayName: String) {
     SET_SIDEBAR_VIEW_MODE("setSidebarViewState"),
     INVERT_DOCUMENT_COLORS("invertDocumentColors"),
     SET_SYNCTEX_AVAILABLE("setSynctexAvailable"),
+    FORWARD_SEARCH("forwardSearch")
 }

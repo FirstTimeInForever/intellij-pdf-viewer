@@ -25,7 +25,8 @@ export enum SubscriptableEvents {
     SET_PAGE = "pageSet",
     TOGGLE_SIDEBAR = "toggleSidebar",
     SET_SIDEBAR_VIEW_MODE = "setSidebarViewState",
-    SET_SYNCTEX_AVAILABLE = 'setSynctexAvailable'
+    SET_SYNCTEX_AVAILABLE = "setSynctexAvailable",
+    FORWARD_SEARCH = "forwardSearch"
 }
 
 @Injectable({
