@@ -1,5 +1,9 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.10.1
+- Fixed default keyboard shortcuts for Windows and Linux (related to #16)
+- Fixed preview panel was not available while project indexing (#17)
+
 ## 0.10.0
 - Updated deprecated platform code
 - Updated project dependencies
