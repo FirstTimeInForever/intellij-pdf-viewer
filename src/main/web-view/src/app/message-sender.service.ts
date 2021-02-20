@@ -17,7 +17,8 @@ export enum TriggerableEvents {
     UNHANDLED_ERROR = "unhandledError",
     SIDEBAR_VIEW_STATE_CHANGED = "sidebarViewStateChanged",
     SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged",
-    SYNC_EDITOR = "syncEditor"
+    SYNC_EDITOR = "syncEditor",
+    ASK_FORWARD_SEARCH_DATA = "askForwardSearchData"
 }
 
 @Injectable({

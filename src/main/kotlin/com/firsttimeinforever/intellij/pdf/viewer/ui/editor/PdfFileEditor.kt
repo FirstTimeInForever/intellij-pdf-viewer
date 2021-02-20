@@ -63,7 +63,7 @@ class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): Fil
 
     override fun getComponent(): JComponent = viewPanel
 
-    override fun getPreferredFocusedComponent(): JComponent? = viewPanel
+    override fun getPreferredFocusedComponent(): JComponent = viewPanel
 
     override fun <T : Any?> getUserData(key: Key<T>): T? = null
 

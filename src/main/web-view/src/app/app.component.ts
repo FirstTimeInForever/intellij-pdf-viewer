@@ -327,8 +327,6 @@ export class AppComponent {
             console.log(`Sending view state: ${JSON.stringify(state)}`);
             this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED, state);
         });
-        // console.log(`Forward search: ${this.forwardSearchData}`)
-        // this.executeForwardSearch(document);
 
         // Send initial state
         this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED,
@@ -347,6 +345,12 @@ export class AppComponent {
             this.messageSenderService.triggerEvent(TriggerableEvents.PAGES_COUNT, {
                 count: this.pagesCount
             });
+        }
+        if (this.forwardSearchData == undefined) {
+            this.messageSenderService.triggerEvent(TriggerableEvents.ASK_FORWARD_SEARCH_DATA, {})
+        }
+        else {
+            this.executeForwardSearch(document)
         }
     }
 
@@ -462,11 +466,15 @@ export class AppComponent {
         })
         this.messageReceiverService.subscribe(SubscriptableEvents.
             FORWARD_SEARCH, (data: ForwarSearchData) => {
-            this.forwardSearchData = data
-            this.actualPage = data.page;
-            console.log("Forward search " + data.page);
-            this.executeForwardSearch(document)
-        })
+                // If the data is undefined, there is nothing to forward search. This can happen e.g. when
+                // starting up the application, or when opening a document without forward searching to it.
+                if (data == undefined) return
+                this.forwardSearchData = data
+                this.actualPage = data.page;
+                console.log("Forward search " + data.page);
+                this.executeForwardSearch(document)
+            }
+        )
 
         this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
         this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);

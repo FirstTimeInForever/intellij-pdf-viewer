@@ -149,6 +149,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 TexFileInfo.fromSynctexInfoData(this@PdfFileEditorJcefPanel.virtualFile, result)
                     ?.syncEditor(project)
             }
+            addHandler(SubscribableEventType.ASK_FORWARD_SEARCH_DATA) {
+                val data = jsonSerializer.encodeToJsonElement(currentForwardSearchData)
+                eventSender.triggerWith(TriggerableEventType.FORWARD_SEARCH, data)
+            }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
@@ -239,6 +243,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         eventSender.triggerWith(TriggerableEventType.SET_SCALE, ScaleChangeDataObject(currentScaleValue))
     }
 
+    override fun setForwardSearchData(data: SynctexFowardDataObject) {
+        currentForwardSearchData = data
+        eventSender.triggerWith(TriggerableEventType.FORWARD_SEARCH, data)
+    }
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
     override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 

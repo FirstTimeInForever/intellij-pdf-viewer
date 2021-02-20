@@ -1,21 +1,20 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexFowardDataObject
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInverseDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
 import com.intellij.ide.actions.OpenInRightSplitAction
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
-import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import nl.hannahsten.texifyidea.run.pdfviewer.ExternalPdfViewer
 import java.io.File
 
+/**
+ * PDF viewer for TeXiFy IDEA.
+ */
 class TexPdfViewer : ExternalPdfViewer {
 
     /**
@@ -43,31 +42,32 @@ class TexPdfViewer : ExternalPdfViewer {
             val pdfEditor = OpenFileDescriptor(project, file)
             val fileEditorManager = FileEditorManager.getInstance(project)
 
-            val jcefPanel = if (fileEditorManager.isFileOpen(file)) {
-                val editor = fileEditorManager.getSelectedEditor(file)
-                pdfEditor.navigate(true)
-                (editor as PdfFileEditor).viewPanel as PdfFileEditorJcefPanel
-            }
-            else {
-                val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor)
-                (editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor).viewPanel as PdfFileEditorJcefPanel
-            }
+            invokeLater {
+                val jcefEditor = if (fileEditorManager.isFileOpen(file)) {
+                    val editor = fileEditorManager.getSelectedEditor(file)
+                    pdfEditor.navigate(true)
+                    editor as PdfFileEditor
+                } else {
+                    val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor)
+                    editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor
+                }
 
-            val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.name}", "-o", file.name)
-            val synctexOutput = runCommand(*command, directory = File(file.parent.path)) ?: return
-            val values: Map<String, Int> = NUMBER_REGEX.findAll(synctexOutput)
-                .associate { it.groups["id"]?.value to it.groups["value"]?.value?.toInt() }
-                .filter { it.key != null && it.value != null } as Map<String, Int>
+                val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.name}", "-o", file.name)
+                val synctexOutput = runCommand(*command, directory = File(file.parent.path)) ?: return@invokeLater
+                val values: Map<String, Int> = NUMBER_REGEX.findAll(synctexOutput)
+                    .associate { it.groups["id"]?.value to it.groups["value"]?.value?.toInt() }
+                    .filter { it.key != null && it.value != null } as Map<String, Int>
 
-            jcefPanel.eventSender.triggerWith(
-                        TriggerableEventType.FORWARD_SEARCH, SynctexFowardDataObject(
-                            values.getOrDefault("Page", 1),
-                            values.getOrDefault("h", 0),
-                            values.getOrDefault("v", 0),
-                            values.getOrDefault("W", 0),
-                            values.getOrDefault("H", 0)
-                        )
+                jcefEditor.viewPanel.setForwardSearchData(
+                    SynctexFowardDataObject(
+                        values.getOrDefault("Page", 1),
+                        values.getOrDefault("h", 0),
+                        values.getOrDefault("v", 0),
+                        values.getOrDefault("W", 0),
+                        values.getOrDefault("H", 0)
                     )
+                )
+            }
         }
     }
 
