@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInfoDataObject
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInverseDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -12,6 +12,10 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import java.io.File
 
+/**
+ * Information about the tex file that comes from the PDF. This infomration is used to sync the editor with the PDF,
+ * aka inverse or backward search.
+ */
 class TexFileInfo(val file: VirtualFile, private val line: Int, private val column: Int) {
 
     /**
@@ -55,16 +59,18 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
         /**
          *
          * @param pdfFile The virtual file of the pdf file to find the corresponding tex file of.
-         * @param data [SynctexInfoDataObject] that contains information that has to be passed on to SyncTeX.
+         * @param data [SynctexInverseDataObject] that contains information that has to be passed on to SyncTeX.
          */
-        fun fromSynctexInfoData(pdfFile: VirtualFile, data: SynctexInfoDataObject): TexFileInfo? {
+        fun fromSynctexInfoData(pdfFile: VirtualFile, data: SynctexInverseDataObject): TexFileInfo? {
             val pdfDir = File(pdfFile.parent.path)
 
             val command = arrayOf(
                 "synctex", "edit", "-o", "${data.page}:${data.x}:${data.y}:${pdfFile.name}",
             )
             val synctexOutput = runCommand(*command, directory = pdfDir) ?: return null
-
+            println(data)
+            println()
+            println(synctexOutput)
             val texPath = INPUT_REGEX.find(synctexOutput)?.groups?.get("file")?.value ?: return null
             val line = LINE_REGEX.find(synctexOutput)?.groups?.get("line")?.value?.toInt() ?: 1
             val column = COLUMN_REGEX.find(synctexOutput)?.groups?.get("col")?.value?.toInt() ?: 1

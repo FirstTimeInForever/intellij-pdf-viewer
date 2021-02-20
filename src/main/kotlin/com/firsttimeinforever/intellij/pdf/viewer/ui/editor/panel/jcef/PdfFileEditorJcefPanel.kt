@@ -145,7 +145,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 grabFocus()
             }
             addHandler(SubscribableEventType.SYNC_EDITOR) {
-                val result = jsonSerializer.decodeFromString<SynctexInfoDataObject>(it)
+                val result = jsonSerializer.decodeFromString<SynctexInverseDataObject>(it)
                 TexFileInfo.fromSynctexInfoData(this@PdfFileEditorJcefPanel.virtualFile, result)
                     ?.syncEditor(project)
             }

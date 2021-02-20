@@ -26,6 +26,14 @@ interface ThemeColors {
     documentColorInvertIntensity: number;
 }
 
+interface ForwarSearchData {
+    page: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+}
+
 @Component({
     selector: 'app-root',
     template: `<ng2-pdfjs-viewer #viewer viewerId="__uniqueViewerId" (onPageChange)="pageChanged($event)" 
@@ -42,6 +50,7 @@ export class AppComponent {
     private presentationModeController: PresentationModeController = null;
     private sidebarController: SidebarController = null;
     private isSynctexAvailable: boolean;
+    private forwardSearchData: ForwarSearchData;
 
     actualPage: number;
 
@@ -318,6 +327,9 @@ export class AppComponent {
             console.log(`Sending view state: ${JSON.stringify(state)}`);
             this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED, state);
         });
+        // console.log(`Forward search: ${this.forwardSearchData}`)
+        // this.executeForwardSearch(document);
+
         // Send initial state
         this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED,
             this.sidebarController.getCurrentState());
@@ -340,7 +352,10 @@ export class AppComponent {
 
     private ctrlDown: boolean = false;
     private addCtrlClickListener(document: Document) {
-        document.addEventListener("keydown", event => { this.ctrlDown = event.ctrlKey });
+        document.addEventListener("keydown", event => {
+            this.ctrlDown = event.ctrlKey
+            console.log("ctrl down")
+        });
         document.addEventListener("keyup", event => { this.ctrlDown = event.ctrlKey });
         document.addEventListener("click", event => {
             console.log(this.isSynctexAvailable)
@@ -348,8 +363,6 @@ export class AppComponent {
             if (this.ctrlDown && this.isSynctexAvailable) {
                 console.log("synctex to editor")
                 this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
-                    // TODO page number might not be the number of the page you have clicked on.
-                    //  It currently is the page number you see in the bottom right corner.
                     {
                         "page": this.viewer.page,
                         "x": event.offsetX / this.delayedScaleValue,
@@ -358,6 +371,36 @@ export class AppComponent {
                 );
             }
         });
+    }
+
+    private executeForwardSearch(document: Document) {
+        console.log(this.forwardSearchData)
+        let context = AppComponent.getDrawingContext(document, this.forwardSearchData.page)
+
+        // Clear the previous rectangle.
+        context.getImageData(0, 0, context.canvas.width, context.canvas.height)
+
+        context.strokeStyle = "red"
+        context.strokeRect(
+            this.forwardSearchData.x * this.delayedScaleValue,
+            this.forwardSearchData.y * this.delayedScaleValue,
+            this.forwardSearchData.width * this.delayedScaleValue,
+            this.forwardSearchData.height * this.delayedScaleValue
+        )
+    }
+
+    private static getDrawingContext(document: Document, page: number) {
+        return document.body
+            .getElementsByTagName("app-root").item(0)
+            .getElementsByTagName("ng2-pdfjs-viewer").item(0)
+            .getElementsByTagName("iframe").item(0)
+            .contentDocument
+            .getElementById("viewer")
+            .getElementsByClassName("page")
+            .item(page - 1)
+            .getElementsByClassName("canvasWrapper").item(0)
+            .getElementsByTagName("canvas").item(0)
+            .getContext("2d")
     }
 
     private ensureDocumentPropertiesReady() {
@@ -415,12 +458,16 @@ export class AppComponent {
         });
 
         this.messageReceiverService.subscribe(SubscriptableEvents.SET_SYNCTEX_AVAILABLE, (available: boolean) => {
-            console.log("Synctex " + available)
             this.isSynctexAvailable = available;
         })
-        this.messageReceiverService.subscribe(SubscriptableEvents.FORWARD_SEARCH, () => {
-            console.log("Forward search")
+        this.messageReceiverService.subscribe(SubscriptableEvents.
+            FORWARD_SEARCH, (data: ForwarSearchData) => {
+            this.forwardSearchData = data
+            this.actualPage = data.page;
+            console.log("Forward search " + data.page);
+            this.executeForwardSearch(document)
         })
+
         this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
         this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);
         this.subscribeTo(SubscriptableEvents.ROTATE_COUNTERCLOCKWISE, this.rotateCounterclockwise);
