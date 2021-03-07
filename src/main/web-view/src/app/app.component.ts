@@ -403,9 +403,10 @@ export class AppComponent {
 
                 // Get the page number and the (x,y) coordinate on that page.
                 const pageSizes = this.getPageCoordinates();
-                const pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
-                const page = pageSizes[pageNumber - 1]
+                let pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
+                if (pageNumber == -1) pageNumber = pageSizes.length
 
+                const page = pageSizes[pageNumber - 1]
                 // Get PDF view resolution, assuming that currentScale is relative to a
                 // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
                 const res = 72 / (this.delayedScaleValue * 96)
