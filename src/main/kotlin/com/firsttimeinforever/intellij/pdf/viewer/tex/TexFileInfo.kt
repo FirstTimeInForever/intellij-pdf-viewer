@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexCoordinateTransformation.fromPdf
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInverseDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
 import com.intellij.openapi.application.runInEdt
@@ -65,10 +66,12 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
             val pdfDir = File(pdfFile.parent.path)
 
             val command = arrayOf(
-                "synctex", "edit", "-o", "${data.page}:${data.x}:${data.y}:${pdfFile.name}",
+                "synctex", "edit", "-o", "${data.page}:${fromPdf(data.x)}:${fromPdf(data.y)}:${pdfFile.name}",
             )
             val synctexOutput = runCommand(*command, directory = pdfDir) ?: return null
+            println("Inverse search")
             println(data)
+            println(command.toList())
             println()
             println(synctexOutput)
             val texPath = INPUT_REGEX.find(synctexOutput)?.groups?.get("file")?.value ?: return null

@@ -26,7 +26,7 @@ interface ThemeColors {
     documentColorInvertIntensity: number;
 }
 
-interface ForwarSearchData {
+interface ForwardSearchData {
     page: number,
     x: number,
     y: number,
@@ -50,7 +50,21 @@ export class AppComponent {
     private presentationModeController: PresentationModeController = null;
     private sidebarController: SidebarController = null;
     private isSynctexAvailable: boolean;
-    private forwardSearchData: ForwarSearchData;
+    private forwardSearchData: ForwardSearchData;
+
+    private getPageSizes() {
+        if (this.viewer == null) return null
+        else {
+            return this.viewer.PDFViewerApplication.pdfViewer._pages.map(p =>
+                ({
+                    left: p.div.offsetLeft,
+                    top: p.div.offsetTop,
+                    width: p.div.clientWidth,
+                    height: p.div.clientHeight
+                })
+            )
+        }
+    }
 
     actualPage: number;
 
@@ -365,12 +379,21 @@ export class AppComponent {
             console.log(this.isSynctexAvailable)
             console.log("ctrl down: " + this.ctrlDown)
             if (this.ctrlDown && this.isSynctexAvailable) {
-                console.log("synctex to editor")
+                // console.log(event.view)
+                const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll
+                const x = event.pageX + scroll.lastX
+                const y = event.pageY + scroll.lastY
+                // Get the page number and the (x,y) coordinate on that page.
+                const pageSizes = this.getPageSizes();
+                const pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
+                const page = pageSizes[pageNumber - 1]
+
+                // console.log(`scrollLeft: ${viewer.scrollLeft}, scrollY: ${viewer.scrollTop}`)
                 this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
                     {
-                        "page": this.viewer.page,
-                        "x": event.offsetX / this.delayedScaleValue,
-                        "y": event.offsetY / this.delayedScaleValue
+                        "page": pageNumber,
+                        "x": (x - page.left) / this.delayedScaleValue,
+                        "y": (y - page.top) / this.delayedScaleValue
                     }
                 );
             }
@@ -465,13 +488,13 @@ export class AppComponent {
             this.isSynctexAvailable = available;
         })
         this.messageReceiverService.subscribe(SubscriptableEvents.
-            FORWARD_SEARCH, (data: ForwarSearchData) => {
+            FORWARD_SEARCH, (data: ForwardSearchData) => {
                 // If the data is undefined, there is nothing to forward search. This can happen e.g. when
                 // starting up the application, or when opening a document without forward searching to it.
                 if (data == undefined) return
                 this.forwardSearchData = data
                 this.actualPage = data.page;
-                console.log("Forward search " + data.page);
+                console.log("Forward search to page " + data.page);
                 this.executeForwardSearch(document)
             }
         )

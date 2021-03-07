@@ -1,6 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexCoordinateTransformation
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexCoordinateTransformation.toPdf
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexFowardDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
 import com.intellij.ide.actions.OpenInRightSplitAction
@@ -54,17 +56,17 @@ class TexPdfViewer : ExternalPdfViewer {
 
                 val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.name}", "-o", file.name)
                 val synctexOutput = runCommand(*command, directory = File(file.parent.path)) ?: return@invokeLater
-                val values: Map<String, Int> = NUMBER_REGEX.findAll(synctexOutput)
-                    .associate { it.groups["id"]?.value to it.groups["value"]?.value?.toInt() }
-                    .filter { it.key != null && it.value != null } as Map<String, Int>
+                val values: Map<String?, String?> = NUMBER_REGEX.findAll(synctexOutput)
+                    .associate { it.groups["id"]?.value to it.groups["value"]?.value }
+                    .filter { it.key != null && it.value != null }
 
                 jcefEditor.viewPanel.setForwardSearchData(
                     SynctexFowardDataObject(
-                        values.getOrDefault("Page", 1),
-                        values.getOrDefault("h", 0),
-                        values.getOrDefault("v", 0),
-                        values.getOrDefault("W", 0),
-                        values.getOrDefault("H", 0)
+                        values["Page"]?.toInt() ?: 1,
+                        toPdf(values["h"]?.toDouble() ?: 0.0),
+                        toPdf(values["v"]?.toDouble() ?: 0.0),
+                        toPdf(values["W"]?.toDouble() ?: 0.0),
+                        toPdf(values["H"]?.toDouble() ?: 0.0),
                     )
                 )
             }
@@ -76,6 +78,6 @@ class TexPdfViewer : ExternalPdfViewer {
     }
 
     companion object {
-        val NUMBER_REGEX = "(?<id>\\w+):(?<value>\\d+)".toRegex()
+        val NUMBER_REGEX = "(?<id>\\w+):(?<value>(\\d+)(.\\d+)?)".toRegex()
     }
 }
