@@ -1,8 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexCoordinateTransformation
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexCoordinateTransformation.toPdf
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexFowardDataObject
 import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
 import com.intellij.ide.actions.OpenInRightSplitAction
@@ -60,13 +58,14 @@ class TexPdfViewer : ExternalPdfViewer {
                     .associate { it.groups["id"]?.value to it.groups["value"]?.value }
                     .filter { it.key != null && it.value != null }
 
+                println(synctexOutput)
                 jcefEditor.viewPanel.setForwardSearchData(
                     SynctexFowardDataObject(
                         values["Page"]?.toInt() ?: 1,
-                        toPdf(values["h"]?.toDouble() ?: 0.0),
-                        toPdf(values["v"]?.toDouble() ?: 0.0),
-                        toPdf(values["W"]?.toDouble() ?: 0.0),
-                        toPdf(values["H"]?.toDouble() ?: 0.0),
+                        values["h"]?.toDouble() ?: 0.0,
+                        values["v"]?.toDouble() ?: 0.0,
+                        values["W"]?.toDouble() ?: 0.0,
+                        values["H"]?.toDouble() ?: 0.0,
                     )
                 )
             }

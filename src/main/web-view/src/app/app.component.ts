@@ -388,12 +388,14 @@ export class AppComponent {
                 const pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
                 const page = pageSizes[pageNumber - 1]
 
-                // console.log(`scrollLeft: ${viewer.scrollLeft}, scrollY: ${viewer.scrollTop}`)
+                // Get PDF view resolution, assuming that currentScale is relative to a
+                // fixed browser resolution of 96 dpi
+                const res = 72 / (this.delayedScaleValue * 96)
                 this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
                     {
                         "page": pageNumber,
-                        "x": (x - page.left) / this.delayedScaleValue,
-                        "y": (y - page.top) / this.delayedScaleValue
+                        "x": Math.round(res * (x - page.left)),
+                        "y": Math.round(res * (y - page.top))
                     }
                 );
             }
@@ -405,14 +407,16 @@ export class AppComponent {
         let context = AppComponent.getDrawingContext(document, this.forwardSearchData.page)
 
         // Clear the previous rectangle.
+        // TODO doesn't work?
         context.getImageData(0, 0, context.canvas.width, context.canvas.height)
+        const res = 72 / (this.delayedScaleValue * 96)
 
         context.strokeStyle = "red"
         context.strokeRect(
-            this.forwardSearchData.x * this.delayedScaleValue,
-            this.forwardSearchData.y * this.delayedScaleValue,
-            this.forwardSearchData.width * this.delayedScaleValue,
-            this.forwardSearchData.height * this.delayedScaleValue
+            this.forwardSearchData.x / res,
+            this.forwardSearchData.y / res - this.forwardSearchData.height / res,
+            this.forwardSearchData.width / res,
+            this.forwardSearchData.height / res
         )
     }
 
