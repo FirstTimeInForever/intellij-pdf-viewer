@@ -52,15 +52,36 @@ export class AppComponent {
     private isSynctexAvailable: boolean;
     private forwardSearchData: ForwardSearchData;
 
-    private getPageSizes() {
+    /**
+     * Array of all current drawing canvasses, so we can remove them when drawing something new.
+     * @private
+     */
+    private drawingCanvases: HTMLElement[];
+
+    /**
+     * Reset the drawing canvases, i.e., remove all the canvases from the document and set the list of drawing canvases
+     * to be the empty list.
+     * @private
+     */
+    private resetCanvas() {
+        if (this.drawingCanvases != undefined) {
+            this.drawingCanvases.forEach(c => c.remove())
+        }
+        this.drawingCanvases = []
+    }
+
+    /**
+     * Get the coordinates of the top-left corner of each page. These coordinates are later used to figure out
+     * to which page a coordinate belongs.
+     * @private
+     */
+    private getPageCoordinates() {
         if (this.viewer == null) return null
         else {
             return this.viewer.PDFViewerApplication.pdfViewer._pages.map(p =>
                 ({
                     left: p.div.offsetLeft,
                     top: p.div.offsetTop,
-                    width: p.div.clientWidth,
-                    height: p.div.clientHeight
                 })
             )
         }
@@ -352,6 +373,7 @@ export class AppComponent {
         this.buildIgnoreClickTargetsList();
         this.addCtrlClickListener(targetDocument);
         targetDocument.addEventListener("click", this.focusEventHandler);
+        targetDocument.addEventListener("click", () => this.resetCanvas())
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
         if (this.pagesCount) {
@@ -360,6 +382,7 @@ export class AppComponent {
                 count: this.pagesCount
             });
         }
+        // TODO check if synctex available?
         if (this.forwardSearchData == undefined) {
             this.messageSenderService.triggerEvent(TriggerableEvents.ASK_FORWARD_SEARCH_DATA, {})
         }
@@ -370,27 +393,23 @@ export class AppComponent {
 
     private ctrlDown: boolean = false;
     private addCtrlClickListener(document: Document) {
-        document.addEventListener("keydown", event => {
-            this.ctrlDown = event.ctrlKey
-            console.log("ctrl down")
-        });
-        document.addEventListener("keyup", event => { this.ctrlDown = event.ctrlKey });
+        document.addEventListener("keydown", event => this.ctrlDown = event.ctrlKey);
+        document.addEventListener("keyup", event => this.ctrlDown = event.ctrlKey);
         document.addEventListener("click", event => {
-            console.log(this.isSynctexAvailable)
-            console.log("ctrl down: " + this.ctrlDown)
             if (this.ctrlDown && this.isSynctexAvailable) {
-                // console.log(event.view)
                 const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll
                 const x = event.pageX + scroll.lastX
                 const y = event.pageY + scroll.lastY
+
                 // Get the page number and the (x,y) coordinate on that page.
-                const pageSizes = this.getPageSizes();
+                const pageSizes = this.getPageCoordinates();
                 const pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
                 const page = pageSizes[pageNumber - 1]
 
                 // Get PDF view resolution, assuming that currentScale is relative to a
-                // fixed browser resolution of 96 dpi
+                // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
                 const res = 72 / (this.delayedScaleValue * 96)
+                // Send a message to IntelliJ to sync to the tex file.
                 this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
                     {
                         "page": pageNumber,
@@ -402,15 +421,27 @@ export class AppComponent {
         });
     }
 
+    /**
+     * Draw a box around the forward search result that is stored in this.forwardSearchData.
+     * @private
+     */
     private executeForwardSearch(document: Document) {
-        console.log(this.forwardSearchData)
-        let context = AppComponent.getDrawingContext(document, this.forwardSearchData.page)
-
-        // Clear the previous rectangle.
-        // TODO doesn't work?
-        context.getImageData(0, 0, context.canvas.width, context.canvas.height)
+        this.resetCanvas()
         const res = 72 / (this.delayedScaleValue * 96)
+        // Create a new canvas to draw on, on top of the already existing canvas.
+        let canvas = AppComponent.getCanvas(document, this.forwardSearchData.page)
+        const drawingCanvas = document.createElement("canvas")
+        drawingCanvas.height = canvas.height
+        drawingCanvas.width = canvas.width
+        drawingCanvas.style.position = "absolute"
+        drawingCanvas.style.top = "0px"
+        drawingCanvas.style.left = "0px"
+        canvas.parentElement.appendChild(drawingCanvas)
 
+        // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
+        this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas)
+
+        const context = drawingCanvas.getContext("2d")
         context.strokeStyle = "red"
         context.strokeRect(
             this.forwardSearchData.x / res,
@@ -420,7 +451,11 @@ export class AppComponent {
         )
     }
 
-    private static getDrawingContext(document: Document, page: number) {
+    /**
+     * Get the canvas for a given page.
+     * @private
+     */
+    private static getCanvas(document: Document, page: number) {
         return document.body
             .getElementsByTagName("app-root").item(0)
             .getElementsByTagName("ng2-pdfjs-viewer").item(0)
@@ -431,7 +466,6 @@ export class AppComponent {
             .item(page - 1)
             .getElementsByClassName("canvasWrapper").item(0)
             .getElementsByTagName("canvas").item(0)
-            .getContext("2d")
     }
 
     private ensureDocumentPropertiesReady() {
