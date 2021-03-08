@@ -34,12 +34,16 @@ dependencies {
 }
 
 intellij {
-    version = "IC-2020.3"
+    version = "211.5787.15-EAP-SNAPSHOT"
 
     pluginsRepo {
         custom("http://127.0.0.1:8000")
     }
     setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.3")
+
+    // Keep an open until build, to make sure the plugin can be installed in newer versions
+    sameSinceUntilBuild = true
+    updateSinceUntilBuild = false
 }
 
 tasks {
@@ -58,7 +62,6 @@ tasks {
     }
     withType<PatchPluginXmlTask>() {
         sinceBuild(pluginSinceVersion)
-        untilBuild(pluginUntilVersion)
         changeNotes(closure {
             changelog.getLatest().withHeader(false).toHTML()
         })
