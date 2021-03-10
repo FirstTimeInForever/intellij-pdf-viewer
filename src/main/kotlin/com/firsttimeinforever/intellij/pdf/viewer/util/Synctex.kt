@@ -12,3 +12,6 @@ fun VirtualFile.isSynctexFileAvailable(): Boolean = parent.children
     .any { file ->
         file.name.takeWhile { it != '.' } == name.takeWhile { it != '.' }
     }
+
+fun isSynctexInstalled(): Boolean =
+    "synctex version".runCommand()?.contains("This is SyncTeX command line utility") == true

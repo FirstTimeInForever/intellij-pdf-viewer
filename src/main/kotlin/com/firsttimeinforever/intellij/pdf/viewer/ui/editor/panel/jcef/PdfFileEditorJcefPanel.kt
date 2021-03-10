@@ -11,6 +11,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Su
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
 import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexFileAvailable
+import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexInstalled
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -333,7 +334,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
                 setScale(currentScaleValue)
-                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexFileAvailable())
+                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexFileAvailable() && isSynctexInstalled())
             }
         }, browserPanel.cefBrowser)
     }
