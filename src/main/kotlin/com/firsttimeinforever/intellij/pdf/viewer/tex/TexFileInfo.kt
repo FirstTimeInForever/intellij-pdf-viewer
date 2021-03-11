@@ -62,17 +62,19 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
          * @param data [SynctexInverseDataObject] that contains information that has to be passed on to SyncTeX.
          */
         fun fromSynctexInfoData(pdfFile: VirtualFile, data: SynctexInverseDataObject): TexFileInfo? {
-            val pdfDir = File(pdfFile.parent.path)
+            // Use presentableUrl instead of path to get a valid Windows path (with backslashes instead of forward slashes).
+            val pdfDir = File(pdfFile.parent.presentableUrl)
 
             val command = arrayOf(
-                "synctex", "edit", "-o", "${data.page}:${data.x}:${data.y}:${pdfFile.name}",
+                "synctex", "edit", "-o", "${data.page}:${data.x}:${data.y}:${pdfFile.presentableUrl}",
             )
             val synctexOutput = runCommand(*command, directory = pdfDir) ?: return null
+            println(synctexOutput)
             val texPath = INPUT_REGEX.find(synctexOutput)?.groups?.get("file")?.value ?: return null
             val line = LINE_REGEX.find(synctexOutput)?.groups?.get("line")?.value?.toInt() ?: 1
             val column = COLUMN_REGEX.find(synctexOutput)?.groups?.get("col")?.value?.toInt() ?: 1
 
-            val texFile = LocalFileSystem.getInstance().findFileByPath(texPath) ?: return null
+            val texFile = LocalFileSystem.getInstance().findFileByPath(texPath.trim()) ?: return null
             return TexFileInfo(texFile, line, column)
         }
     }

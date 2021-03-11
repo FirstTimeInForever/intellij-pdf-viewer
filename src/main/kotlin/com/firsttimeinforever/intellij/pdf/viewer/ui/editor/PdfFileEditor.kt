@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
-class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): FileEditor {
+class PdfFileEditor(private val project: Project, private val virtualFile: VirtualFile): FileEditor {
     val viewPanel: PdfFileEditorPanel =
         PdfEditorPanelProvider.createPanel(project, virtualFile)
 
@@ -76,6 +76,7 @@ class PdfFileEditor(private val project: Project, virtualFile: VirtualFile): Fil
     override fun removePropertyChangeListener(listener: PropertyChangeListener) = Unit
 
     override fun dispose() = Unit
+    override fun getFile() = virtualFile
 
     companion object {
         private const val NAME = "Pdf Viewer File Editor"
