@@ -76,7 +76,6 @@ class PdfFileEditor(private val project: Project, private val virtualFile: Virtu
     override fun removePropertyChangeListener(listener: PropertyChangeListener) = Unit
 
     override fun dispose() = Unit
-    override fun getFile() = virtualFile
 
     override fun getFile() = virtualFile
 
