@@ -66,7 +66,7 @@ class TexPdfViewer : ExternalPdfViewer {
                     editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor
                 }
 
-                val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.name}", "-o", file.name)
+                val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.path}", "-o", file.path)
                 val synctexOutput = runCommand(*command, directory = File(file.parent.path)) ?: return@invokeLater
                 val values: Map<String?, String?> = NUMBER_REGEX.findAll(synctexOutput)
                     .associate { it.groups["id"]?.value to it.groups["value"]?.value }

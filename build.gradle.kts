@@ -8,7 +8,7 @@ plugins {
     id("java")
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "0.7.2"
     id("org.jetbrains.changelog") version "0.6.2"
     id("com.github.node-gradle.node") version "2.2.3"
     id("com.github.ben-manes.versions") version "0.36.0"
@@ -34,12 +34,16 @@ dependencies {
 }
 
 intellij {
-    version = "IC-2020.3"
+    version = "211.6432.7-EAP-SNAPSHOT"
 
     pluginsRepo {
         custom("http://127.0.0.1:8000")
     }
-    setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.3")
+    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.3.1")
+
+    // Keep an open until build, to make sure the plugin can be installed in newer versions
+    sameSinceUntilBuild = true
+    updateSinceUntilBuild = false
 }
 
 tasks {
@@ -58,7 +62,6 @@ tasks {
     }
     withType<PatchPluginXmlTask>() {
         sinceBuild(pluginSinceVersion)
-        untilBuild(pluginUntilVersion)
         changeNotes(closure {
             changelog.getLatest().withHeader(false).toHTML()
         })

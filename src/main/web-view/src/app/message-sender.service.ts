@@ -42,7 +42,7 @@ export class MessageSenderService {
         if (!this.subscriptions[eventName]) {
             return;
         }
-        console.log(`Triggereing event: ${eventName} with: ${JSON.stringify(data)}`);
+        console.log(`Triggering event: ${eventName} with: ${JSON.stringify(data)}`);
         console.log(data);
         this.subscriptions[eventName].forEach(callback => {
             try {
