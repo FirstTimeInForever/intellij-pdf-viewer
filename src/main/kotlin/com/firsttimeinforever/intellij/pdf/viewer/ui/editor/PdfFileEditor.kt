@@ -78,6 +78,8 @@ class PdfFileEditor(private val project: Project, private val virtualFile: Virtu
     override fun dispose() = Unit
     override fun getFile() = virtualFile
 
+    override fun getFile() = virtualFile
+
     companion object {
         private const val NAME = "Pdf Viewer File Editor"
     }
