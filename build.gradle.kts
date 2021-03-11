@@ -39,7 +39,7 @@ intellij {
     pluginsRepo {
         custom("http://127.0.0.1:8000")
     }
-    setPlugins("nl.rubensten.texifyidea:0.7.4-alpha.3")
+    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.3.1")
 
     // Keep an open until build, to make sure the plugin can be installed in newer versions
     sameSinceUntilBuild = true
