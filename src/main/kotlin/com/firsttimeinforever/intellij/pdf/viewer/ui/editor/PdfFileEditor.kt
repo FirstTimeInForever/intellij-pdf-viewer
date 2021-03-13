@@ -11,7 +11,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.JComponent
 
-class PdfFileEditor(private val project: Project, virtualFile: VirtualFile) : FileEditorBase(), DumbAware {
+class PdfFileEditor(private val project: Project, private val virtualFile: VirtualFile) : FileEditorBase(), DumbAware {
     val viewPanel: PdfFileEditorPanel<*> = PdfEditorPanelProvider.createPanel(project, virtualFile)
 
     init {
