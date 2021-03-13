@@ -1,13 +1,13 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.common
 
+import com.firsttimeinforever.intellij.pdf.viewer.actions.ActionUtils.findPdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorAction
-import com.firsttimeinforever.intellij.pdf.viewer.actions.findPdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.PdfFileEditorJcefPanel
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class FindPreviousInDocumentAction: PdfEditorAction() {
     override fun actionPerformed(event: AnActionEvent) {
-        findPdfFileEditor(event)?.findPrevious()
+        findPdfFileEditor(event)?.viewPanel?.findPrevious()
     }
 
     override fun update(event: AnActionEvent) {

@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.widgets
 
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
@@ -8,8 +8,6 @@ import com.intellij.openapi.project.ProjectManagerListener
 import com.intellij.openapi.wm.impl.status.widget.StatusBarWidgetsManager
 
 class StatusBarProjectManagerListener: ProjectManagerListener {
-    private val logger = logger<StatusBarProjectManagerListener>()
-
     override fun projectOpened(project: Project) {
         logger.debug("Registering new FileEditorManagerListener for newly opened project")
         project.messageBus.connect().subscribe(
@@ -25,5 +23,9 @@ class StatusBarProjectManagerListener: ProjectManagerListener {
                 }
             }
         )
+    }
+
+    companion object {
+        private val logger = thisLogger()
     }
 }

@@ -3,9 +3,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorLeftToolbarActionGroup
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorRightToolbarActionGroup
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfEditorToolbarSearchActionGroup
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.ActionToolbarUtils.createToolbarForGroup
 import com.intellij.ide.ui.UISettings
 import com.intellij.ide.ui.UISettingsListener
-import com.intellij.openapi.Disposable
 import com.intellij.util.messages.MessageBus
 import java.awt.Component
 import java.awt.Dimension
@@ -13,9 +13,10 @@ import java.awt.FlowLayout
 import java.awt.GridLayout
 import javax.swing.JPanel
 
-class ControlPanel(messageBus: MessageBus):
-    JPanel(), UISettingsListener, Disposable
-{
+class ControlPanel(
+    messageBus: MessageBus,
+    presentationModeController: PresentationModeController
+): JPanel(), UISettingsListener {
     private val leftToolbar =
         createToolbarForGroup<PdfEditorLeftToolbarActionGroup>("PdfEditorLeftToolbarActionGroup")
     private val searchToolbar =
@@ -25,8 +26,6 @@ class ControlPanel(messageBus: MessageBus):
 
     val searchTextField = SearchTextField()
     private val rightPanel = JPanel()
-
-    private val messageBusConnection = messageBus.connect()
 
     init {
         layout = GridLayout()
@@ -48,7 +47,17 @@ class ControlPanel(messageBus: MessageBus):
 
         rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
         add(rightPanel, Component.RIGHT_ALIGNMENT)
-        messageBusConnection.subscribe(UISettingsListener.TOPIC, this)
+        messageBus.connect().subscribe(UISettingsListener.TOPIC, this)
+        with(presentationModeController) {
+            addEnterListener {
+                presentationModeEnabled = true
+                false
+            }
+            addExitListener {
+                presentationModeEnabled = false
+                false
+            }
+        }
     }
 
     private var presentationModeState = false
@@ -67,9 +76,5 @@ class ControlPanel(messageBus: MessageBus):
         if (presentationModeEnabled) {
             searchTextField.isEnabled = false
         }
-    }
-
-    override fun dispose() {
-        messageBusConnection.disconnect()
     }
 }

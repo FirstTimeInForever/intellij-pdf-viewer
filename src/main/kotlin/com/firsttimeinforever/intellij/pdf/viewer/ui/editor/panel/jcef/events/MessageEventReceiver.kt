@@ -1,13 +1,12 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefJSQuery
 
 class MessageEventReceiver private constructor(private val browser: JBCefBrowser): Disposable {
     val subscriptions = mutableMapOf<SubscribableEventType, JBCefJSQuery>()
-    private val logger = logger<MessageEventReceiver>()
 
     fun addHandlerWithResponse(event: SubscribableEventType, handler: (String) -> JBCefJSQuery.Response?) {
         check(subscriptions.contains(event))
@@ -37,7 +36,13 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
         """.trimIndent(), null, 0)
     }
 
+    override fun dispose() {
+        subscriptions.values.forEach { it.dispose() }
+    }
+
     companion object {
+        private val logger = thisLogger()
+
         fun fromList(browser: JBCefBrowser, events: List<SubscribableEventType>): MessageEventReceiver {
             val manager = MessageEventReceiver(browser)
             events.forEach {
@@ -45,9 +50,5 @@ class MessageEventReceiver private constructor(private val browser: JBCefBrowser
             }
             return manager
         }
-    }
-
-    override fun dispose() {
-        subscriptions.values.forEach { it.dispose() }
     }
 }

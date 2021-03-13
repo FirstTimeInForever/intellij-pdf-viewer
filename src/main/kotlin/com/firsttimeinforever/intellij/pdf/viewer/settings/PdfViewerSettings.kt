@@ -1,12 +1,14 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager.getService
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.util.registry.Registry
+import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil.copyBean
-import com.intellij.util.xmlb.annotations.Transient
 
 @State(name = "PdfViewerSettings", storages = [(Storage("pdf_viewer.xml"))])
 class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
@@ -17,23 +19,10 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     var enableDocumentAutoReload = true
     var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
     var invertDocumentColors = false
+        get() = field && Registry.`is`("pdf.viewer.enableExperimentalFeatures")
 
-    @Transient
-    private val changeListenersHolder = mutableListOf<(PdfViewerSettings) -> Unit>()
-
-    val changeListeners
-        get() = changeListenersHolder.toList()
-
-    fun addChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
-        changeListenersHolder.add(listener)
-    }
-
-    fun removeChangeListener(listener: (settings: PdfViewerSettings) -> Unit) {
-        changeListenersHolder.remove(listener)
-    }
-
-    fun callChangeListeners() {
-        changeListeners.forEach { it(this) }
+    fun notifyListeners() {
+        ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).settingsChanged(this)
     }
 
     override fun getState() = this
@@ -43,6 +32,8 @@ class PdfViewerSettings: PersistentStateComponent<PdfViewerSettings> {
     }
 
     companion object {
+        val TOPIC = Topic(PdfViewerSettingsListener::class.java)
+
         val instance: PdfViewerSettings
             get() = getService(PdfViewerSettings::class.java)
 

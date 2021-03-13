@@ -67,14 +67,14 @@
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"
                     text="Increase Current Document Scale" icon="AllIcons.General.Add"
                     description="Increases document scale in current editor">
-                <keyboard-shortcut keymap="$default" first-keystroke="shift meta EQUALS"/>
+                <keyboard-shortcut keymap="$default" first-keystroke="shift control EQUALS"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"
                     text="Decrease Current Document Scale" icon="AllIcons.General.Remove"
                     description="Decreases document scale in current editor">
-                <keyboard-shortcut keymap="$default" first-keystroke="meta MINUS"/>
+                <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.PrintDocumentAction"
@@ -92,13 +92,13 @@
                     icon="AllIcons.Actions.FindForward"
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindNextInDocumentAction"
                     text="Find In Document">
-                <keyboard-shortcut keymap="$default" first-keystroke="meta F"/>
+                <keyboard-shortcut keymap="$default" first-keystroke="control F"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.FindPreviousInDocumentAction"
                     text="Find Previous In Document" icon="AllIcons.Actions.FindBackward">
-                <keyboard-shortcut keymap="$default" first-keystroke="shift meta F"/>
+                <keyboard-shortcut keymap="$default" first-keystroke="shift control F"/>
                 <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
             </action>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.ShowDocumentInfoAction"
@@ -124,8 +124,8 @@
                     class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"
                     text="Rotate Document Clockwise" description="Rotates document clockwise"
                     icon="/icons/actions/rotateRight.svg"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"
+            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"
                     text="Rotate Document Counterclockwise" description="Rotates document counterclockwise"
                     icon="/icons/actions/rotateLeft.svg"/>
             <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.OpenDevtoolsAction"
@@ -170,7 +170,7 @@
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.IncreaseDocumentScaleAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.common.DecreaseDocumentScaleAction"/>
             <separator/>
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterclockwiseAction"/>
+            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateCounterClockwiseAction"/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.RotateClockwiseAction"/>
             <separator/>
             <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.pdfjs.SpreadNonePagesAction"/>

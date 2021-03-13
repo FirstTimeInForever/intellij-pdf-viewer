@@ -7,27 +7,34 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
-abstract class PdfFileEditorPanel(
-    val virtualFile: VirtualFile
-): JPanel(), Disposable {
-    init {
-        layout = BorderLayout()
-    }
-
+abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFile): JPanel(BorderLayout()), Disposable {
     open fun reloadDocument() = Unit
-    open fun increaseScale() = Unit
-    open fun decreaseScale() = Unit
+
+    open fun increaseScale() = setScale(currentScaleValue * SCALE_MULTIPLIER)
+
+    open fun decreaseScale() = setScale(currentScaleValue / SCALE_MULTIPLIER)
+
     open fun setScale(value: Double) = Unit
+
     open fun nextPage() = Unit
+
     open fun previousPage() = Unit
+
     open fun findNext() = Unit
+
     open fun findPrevious() = Unit
     open fun setForwardSearchData(data: SynctexFowardDataObject) = Unit
 
     open var currentPageNumber: Int = 0
-    open var currentScaleValue: Double = 1.0
+    open val currentScaleValue: Double = 1.0
+
+    open val previewState: PreviewState? = null
+
+    open val properties: PdfEditorPanelPreviewProperties = defaultProperties
+
     open var currentForwardSearchData: SynctexFowardDataObject? = null
-    open val pagesCount: Int = 0
+
+    open fun updatePreviewState(state: PreviewState) = Unit
 
     protected val pageStateChangeListeners =
         mutableListOf<(DocumentPageState) -> Unit>()
@@ -42,7 +49,17 @@ abstract class PdfFileEditorPanel(
 
     fun pageStateChanged() {
         pageStateChangeListeners.forEach {
-            it(DocumentPageState(currentPageNumber, pagesCount))
+            it(DocumentPageState(currentPageNumber, properties.pagesCount))
+        }
+    }
+
+    override fun dispose() = Unit
+
+    companion object {
+        const val SCALE_MULTIPLIER = 1.1
+
+        private val defaultProperties = object: PdfEditorPanelPreviewProperties {
+            override val pagesCount: Int = 0
         }
     }
 }

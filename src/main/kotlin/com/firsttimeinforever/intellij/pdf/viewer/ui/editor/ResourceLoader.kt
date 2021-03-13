@@ -6,7 +6,7 @@ import java.io.FileNotFoundException
 object ResourceLoader {
     private val shouldFixPaths =
         System.getProperty("os.name").toLowerCase().contains("windows")
-    
+
     fun load(file: File): ByteArray {
         val targetPath = ensureCorrectFormedPath(file)
         return this::class.java.getResourceAsStream(targetPath).use {

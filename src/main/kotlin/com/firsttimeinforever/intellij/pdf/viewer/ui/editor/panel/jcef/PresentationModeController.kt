@@ -13,16 +13,14 @@ import javax.swing.FocusManager
 import javax.swing.JComponent
 import javax.swing.SwingUtilities
 
-typealias PresentationModeListenerType = (PresentationModeController) -> Boolean
-
 class PresentationModeController(
     private val panel: PdfFileEditorJcefPanel,
     private val browserComponent: JComponent,
     private val eventReceiver: MessageEventReceiver,
     private val eventSender: MessageEventSender
 ) {
-    private val enterListeners = mutableListOf<PresentationModeListenerType>()
-    private val exitListeners = mutableListOf<PresentationModeListenerType>()
+    private val enterListeners = mutableListOf<PresentationModeListener>()
+    private val exitListeners = mutableListOf<PresentationModeListener>()
 
     private var presentationModeActive = false
 
@@ -58,19 +56,19 @@ class PresentationModeController(
         }
     }
 
-    private fun invokeListeners(listeners: MutableList<PresentationModeListenerType>) {
-        val shouldBeRemoved = mutableListOf<PresentationModeListenerType>()
+    private fun invokeListeners(listeners: MutableList<PresentationModeListener>) {
+        val shouldBeRemoved = mutableListOf<PresentationModeListener>()
         for (listener in listeners) {
-            if (listener(this)) {
+            if (listener.presentationModeChanged(this)) {
                 shouldBeRemoved.add(listener)
             }
         }
         listeners.removeAll(shouldBeRemoved)
     }
 
-    fun addEnterListener(listener: PresentationModeListenerType) = enterListeners.add(listener)
+    fun addEnterListener(listener: PresentationModeListener) = enterListeners.add(listener)
 
-    fun addExitListener(listener: PresentationModeListenerType) = exitListeners.add(listener)
+    fun addExitListener(listener: PresentationModeListener) = exitListeners.add(listener)
 
     private fun clickInBrowserWindow() {
         val originalPosition = MouseInfo.getPointerInfo().location
@@ -78,7 +76,7 @@ class PresentationModeController(
         val location = browserComponent.locationOnScreen
         val xcenter = browserComponent.width / 2
         val ycenter = browserComponent.height / 2
-        with (Robot()) {
+        with(Robot()) {
             mouseMove(location.x + xcenter, location.y + ycenter)
             mousePress(InputEvent.BUTTON1_DOWN_MASK)
             mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
