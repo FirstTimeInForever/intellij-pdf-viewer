@@ -36,10 +36,7 @@ dependencies {
 intellij {
     version = "211.6432.7-EAP-SNAPSHOT"
 
-    pluginsRepo {
-        custom("http://127.0.0.1:8000")
-    }
-    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.3.2")
+    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.4@alpha")
 
     // Keep an open until build, to make sure the plugin can be installed in newer versions
     sameSinceUntilBuild = true
