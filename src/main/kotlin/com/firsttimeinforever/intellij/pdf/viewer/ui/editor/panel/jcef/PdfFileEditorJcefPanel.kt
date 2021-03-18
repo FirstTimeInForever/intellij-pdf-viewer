@@ -326,7 +326,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         }
 
         override fun after(events: MutableList<out VFileEvent>) {
-            if (enabled && events.any { it == virtualFile }) {
+            if (enabled && events.any { it.file == virtualFile }) {
                 logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
                 val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
                 browserPanel.loadURL(targetUrl.toExternalForm())
