@@ -7,6 +7,7 @@ import {MessageSenderService, TriggerableEvents} from "./message-sender.service"
 import {PresentationModeController} from "./PresentationModeController";
 import {SidebarController, SidebarViewMode} from "./SidebarController";
 import {style} from "@angular/animations";
+import {hasErrors} from "@angular/compiler-cli/ngcc/src/packages/transformer";
 
 // @ts-ignore
 const iframeCssOverrides = require("./iframe-overrides.less").default;
@@ -382,8 +383,7 @@ export class AppComponent {
                 count: this.pagesCount
             });
         }
-        // TODO check if synctex available?
-        if (this.forwardSearchData == undefined) {
+        if (this.forwardSearchData == undefined && this.isSynctexAvailable) {
             this.messageSenderService.triggerEvent(TriggerableEvents.ASK_FORWARD_SEARCH_DATA, {})
         }
         else {
@@ -396,6 +396,7 @@ export class AppComponent {
         document.addEventListener("keydown", event => this.ctrlDown = event.ctrlKey);
         document.addEventListener("keyup", event => this.ctrlDown = event.ctrlKey);
         document.addEventListener("click", event => {
+            // Ctrl + click -> Inverse search with SyncTeX.
             if (this.ctrlDown && this.isSynctexAvailable) {
                 const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll
                 const x = event.pageX + scroll.lastX
@@ -424,11 +425,15 @@ export class AppComponent {
 
     /**
      * Draw a box around the forward search result that is stored in this.forwardSearchData.
+     *
+     * We do NOT explicitly set the page data because then we cannot scroll to the rectangle if the page just changed.
+     * We request the canvas for the page we have to draw on and scroll to, and scroll to a dummy element on that canvas.
      * @private
      */
     private executeForwardSearch(document: Document) {
         this.resetCanvas()
         const res = 72 / (this.delayedScaleValue * 96)
+
         // Create a new canvas to draw on, on top of the already existing canvas.
         let canvas = AppComponent.getCanvas(document, this.forwardSearchData.page)
         const drawingCanvas = document.createElement("canvas")
@@ -442,14 +447,26 @@ export class AppComponent {
         // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
         this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas)
 
+        const rectangle = {
+            x: this.forwardSearchData.x / res,
+            y: this.forwardSearchData.y / res - this.forwardSearchData.height / res,
+            width: this.forwardSearchData.width / res,
+            height: this.forwardSearchData.height / res
+        }
+
         const context = drawingCanvas.getContext("2d")
         context.strokeStyle = "red"
-        context.strokeRect(
-            this.forwardSearchData.x / res,
-            this.forwardSearchData.y / res - this.forwardSearchData.height / res,
-            this.forwardSearchData.width / res,
-            this.forwardSearchData.height / res
-        )
+        context.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
+
+        // Create a dummy element so we can scroll to the rectangle we have just drawn.
+        const scrollDummy = document.createElement("scrollDummy")
+        scrollDummy.style.position = "absolute"
+        scrollDummy.style.left = `${rectangle.x}px`
+        scrollDummy.style.top = `${rectangle.y}px`
+        canvas.parentElement.appendChild(scrollDummy)
+        // Center the rectangle/forward search result in the pdf view.
+        scrollDummy.scrollIntoView({ block: "center", inline: "center" })
+        canvas.parentElement.removeChild(scrollDummy)
     }
 
     /**
@@ -532,7 +549,6 @@ export class AppComponent {
                 // starting up the application, or when opening a document without forward searching to it.
                 if (data == undefined) return
                 this.forwardSearchData = data
-                this.actualPage = data.page;
                 console.log("Forward search to page " + data.page);
                 this.executeForwardSearch(document)
             }
