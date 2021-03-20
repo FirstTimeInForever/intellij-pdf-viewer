@@ -430,15 +430,22 @@ export class AppComponent {
      * Draw a box around the forward search result that is stored in this.forwardSearchData.
      *
      * We do NOT explicitly set the page data because then we cannot scroll to the rectangle if the page just changed.
-     * We request the canvas for the page we have to draw on and scroll to, and scroll to a dummy element on that canvas.
+     * However, we first scroll to the page manually to make sure that the page has been loaded before we request the
+     * canvas to draw on.
      * @private
      */
     private executeForwardSearch(document: Document) {
         this.resetCanvas()
         const res = 72 / (this.delayedScaleValue * 96)
 
+        // Scroll to the page before requesting the canvas, to ensure that the page has been loaded.
+        const pages = Array.from(AppComponent.getPages(document))
+            .map(p => p as HTMLElement)
+        const page = pages[this.forwardSearchData.page - 1]
+        page.scrollIntoView()
+        const canvas = page.querySelector("canvas") as HTMLCanvasElement
+
         // Create a new canvas to draw on, on top of the already existing canvas.
-        let canvas = AppComponent.getCanvas(document, this.forwardSearchData.page)
         const drawingCanvas = document.createElement("canvas")
         drawingCanvas.height = canvas.height
         drawingCanvas.width = canvas.width
@@ -468,25 +475,18 @@ export class AppComponent {
         scrollDummy.style.top = `${rectangle.y}px`
         canvas.parentElement.appendChild(scrollDummy)
         // Center the rectangle/forward search result in the pdf view.
-        scrollDummy.scrollIntoView({ block: "center", inline: "center" })
+        scrollDummy.scrollIntoView({block: "center", inline: "center"})
         canvas.parentElement.removeChild(scrollDummy)
     }
 
     /**
-     * Get the canvas for a given page.
+     * Get all the page elements.
      * @private
      */
-    private static getCanvas(document: Document, page: number) {
-        return document.body
-            .getElementsByTagName("app-root").item(0)
-            .getElementsByTagName("ng2-pdfjs-viewer").item(0)
-            .getElementsByTagName("iframe").item(0)
+    private static getPages(document: Document): NodeList {
+        return (document.body.querySelector("iframe") as HTMLIFrameElement)
             .contentDocument
-            .getElementById("viewer")
-            .getElementsByClassName("page")
-            .item(page - 1)
-            .getElementsByClassName("canvasWrapper").item(0)
-            .getElementsByTagName("canvas").item(0)
+            .querySelectorAll(".page");
     }
 
     private ensureDocumentPropertiesReady() {
