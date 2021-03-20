@@ -22,7 +22,8 @@ import java.io.File
 class TexPdfViewer : ExternalPdfViewer {
 
     /**
-     * Remember the last compiled/viewed pdf file so we can forward search to it later.
+     * Remember the last compiled/viewed pdf file so we can forward search to it later. This implies that we always
+     * execute a forward search to the document that was compiled last.
      */
     private var pdfFilePath: String? = null
 
@@ -30,6 +31,9 @@ class TexPdfViewer : ExternalPdfViewer {
 
     override val name: String = displayName.toUpperCase().replace(" ", "-")
 
+    /**
+     * When this plugin is installed, the PDF viewer plugin is always available.
+     */
     override fun isAvailable(): Boolean = true
 
     override fun forwardSearch(
@@ -40,17 +44,25 @@ class TexPdfViewer : ExternalPdfViewer {
         focusAllowed: Boolean
     ) {
         if (!isSynctexInstalled()) {
-            Notifications.Bus.notify(Notification(
+            Notification(
                 "LaTeX",
                 "SyncTeX not installed",
                 "Forward search and inverse search need the synctex command line tool to be installed.",
                 NotificationType.WARNING
-            ), project)
+            ).notify(project)
             return
         }
 
         if (pdfPath != null) pdfFilePath = pdfPath
-        if (pdfFilePath != null) {
+        if (pdfFilePath == null) {
+            Notification(
+                "LaTeX",
+                "Please compile before using forward search",
+                "",
+                NotificationType.WARNING
+            ).notify(project)
+        }
+        else {
             val file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pdfFilePath!!) ?: return
             val texFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(sourceFilePath) ?: return
             val pdfEditor = OpenFileDescriptor(project, file)
@@ -59,10 +71,10 @@ class TexPdfViewer : ExternalPdfViewer {
             invokeLater {
                 val jcefEditor = if (fileEditorManager.isFileOpen(file)) {
                     val editor = fileEditorManager.getSelectedEditor(file)
-                    pdfEditor.navigate(true)
+                    pdfEditor.navigate(false)
                     editor as PdfFileEditor
                 } else {
-                    val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor)
+                    val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
                     editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor
                 }
 

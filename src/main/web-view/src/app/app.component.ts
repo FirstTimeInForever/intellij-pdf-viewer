@@ -5,9 +5,7 @@ import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
 import {MessageReceiverService, SubscriptableEvents} from "./message-receiver.service";
 import {MessageSenderService, TriggerableEvents} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
-import {SidebarController, SidebarViewMode} from "./SidebarController";
-import {style} from "@angular/animations";
-import {hasErrors} from "@angular/compiler-cli/ngcc/src/packages/transformer";
+import {SidebarController} from "./SidebarController";
 
 // @ts-ignore
 const iframeCssOverrides = require("./iframe-overrides.less").default;
@@ -72,8 +70,7 @@ export class AppComponent {
     }
 
     /**
-     * Get the coordinates of the top-left corner of each page. These coordinates are later used to figure out
-     * to which page a coordinate belongs.
+     * Get the coordinates of the top-left corner of each page.
      * @private
      */
     private getPageCoordinates() {
@@ -402,12 +399,17 @@ export class AppComponent {
                 const x = event.pageX + scroll.lastX
                 const y = event.pageY + scroll.lastY
 
-                // Get the page number and the (x,y) coordinate on that page.
+                // Get the page number.
                 const pageSizes = this.getPageCoordinates();
-                let pageNumber = pageSizes.findIndex(p => !(p.top < y && p.left < x))
-                if (pageNumber == -1) pageNumber = pageSizes.length
-
+                let pageNumber = pageSizes.slice().reverse().findIndex(p => (p.top < y && p.left < x))
+                if (pageNumber == -1) {
+                    pageNumber = pageSizes.length
+                }
+                else {
+                    pageNumber = pageSizes.length - pageNumber
+                }
                 const page = pageSizes[pageNumber - 1]
+
                 // Get PDF view resolution, assuming that currentScale is relative to a
                 // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
                 const res = 72 / (this.delayedScaleValue * 96)
@@ -415,6 +417,7 @@ export class AppComponent {
                 this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
                     {
                         "page": pageNumber,
+                        // Transform the clicked (x, y) coordinate to a (x, y) coordinate on this page.
                         "x": Math.round(res * (x - page.left)),
                         "y": Math.round(res * (y - page.top))
                     }

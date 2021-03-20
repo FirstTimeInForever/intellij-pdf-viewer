@@ -3,6 +3,8 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.o
 import kotlinx.serialization.Serializable
 
 /**
+ * The information in this class comes from the PDF viewer and is passed to SyncTeX to obtain the corresponding (tex)
+ * source file and column number.
  *
  * @property page The page of the pdf file.
  * @property x The x coordinate in the pdf file.
@@ -15,6 +17,11 @@ data class SynctexInverseDataObject(
     val y: Int
 )
 
+/**
+ * The information in this object comes from SyncTeX and is passed to the PDF viewer to show the rectangle.
+ *
+ * @property page The
+ */
 @Serializable
 data class SynctexFowardDataObject(
     val page: Int,
