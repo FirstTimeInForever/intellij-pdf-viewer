@@ -1,0 +1,15 @@
+@import url(sidebar-triangles.css);
+
+#findbar, #secondaryToolbar, #toolbarContainer, #toolbarSidebar {
+    display: none;
+}
+
+#sidebarContainer {
+    border-top: none;
+    display: none;
+}
+
+#sidebarContainer, #sidebarContent, #viewerContainer {
+    top: 0;
+}
+

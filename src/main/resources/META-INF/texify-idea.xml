@@ -1,5 +1,0 @@
-<idea-plugin>
-    <extensions defaultExtensionNs="nl.rubensten.texifyidea">
-        <pdfViewer implementation="com.firsttimeinforever.intellij.pdf.viewer.tex.TexPdfViewer"/>
-    </extensions>
-</idea-plugin>
