@@ -388,41 +388,40 @@ export class AppComponent {
         }
     }
 
-    private ctrlDown: boolean = false;
     private addCtrlClickListener(document: Document) {
-        document.addEventListener("keydown", event => this.ctrlDown = event.ctrlKey);
-        document.addEventListener("keyup", event => this.ctrlDown = event.ctrlKey);
         document.addEventListener("click", event => {
-            // Ctrl + click -> Inverse search with SyncTeX.
-            if (this.ctrlDown && this.isSynctexAvailable) {
-                const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll
-                const x = event.pageX + scroll.lastX
-                const y = event.pageY + scroll.lastY
-
-                // Get the page number.
-                const pageSizes = this.getPageCoordinates();
-                let pageNumber = pageSizes.slice().reverse().findIndex(p => (p.top < y && p.left < x))
-                if (pageNumber == -1) {
-                    pageNumber = pageSizes.length
-                }
-                else {
-                    pageNumber = pageSizes.length - pageNumber
-                }
-                const page = pageSizes[pageNumber - 1]
-
-                // Get PDF view resolution, assuming that currentScale is relative to a
-                // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
-                const res = 72 / (this.delayedScaleValue * 96)
-                // Send a message to IntelliJ to sync to the tex file.
-                this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR,
-                    {
-                        "page": pageNumber,
-                        // Transform the clicked (x, y) coordinate to a (x, y) coordinate on this page.
-                        "x": Math.round(res * (x - page.left)),
-                        "y": Math.round(res * (y - page.top))
-                    }
-                );
+            // Ctrl + click (or Meta + click) -> Inverse search with SyncTeX.
+            if (!((event.ctrlKey && !AppComponent.isMacos()) || (event.metaKey && AppComponent.isMacos()))) {
+                return;
             }
+            if (!this.isSynctexAvailable) {
+                return;
+            }
+            const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll;
+            const x = event.pageX + scroll.lastX;
+            const y = event.pageY + scroll.lastY;
+
+            // Get the page number.
+            const pageSizes = this.getPageCoordinates();
+            let pageNumber = pageSizes.slice().reverse().findIndex(p => (p.top < y && p.left < x));
+            if (pageNumber == -1) {
+                pageNumber = pageSizes.length;
+            }
+            else {
+                pageNumber = pageSizes.length - pageNumber;
+            }
+            const page = pageSizes[pageNumber - 1];
+
+            // Get PDF view resolution, assuming that currentScale is relative to a
+            // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
+            const res = 72 / (this.delayedScaleValue * 96);
+            // Send a message to IntelliJ to sync to the tex file.
+            this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR, {
+                page: pageNumber,
+                // Transform the clicked (x, y) coordinate to a (x, y) coordinate on this page.
+                x: Math.round(res * (x - page.left)),
+                y: Math.round(res * (y - page.top))
+            });
         });
     }
 
@@ -435,48 +434,47 @@ export class AppComponent {
      * @private
      */
     private executeForwardSearch(document: Document) {
-        this.resetCanvas()
-        const res = 72 / (this.delayedScaleValue * 96)
+        this.resetCanvas();
+        const res = 72 / (this.delayedScaleValue * 96);
 
         // Scroll to the page before requesting the canvas, to ensure that the page has been loaded.
-        const pages = Array.from(AppComponent.getPages(document))
-            .map(p => p as HTMLElement)
-        const page = pages[this.forwardSearchData.page - 1]
-        page.scrollIntoView()
-        const canvas = page.querySelector("canvas") as HTMLCanvasElement
+        const pages = Array.from(AppComponent.getPages(document)).map(p => p as HTMLElement);
+        const page = pages[this.forwardSearchData.page - 1];
+        page.scrollIntoView();
+        const canvas = page.querySelector("canvas") as HTMLCanvasElement;
 
         // Create a new canvas to draw on, on top of the already existing canvas.
-        const drawingCanvas = document.createElement("canvas")
-        drawingCanvas.height = canvas.height
-        drawingCanvas.width = canvas.width
-        drawingCanvas.style.position = "absolute"
-        drawingCanvas.style.top = "0px"
-        drawingCanvas.style.left = "0px"
-        canvas.parentElement.appendChild(drawingCanvas)
+        const drawingCanvas = document.createElement("canvas");
+        drawingCanvas.height = canvas.height;
+        drawingCanvas.width = canvas.width;
+        drawingCanvas.style.position = "absolute";
+        drawingCanvas.style.top = "0px";
+        drawingCanvas.style.left = "0px";
+        canvas.parentElement.appendChild(drawingCanvas);
 
         // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
-        this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas)
+        this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas);
 
         const rectangle = {
             x: this.forwardSearchData.x / res,
             y: this.forwardSearchData.y / res - this.forwardSearchData.height / res,
             width: this.forwardSearchData.width / res,
             height: this.forwardSearchData.height / res
-        }
+        };
 
-        const context = drawingCanvas.getContext("2d")
-        context.strokeStyle = "red"
-        context.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
+        const context = drawingCanvas.getContext("2d");
+        context.strokeStyle = "red";
+        context.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 
         // Create a dummy element so we can scroll to the rectangle we have just drawn.
-        const scrollDummy = document.createElement("scrollDummy")
-        scrollDummy.style.position = "absolute"
-        scrollDummy.style.left = `${rectangle.x}px`
-        scrollDummy.style.top = `${rectangle.y}px`
-        canvas.parentElement.appendChild(scrollDummy)
+        const scrollDummy = document.createElement("scrollDummy");
+        scrollDummy.style.position = "absolute";
+        scrollDummy.style.left = `${rectangle.x}px`;
+        scrollDummy.style.top = `${rectangle.y}px`;
+        canvas.parentElement.appendChild(scrollDummy);
         // Center the rectangle/forward search result in the pdf view.
-        scrollDummy.scrollIntoView({block: "center", inline: "center"})
-        canvas.parentElement.removeChild(scrollDummy)
+        scrollDummy.scrollIntoView({block: "center", inline: "center"});
+        canvas.parentElement.removeChild(scrollDummy);
     }
 
     /**
@@ -570,5 +568,9 @@ export class AppComponent {
         this.messageReceiverService.subscribe(event, (data: any) => {
             callback.apply(this, data);
         });
+    }
+
+    private static isMacos(): boolean {
+        return navigator.platform.toLowerCase().indexOf("mac") != -1;
     }
 }
