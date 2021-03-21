@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.DocumentPageState
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexFowardDataObject
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.vfs.VirtualFile
 import java.awt.BorderLayout
@@ -22,6 +23,7 @@ abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFil
     open fun findNext() = Unit
 
     open fun findPrevious() = Unit
+    open fun setForwardSearchData(data: SynctexFowardDataObject) = Unit
 
     open var currentPageNumber: Int = 0
     open val currentScaleValue: Double = 1.0
@@ -29,6 +31,8 @@ abstract class PdfFileEditorPanel<PreviewState: Any>(val virtualFile: VirtualFil
     open val previewState: PreviewState? = null
 
     open val properties: PdfEditorPanelPreviewProperties = defaultProperties
+
+    open var currentForwardSearchData: SynctexFowardDataObject? = null
 
     open fun updatePreviewState(state: PreviewState) = Unit
 

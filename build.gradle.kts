@@ -1,13 +1,14 @@
-import org.jetbrains.intellij.tasks.*
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.moowork.gradle.node.npm.*
+import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.changelog.closure
+import org.jetbrains.intellij.tasks.PatchPluginXmlTask
+import org.jetbrains.intellij.tasks.RunIdeTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("java")
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "0.7.2"
     id("org.jetbrains.changelog") version "0.6.2"
     id("com.github.node-gradle.node") version "2.2.3"
     id("com.github.ben-manes.versions") version "0.36.0"
@@ -33,7 +34,13 @@ dependencies {
 }
 
 intellij {
-    version = "IC-2020.3"
+    version = "211.6432.7-EAP-SNAPSHOT"
+
+    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.4@alpha")
+
+    // Keep an open until build, to make sure the plugin can be installed in newer versions
+    sameSinceUntilBuild = true
+    updateSinceUntilBuild = false
 }
 
 tasks {
@@ -52,7 +59,6 @@ tasks {
     }
     withType<PatchPluginXmlTask>() {
         sinceBuild(pluginSinceVersion)
-        untilBuild(pluginUntilVersion)
         changeNotes(closure {
             changelog.getLatest().withHeader(false).toHTML()
         })

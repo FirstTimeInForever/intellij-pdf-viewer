@@ -16,7 +16,9 @@ export enum TriggerableEvents {
     DOCUMENT_LOAD_ERROR = "documentLoadError",
     UNHANDLED_ERROR = "unhandledError",
     SIDEBAR_VIEW_STATE_CHANGED = "sidebarViewStateChanged",
-    SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged"
+    SIDEBAR_AVAILABLE_VIEWS_CHANGED = "sidebarAvailableViewsChanged",
+    SYNC_EDITOR = "syncEditor",
+    ASK_FORWARD_SEARCH_DATA = "askForwardSearchData"
 }
 
 @Injectable({
@@ -40,7 +42,7 @@ export class MessageSenderService {
         if (!this.subscriptions[eventName]) {
             return;
         }
-        console.log(`Triggereing event: ${eventName} with: ${JSON.stringify(data)}`);
+        console.log(`Triggering event: ${eventName} with: ${JSON.stringify(data)}`);
         console.log(data);
         this.subscriptions[eventName].forEach(callback => {
             try {

@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
@@ -10,6 +11,8 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
+import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexFileAvailable
+import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexInstalled
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -96,6 +99,15 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
             addHandler(SubscribableEventType.FRAME_FOCUSED) {
                 grabFocus()
             }
+            addHandler(SubscribableEventType.SYNC_EDITOR) {
+                val result = jsonSerializer.decodeFromString<SynctexInverseDataObject>(it)
+                TexFileInfo.fromSynctexInfoData(this@PdfFileEditorJcefPanel.virtualFile, result)
+                    ?.syncEditor(project)
+            }
+            addHandler(SubscribableEventType.ASK_FORWARD_SEARCH_DATA) {
+                val data = jsonSerializer.encodeToJsonElement(currentForwardSearchData)
+                eventSender.triggerWith(TriggerableEventType.FORWARD_SEARCH, data)
+            }
             addHandler(SubscribableEventType.PAGES_COUNT) {
                 try {
                     val result = jsonSerializer.decodeFromString<PagesCountDataObject>(it)
@@ -178,6 +190,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         eventSender.triggerWith(TriggerableEventType.SET_SCALE, ScaleChangeDataObject(state.scale))
     }
 
+    override fun setForwardSearchData(data: SynctexFowardDataObject) {
+        currentForwardSearchData = data
+        eventSender.triggerWith(TriggerableEventType.FORWARD_SEARCH, data)
+    }
     override fun nextPage() = eventSender.trigger(TriggerableEventType.GOTO_NEXT_PAGE)
     override fun previousPage() = eventSender.trigger(TriggerableEventType.GOTO_PREVIOUS_PAGE)
 
@@ -251,6 +267,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
                 setScale(currentScaleValue)
+                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexFileAvailable() && isSynctexInstalled())
             }
         }, browserPanel.cefBrowser)
     }
@@ -309,7 +326,7 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
         }
 
         override fun after(events: MutableList<out VFileEvent>) {
-            if (enabled && events.any { it == virtualFile }) {
+            if (enabled && events.any { it.file == virtualFile }) {
                 logger.debug("Target file (${virtualFile.path}) changed. Reloading page!")
                 val targetUrl = StaticServer.instance.getFilePreviewUrl(virtualFile.path)
                 browserPanel.loadURL(targetUrl.toExternalForm())

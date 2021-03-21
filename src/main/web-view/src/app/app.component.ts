@@ -5,8 +5,7 @@ import {PdfJsViewerComponent} from "ng2-pdfjs-viewer";
 import {MessageReceiverService, SubscriptableEvents} from "./message-receiver.service";
 import {MessageSenderService, TriggerableEvents} from "./message-sender.service";
 import {PresentationModeController} from "./PresentationModeController";
-import {SidebarController, SidebarViewMode} from "./SidebarController";
-import {style} from "@angular/animations";
+import {SidebarController} from "./SidebarController";
 
 // @ts-ignore
 const iframeCssOverrides = require("./iframe-overrides.less").default;
@@ -26,6 +25,14 @@ interface ThemeColors {
     documentColorInvertIntensity: number;
 }
 
+interface ForwardSearchData {
+    page: number,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+}
+
 @Component({
     selector: 'app-root',
     template: `<ng2-pdfjs-viewer #viewer viewerId="__uniqueViewerId" (onPageChange)="pageChanged($event)" 
@@ -41,6 +48,42 @@ export class AppComponent {
 
     private presentationModeController: PresentationModeController = null;
     private sidebarController: SidebarController = null;
+    private isSynctexAvailable: boolean;
+    private forwardSearchData: ForwardSearchData;
+
+    /**
+     * Array of all current drawing canvasses, so we can remove them when drawing something new.
+     * @private
+     */
+    private drawingCanvases: HTMLElement[];
+
+    /**
+     * Reset the drawing canvases, i.e., remove all the canvases from the document and set the list of drawing canvases
+     * to be the empty list.
+     * @private
+     */
+    private resetCanvas() {
+        if (this.drawingCanvases != undefined) {
+            this.drawingCanvases.forEach(c => c.remove())
+        }
+        this.drawingCanvases = []
+    }
+
+    /**
+     * Get the coordinates of the top-left corner of each page.
+     * @private
+     */
+    private getPageCoordinates() {
+        if (this.viewer == null) return null
+        else {
+            return this.viewer.PDFViewerApplication.pdfViewer._pages.map(p =>
+                ({
+                    left: p.div.offsetLeft,
+                    top: p.div.offsetTop,
+                })
+            )
+        }
+    }
 
     actualPage: number;
 
@@ -317,6 +360,7 @@ export class AppComponent {
             console.log(`Sending view state: ${JSON.stringify(state)}`);
             this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED, state);
         });
+
         // Send initial state
         this.messageSenderService.triggerEvent(TriggerableEvents.SIDEBAR_VIEW_STATE_CHANGED,
             this.sidebarController.getCurrentState());
@@ -325,7 +369,9 @@ export class AppComponent {
         this.createPresentationModeController();
         const targetDocument = this.viewer.PDFViewerApplication.pdfPresentationMode.container.ownerDocument;
         this.buildIgnoreClickTargetsList();
+        this.addCtrlClickListener(targetDocument);
         targetDocument.addEventListener("click", this.focusEventHandler);
+        targetDocument.addEventListener("click", () => this.resetCanvas())
         this.ensureDocumentPropertiesReady();
         this.pagesCount = this.viewer.PDFViewerApplication.pdfDocument.numPages;
         if (this.pagesCount) {
@@ -334,6 +380,111 @@ export class AppComponent {
                 count: this.pagesCount
             });
         }
+        if (this.forwardSearchData == undefined && this.isSynctexAvailable) {
+            this.messageSenderService.triggerEvent(TriggerableEvents.ASK_FORWARD_SEARCH_DATA, {})
+        }
+        else {
+            this.executeForwardSearch(document)
+        }
+    }
+
+    private addCtrlClickListener(document: Document) {
+        document.addEventListener("click", event => {
+            // Ctrl + click (or Meta + click) -> Inverse search with SyncTeX.
+            if (!((event.ctrlKey && !AppComponent.isMacos()) || (event.metaKey && AppComponent.isMacos()))) {
+                return;
+            }
+            if (!this.isSynctexAvailable) {
+                return;
+            }
+            const scroll = this.viewer.PDFViewerApplication.pdfViewer.scroll;
+            const x = event.pageX + scroll.lastX;
+            const y = event.pageY + scroll.lastY;
+
+            // Get the page number.
+            const pageSizes = this.getPageCoordinates();
+            let pageNumber = pageSizes.slice().reverse().findIndex(p => (p.top < y && p.left < x));
+            if (pageNumber == -1) {
+                pageNumber = pageSizes.length;
+            }
+            else {
+                pageNumber = pageSizes.length - pageNumber;
+            }
+            const page = pageSizes[pageNumber - 1];
+
+            // Get PDF view resolution, assuming that currentScale is relative to a
+            // fixed browser resolution of 96 dpi, and that synctex uses the big point (1/72th of an inch)
+            const res = 72 / (this.delayedScaleValue * 96);
+            // Send a message to IntelliJ to sync to the tex file.
+            this.messageSenderService.triggerEvent(TriggerableEvents.SYNC_EDITOR, {
+                page: pageNumber,
+                // Transform the clicked (x, y) coordinate to a (x, y) coordinate on this page.
+                x: Math.round(res * (x - page.left)),
+                y: Math.round(res * (y - page.top))
+            });
+        });
+    }
+
+    /**
+     * Draw a box around the forward search result that is stored in this.forwardSearchData.
+     *
+     * We do NOT explicitly set the page data because then we cannot scroll to the rectangle if the page just changed.
+     * However, we first scroll to the page manually to make sure that the page has been loaded before we request the
+     * canvas to draw on.
+     * @private
+     */
+    private executeForwardSearch(document: Document) {
+        this.resetCanvas();
+        const res = 72 / (this.delayedScaleValue * 96);
+
+        // Scroll to the page before requesting the canvas, to ensure that the page has been loaded.
+        const pages = Array.from(AppComponent.getPages(document)).map(p => p as HTMLElement);
+        const page = pages[this.forwardSearchData.page - 1];
+        page.scrollIntoView();
+        const canvas = page.querySelector("canvas") as HTMLCanvasElement;
+
+        // Create a new canvas to draw on, on top of the already existing canvas.
+        const drawingCanvas = document.createElement("canvas");
+        drawingCanvas.height = canvas.height;
+        drawingCanvas.width = canvas.width;
+        drawingCanvas.style.position = "absolute";
+        drawingCanvas.style.top = "0px";
+        drawingCanvas.style.left = "0px";
+        canvas.parentElement.appendChild(drawingCanvas);
+
+        // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
+        this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas);
+
+        const rectangle = {
+            x: this.forwardSearchData.x / res,
+            y: this.forwardSearchData.y / res - this.forwardSearchData.height / res,
+            width: this.forwardSearchData.width / res,
+            height: this.forwardSearchData.height / res
+        };
+
+        const context = drawingCanvas.getContext("2d");
+        context.strokeStyle = "red";
+        context.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+
+        // Create a dummy element so we can scroll to the rectangle we have just drawn.
+        const scrollDummy = document.createElement("scrollDummy");
+        scrollDummy.style.position = "absolute";
+        scrollDummy.style.left = `${rectangle.x}px`;
+        scrollDummy.style.top = `${rectangle.y}px`;
+        canvas.parentElement.appendChild(scrollDummy);
+        // Center the rectangle/forward search result in the pdf view.
+        scrollDummy.scrollIntoView({block: "center", inline: "center"});
+        canvas.parentElement.removeChild(scrollDummy);
+    }
+
+    /**
+     * Get all the page elements.
+     * @private
+     */
+    private static getPages(document: Document): NodeList {
+        return (document.body.querySelector("iframe") as HTMLIFrameElement)
+            .contentDocument
+            .querySelectorAll(".page");
     }
 
     private ensureDocumentPropertiesReady() {
@@ -389,6 +540,21 @@ export class AppComponent {
         this.messageReceiverService.subscribe(SubscriptableEvents.GET_DOCUMENT_INFO, () => {
             this.messageSenderService.triggerEvent(TriggerableEvents.DOCUMENT_INFO, this.collectDocumentInfo());
         });
+
+        this.messageReceiverService.subscribe(SubscriptableEvents.SET_SYNCTEX_AVAILABLE, (available: boolean) => {
+            this.isSynctexAvailable = available;
+        })
+        this.messageReceiverService.subscribe(SubscriptableEvents.
+            FORWARD_SEARCH, (data: ForwardSearchData) => {
+                // If the data is undefined, there is nothing to forward search. This can happen e.g. when
+                // starting up the application, or when opening a document without forward searching to it.
+                if (data == undefined) return
+                this.forwardSearchData = data
+                console.log("Forward search to page " + data.page);
+                this.executeForwardSearch(document)
+            }
+        )
+
         this.subscribeTo(SubscriptableEvents.TOGGLE_SCROLL_DIRECTION, this.toggleScrollDirection);
         this.subscribeTo(SubscriptableEvents.ROTATE_CLOCKWISE, this.rotateClockwise);
         this.subscribeTo(SubscriptableEvents.ROTATE_COUNTERCLOCKWISE, this.rotateCounterclockwise);
@@ -402,5 +568,9 @@ export class AppComponent {
         this.messageReceiverService.subscribe(event, (data: any) => {
             callback.apply(this, data);
         });
+    }
+
+    private static isMacos(): boolean {
+        return navigator.platform.toLowerCase().indexOf("mac") != -1;
     }
 }
