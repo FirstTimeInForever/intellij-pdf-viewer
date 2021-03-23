@@ -1,7 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexInverseDataObject
-import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
+import com.firsttimeinforever.intellij.pdf.viewer.util.CommandExecutionUtils.getCommandStdoutIfSuccessful
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -17,7 +18,6 @@ import java.io.File
  * aka inverse or backward search.
  */
 class TexFileInfo(val file: VirtualFile, private val line: Int, private val column: Int) {
-
     /**
      * Use SyncTeX to open the corresponding tex [file] at [line] and [column].
      *
@@ -64,16 +64,17 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
         fun fromSynctexInfoData(pdfFile: VirtualFile, data: SynctexInverseDataObject): TexFileInfo? {
             // Use presentableUrl instead of path to get a valid Windows path (with backslashes instead of forward slashes).
             val pdfDir = File(pdfFile.parent.presentableUrl)
-
-            val command = arrayOf(
-                "synctex", "edit", "-o", "${data.page}:${data.x}:${data.y}:${pdfFile.presentableUrl}",
-            )
-            val synctexOutput = runCommand(*command, directory = pdfDir) ?: return null
-            println(synctexOutput)
-            val texPath = INPUT_REGEX.find(synctexOutput)?.groups?.get("file")?.value ?: return null
-            val line = LINE_REGEX.find(synctexOutput)?.groups?.get("line")?.value?.toInt() ?: 1
-            val column = COLUMN_REGEX.find(synctexOutput)?.groups?.get("col")?.value?.toInt() ?: 1
-
+            val command = GeneralCommandLine(
+                "synctex",
+                "edit",
+                "-o",
+                "${data.page}:${data.x}:${data.y}:${pdfFile.presentableUrl}"
+            ).withWorkDirectory(pdfDir)
+            val output = getCommandStdoutIfSuccessful(command) ?: return null
+            println(output)
+            val texPath = INPUT_REGEX.find(output)?.groups?.get("file")?.value ?: return null
+            val line = LINE_REGEX.find(output)?.groups?.get("line")?.value?.toInt() ?: 1
+            val column = COLUMN_REGEX.find(output)?.groups?.get("col")?.value?.toInt() ?: 1
             val texFile = LocalFileSystem.getInstance().findFileByPath(texPath.trim()) ?: return null
             return TexFileInfo(texFile, line, column)
         }

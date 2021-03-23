@@ -2,8 +2,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
-import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexFileAvailable
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexInstalled
+import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.StaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.PdfFileEditorPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.MessageEventReceiver
@@ -11,8 +13,6 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.Me
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.SubscribableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.TriggerableEventType
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.*
-import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexFileAvailable
-import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexInstalled
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -28,13 +28,15 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogBuilder
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.vfs.*
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.encodeToJsonElement
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefLoadHandlerAdapter
@@ -267,7 +269,10 @@ class PdfFileEditorJcefPanel(project: Project, virtualFile: VirtualFile):
                 updatePageNumber(currentPageNumber)
                 setThemeColors()
                 setScale(currentScaleValue)
-                eventSender.triggerWith(TriggerableEventType.SET_SYNCTEX_AVAILABLE, virtualFile.isSynctexFileAvailable() && isSynctexInstalled())
+                eventSender.triggerWith(
+                    TriggerableEventType.SET_SYNCTEX_AVAILABLE,
+                    virtualFile.isSynctexFileAvailable() && isSynctexInstalled()
+                )
             }
         }, browserPanel.cefBrowser)
     }

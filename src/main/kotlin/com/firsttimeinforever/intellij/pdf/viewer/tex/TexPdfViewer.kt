@@ -2,12 +2,11 @@ package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.panel.jcef.events.objects.SynctexFowardDataObject
-import com.firsttimeinforever.intellij.pdf.viewer.util.isSynctexInstalled
-import com.firsttimeinforever.intellij.pdf.viewer.util.runCommand
+import com.firsttimeinforever.intellij.pdf.viewer.util.CommandExecutionUtils.getCommandStdoutIfSuccessful
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.actions.OpenInRightSplitAction
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -43,7 +42,7 @@ class TexPdfViewer : ExternalPdfViewer {
         project: Project,
         focusAllowed: Boolean
     ) {
-        if (!isSynctexInstalled()) {
+        if (!SynctexUtils.isSynctexInstalled()) {
             Notification(
                 "LaTeX",
                 "SyncTeX not installed",
@@ -78,9 +77,16 @@ class TexPdfViewer : ExternalPdfViewer {
                     editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor
                 }
 
-                val command = arrayOf("synctex", "view", "-i", "$line:0:${texFile.path}", "-o", file.path)
-                val synctexOutput = runCommand(*command, directory = File(file.parent.path)) ?: return@invokeLater
-                val values: Map<String?, String?> = NUMBER_REGEX.findAll(synctexOutput)
+                val command = GeneralCommandLine(
+                    "synctex",
+                    "view",
+                    "-i",
+                    "$line:0:${texFile.path}",
+                    "-o",
+                    file.path
+                ).withWorkDirectory(File(file.parent.path))
+                val output = getCommandStdoutIfSuccessful(command) ?: return@invokeLater
+                val values: Map<String?, String?> = NUMBER_REGEX.findAll(output)
                     .associate { it.groups["id"]?.value to it.groups["value"]?.value }
                     .filter { it.key != null && it.value != null }
 
