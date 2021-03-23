@@ -34,9 +34,9 @@ dependencies {
 }
 
 intellij {
-    version = "211.6432.7-EAP-SNAPSHOT"
+    version = "211.6556.6-EAP-SNAPSHOT"
 
-    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.4@alpha")
+    setPlugins("nl.rubensten.texifyidea:0.7.5-alpha.6@alpha")
 
     // Keep an open until build, to make sure the plugin can be installed in newer versions
     sameSinceUntilBuild = true
@@ -47,6 +47,7 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "11"
+            useIR = true
         }
     }
     changelog {
