@@ -1,5 +1,11 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.11.0
+- [Added Add SyncTeX support](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/24) by [
+  Abby Berkers](https://github.com/slideclimb), [Thomas Schouten](https://github.com/PHPirates) and [@ZhengKeli](https://github.com/ZhengKeli)
+- [Fixed document auto-reload on file change](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/22) by [@ZhengKeli](https://github.com/ZhengKeli)
+- Working on migrating `web-view` to KotlinJS ([notes](https://github.com/FirstTimeInForever/intellij-pdf-viewer/wiki/Moving-web-view-to-KotlinJS))
+
 ## 0.10.2
 - Initial support for 2021.1 versions
 
