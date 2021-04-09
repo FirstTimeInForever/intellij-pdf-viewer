@@ -1,0 +1,46 @@
+<idea-plugin>
+    <actions resource-bundle="messages.PdfViewerActionsBundle">
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionGroup" id="pdf.viewer.PdfActionGroup" popup="true" compact="true">
+            <action id="pdf.viewer.OpenDevtoolsAction" class="com.firsttimeinforever.intellij.pdf.viewer.actions.debug.PdfOpenDevtoolsAction"/>
+            <action id="pdf.viewer.ReloadViewAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
+                    icon="AllIcons.Actions.ForceRefresh"/>
+            <!--Sidebar view mode actions-->
+            <action id="pdf.viewer.HideSidebarAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfHideSidebarAction"
+                    icon="AllIcons.Actions.PreviewDetails"/>
+            <action id="pdf.viewer.SetSidebarThumbnailsViewModeAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarThumbnailsViewModeAction"/>
+            <action id="pdf.viewer.SetSidebarAttachmentsViewModeAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarAttachmentsViewModeAction"/>
+            <action id="pdf.viewer.SetSidebarBookmarksViewModeAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfPdfSetSidebarBookmarksViewModeAction"/>
+
+            <action id="pdf.viewer.GotoNextPageAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
+                    icon="AllIcons.Actions.Forward"/>
+            <action id="pdf.viewer.GotoPreviousPageAction"
+                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoPreviousPageAction"
+                    icon="AllIcons.Actions.Back"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfSidebarViewModeActionGroup"
+               id="pdf.viewer.EditorSidebarViewModeActionGroup"
+               popup="true"
+               icon="AllIcons.Actions.PreviewDetails">
+            <reference ref="pdf.viewer.HideSidebarAction"/>
+            <separator/>
+            <reference ref="pdf.viewer.SetSidebarThumbnailsViewModeAction"/>
+            <reference ref="pdf.viewer.SetSidebarAttachmentsViewModeAction"/>
+            <reference ref="pdf.viewer.SetSidebarBookmarksViewModeAction"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfLeftToolbarActionGroup" id="pdf.viewer.LeftToolbarActionGroup">
+            <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
+            <separator/>
+            <reference ref="pdf.viewer.GotoPreviousPageAction"/>
+            <reference ref="pdf.viewer.GotoNextPageAction"/>
+        </group>
+        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfRightToolbarActionGroup" id="pdf.viewer.RightToolbarActionGroup">
+            <reference ref="pdf.viewer.ReloadViewAction"/>
+        </group>
+    </actions>
+</idea-plugin>

@@ -13,8 +13,12 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     val pagesCount: Int
         get() = viewerApp.pdfViewer.pagesCount
 
-    val currentPageNumber: Int
+    var currentPageNumber: Int
         get() = viewerApp.pdfViewer.currentPageNumber
+        set(value) {
+            require(value in 1..pagesCount)
+            viewerApp.pdfViewer.currentPageNumber = value
+        }
 
     val pageSpreadState: PageSpreadState
         get() = when (viewerApp.pdfViewer.spreadMode) {

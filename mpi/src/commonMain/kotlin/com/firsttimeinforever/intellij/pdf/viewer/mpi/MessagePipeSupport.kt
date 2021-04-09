@@ -17,11 +17,12 @@ object MessagePipeSupport {
 
     object MessagePacker {
         fun pack(type: String, data: String): String {
-            return Json.encodeToString(PackedMessage(type, data))
+            val string = Json.encodeToString(PackedMessage(type, data))
+            return MessageEncoder.encode(string)
         }
 
         fun unpack(raw: String): Pair<String, String> {
-            val (type, data) = Json.decodeFromString<PackedMessage>(raw)
+            val (type, data) = Json.decodeFromString<PackedMessage>(MessageEncoder.decode(raw))
             return type to data
         }
     }

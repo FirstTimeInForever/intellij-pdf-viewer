@@ -1,15 +1,15 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.Internals
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewProperties
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReason
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ZoomMode
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
+import kotlinx.browser.window
+import org.w3c.dom.HTMLElement
 import kotlin.js.Promise
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
@@ -25,6 +25,17 @@ class Application(private val viewer: ViewerAdapter) {
                 collectViewState(),
                 ViewStateChangeReason.SIDEBAR_VIEW_MODE
             ))
+        }
+        pipe.subscribe<IdeMessages.LafChanged> {
+            console.log(it)
+            updateColors(it.background, it.foreground)
+        }
+        pipe.subscribe<IdeMessages.GotoPage> {
+            console.log(it)
+            when (it.direction) {
+                PageGotoDirection.FORWARD -> viewer.currentPageNumber += 1
+                PageGotoDirection.BACKWARD -> viewer.currentPageNumber -= 1
+            }
         }
     }
 
@@ -49,6 +60,16 @@ class Application(private val viewer: ViewerAdapter) {
             collectViewState(),
             ViewStateChangeReason.ZOOM
         ))
+    }
+
+    @Suppress("CAST_NEVER_SUCCEEDS")
+    private fun updateColors(background: String, foreground: String) {
+        val root = window.document.documentElement as HTMLElement
+        with(root.style) {
+            setProperty(Internals.StyleVariables.bodyBackgroundColor, background)
+            setProperty(Internals.StyleVariables.sidebarBackgroundColor, background)
+            setProperty(Internals.StyleVariables.mainColor, foreground)
+        }
     }
 
     fun run() {

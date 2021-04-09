@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "postinstall": "node postinstall.js",
-    "build": "npx webpack"
+    "build": "npx webpack --mode=development"
   },
   "keywords": [],
   "author": "",

@@ -50,11 +50,6 @@ class JcefBrowserMessagePipe(private val browser: JBCefBrowser): MessagePipe {
         receiveSubscribers.merge(type, mutableListOf(handler)) { current, _ ->
             current.also { it.add(handler) }
         }
-        // if (receiveSubscribers.contains(type)) {
-        //     receiveSubscribers[type]!!.add(handler)
-        // } else {
-        //     receiveSubscribers[type] = arrayListOf(handler)
-        // }
     }
 
     companion object {

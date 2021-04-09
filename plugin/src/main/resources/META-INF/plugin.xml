@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
     <name>PDF Viewer</name>
     <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
@@ -32,19 +32,16 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="PDF" extensions="pdf" language="PDF"
-                  implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"
-                  fieldName="INSTANCE"/>
-        <fileEditorProvider
-                implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
+        <fileType name="PDF" extensions="pdf" language="PDF" fieldName="INSTANCE"
+                  implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
+        <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
         <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
         <!--        <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>-->
         <!--        <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>-->
         <!--        <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfVieverConfigurable"/>-->
         <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
-        <statusBarWidgetFactory
-                implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+        <statusBarWidgetFactory implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
     </extensions>
 
     <applicationListeners>
@@ -52,53 +49,7 @@
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 
-    <actions>
-        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionGroup"
-               id="PdfActionGroup" text="Pdf Viewer Actions" popup="true" compact="true">
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.debug.PdfOpenDevtoolsAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.debug.PdfOpenDevtoolsAction"
-                    text="Open DevTools"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
-                    text="Reload PDF Document" description="Reloads PDF document in current editor"
-                    icon="AllIcons.Actions.ForceRefresh"/>
-            <!--Sidebar view mode actions-->
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfHideSidebarAction"
-                    icon="AllIcons.Actions.PreviewDetails"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfHideSidebarAction"
-                    text="Hide Sidebar"
-                    description="Hides PDF document sidebar"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarThumbnailsViewModeAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarThumbnailsViewModeAction"
-                    text="Thumbnails View" description="Set sidebar view mode to thumbnails"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarAttachmentsViewModeAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarAttachmentsViewModeAction"
-                    text="Attachments View" description="Set sidebar view mode to attachments"/>
-            <action id="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarBookmarksViewModeAction"
-                    class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfPdfSetSidebarBookmarksViewModeAction"
-                    text="Bookmarks View" description="Set sidebar view mode to bookmarks"/>
-        </group>
-        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfSidebarViewModeActionGroup"
-               id="PdfEditorSidebarViewModeActionGroup" text="Pdf Viewer Sidebar View Mode Actions"
-               popup="true" icon="AllIcons.Actions.PreviewDetails">
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfHideSidebarAction"/>
-            <separator/>
-            <reference
-                    ref="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarThumbnailsViewModeAction"/>
-            <reference
-                    ref="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarAttachmentsViewModeAction"/>
-            <reference
-                    ref="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarBookmarksViewModeAction"/>
-        </group>
-        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfLeftToolbarActionGroup"
-               id="PdfLeftToolbarActionGroup">
-            <reference ref="PdfEditorSidebarViewModeActionGroup"/>
-        </group>
-        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfRightToolbarActionGroup"
-               id="PdfRightToolbarActionGroup">
-            <reference ref="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"/>
-        </group>
-    </actions>
+    <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <!--    <actions>-->
     <!--        <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfFileEditorActionGroup"-->

@@ -8,13 +8,21 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
+import com.intellij.ide.ui.LafManager
+import com.intellij.ide.ui.LafManagerListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.editor.colors.EditorColorsListener
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.ColorUtil
 import com.intellij.ui.jcef.JCEFHtmlPanel
+import com.intellij.util.ui.UIUtil
+import org.jetbrains.annotations.NotNull
 
 class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile): Disposable, DumbAware {
     val browser = JCEFHtmlPanel("about:blank")
@@ -38,6 +46,14 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
             logger.debug(it.toString())
             viewStateChanged(it.state, it.reason)
         }
+        busConnection.subscribe(EditorColorsManager.TOPIC, EditorColorsListener { scheme ->
+            scheme?.let {
+                pipe.send(IdeMessages.LafChanged(
+                    "#${ColorUtil.toHex(it.defaultBackground, true)}",
+                    "#${ColorUtil.toHex(it.defaultForeground, true)}"
+                ))
+            }
+        })
         reload(tryToPreserveState = true)
     }
 
@@ -68,6 +84,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
     fun setSidebarViewMode(mode: SidebarViewMode) {
         pipe.send(IdeMessages.SidebarViewModeSetRequest(mode))
+    }
+
+    fun goToPage(direction: PageGotoDirection) {
+        pipe.send(IdeMessages.GotoPage(direction))
     }
 
     override fun dispose() = Unit

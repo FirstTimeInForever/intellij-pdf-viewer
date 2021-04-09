@@ -20,4 +20,11 @@ object IdeMessages {
 
     @Serializable
     class DocumentInfoRequest
+
+    @Serializable
+    data class LafChanged(
+        val background: String,
+        val foreground: String,
+        val isDarkMode: Boolean = false
+    )
 }

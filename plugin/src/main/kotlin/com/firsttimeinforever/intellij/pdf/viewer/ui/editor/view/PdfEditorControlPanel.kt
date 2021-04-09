@@ -21,9 +21,9 @@ class PdfEditorControlPanel(project: Project):
     PdfPresentationModeListener,
     Disposable
 {
-    private val leftToolbar = createActionToolbar("PdfLeftToolbarActionGroup")
+    private val leftToolbar = createActionToolbar("pdf.viewer.LeftToolbarActionGroup")
 //    private val searchToolbar = createActionToolbar("PdfEditorToolbarSearchActionGroup")
-    private val rightToolbar = createActionToolbar("PdfRightToolbarActionGroup")
+    private val rightToolbar = createActionToolbar("pdf.viewer.RightToolbarActionGroup")
     private val searchTextField = SearchTextField()
     private val rightPanel = JPanel()
     private val messageBusConnection = project.messageBus.connect()

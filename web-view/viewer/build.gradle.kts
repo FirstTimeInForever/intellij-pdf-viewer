@@ -16,7 +16,7 @@ kotlin {
         browser {
             webpackTask {
                 cssSupport.enabled = true
-                sourceMaps = false
+                sourceMaps = true
             }
 
             runTask {

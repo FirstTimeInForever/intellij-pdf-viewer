@@ -6,7 +6,7 @@ external class PdfViewer {
     val scrollMode: Int
     val pagesRotation: Int
     val pagesCount: Int
-    val currentPageNumber: Int
+    var currentPageNumber: Int
     val currentScale: Int
     val currentScaleValue: String
 }

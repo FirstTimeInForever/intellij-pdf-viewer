@@ -24,14 +24,14 @@ class SearchTextField: JTextField() {
             transferFocusUpCycle()
         }
         actionMap.put(ENTER_SHIFT_KEY) {
-            performAction(SEARCH_BACKWARD_ACTION_ID, this)
+            // performAction(SEARCH_BACKWARD_ACTION_ID, this)
         }
         actionMap.put(ENTER_KEY) {
-            performAction(SEARCH_FORWARD_ACTION_ID, this)
+            // performAction(SEARCH_FORWARD_ACTION_ID, this)
         }
         document.addDocumentListener(object: DocumentListenerAdapter() {
             override fun insertUpdate(event: DocumentEvent) {
-                performAction(SEARCH_FORWARD_ACTION_ID, this@SearchTextField)
+                // performAction(SEARCH_FORWARD_ACTION_ID, this@SearchTextField)
             }
 
             override fun removeUpdate(event: DocumentEvent) = insertUpdate(event)
