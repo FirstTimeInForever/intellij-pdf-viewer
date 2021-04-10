@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PackedMessage(
-    val type: String,
-    val data: String
+  val type: String,
+  val data: String
 )

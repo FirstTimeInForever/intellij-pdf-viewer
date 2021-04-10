@@ -5,16 +5,16 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReaso
 import com.intellij.util.messages.Topic
 
 fun interface PdfViewStateChangedListener {
-    fun viewStateChanged(
-        viewController: PdfJcefPreviewController,
-        viewState: ViewState,
-        reason: ViewStateChangeReason
-    )
+  fun viewStateChanged(
+    viewController: PdfJcefPreviewController,
+    viewState: ViewState,
+    reason: ViewStateChangeReason
+  )
 
-    companion object {
-        val TOPIC: Topic<PdfViewStateChangedListener> = Topic.create(
-            "PdfViewStateChangedListener",
-            PdfViewStateChangedListener::class.java
-        )
-    }
+  companion object {
+    val TOPIC: Topic<PdfViewStateChangedListener> = Topic.create(
+      "PdfViewStateChangedListener",
+      PdfViewStateChangedListener::class.java
+    )
+  }
 }

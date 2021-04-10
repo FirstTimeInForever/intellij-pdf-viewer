@@ -11,30 +11,30 @@ import javax.swing.JPanel
 import javax.swing.JTextPane
 import javax.swing.event.HyperlinkEvent
 
-class PdfUnsupportedViewPanel: JPanel(), DumbAware {
-    private val textPane = JTextPane()
-    private val scrollPane = JBScrollPane(textPane)
+class PdfUnsupportedViewPanel : JPanel(), DumbAware {
+  private val textPane = JTextPane()
+  private val scrollPane = JBScrollPane(textPane)
 
-    init {
-        with(textPane) {
-            isEditable = false
-            contentType = "text/html"
-            text = content
-            addHyperlinkListener {
-                if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
-                    Desktop.getDesktop().browse(it.url.toURI())
-                }
-            }
-            border = BorderFactory.createEmptyBorder(20, 20, 20, 20)
+  init {
+    with(textPane) {
+      isEditable = false
+      contentType = "text/html"
+      text = content
+      addHyperlinkListener {
+        if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
+          Desktop.getDesktop().browse(it.url.toURI())
         }
-        add(scrollPane)
+      }
+      border = BorderFactory.createEmptyBorder(20, 20, 20, 20)
     }
+    add(scrollPane)
+  }
 
-    companion object {
-        private val content by lazy {
-            PdfResourceLoader.load(
-                Paths.get("messages", "stubPanelContent.html").toFile()
-            ).toString(Charset.defaultCharset())
-        }
+  companion object {
+    private val content by lazy {
+      PdfResourceLoader.load(
+        Paths.get("messages", "stubPanelContent.html").toFile()
+      ).toString(Charset.defaultCharset())
     }
+  }
 }

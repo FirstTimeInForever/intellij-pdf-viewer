@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class PageSpreadState {
-    NONE,
-    EVEN,
-    ODD
+  NONE,
+  EVEN,
+  ODD
 }

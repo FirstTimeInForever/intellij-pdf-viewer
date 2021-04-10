@@ -2,9 +2,9 @@ const {cp, exec, exit, test, mkdir, cat} = require("shelljs");
 const fs = require('fs');
 
 if (!test("-e", "node_modules/pdf.js")) {
-    if (!exec("npm install --ignore-scripts --no-save mozilla/pdf.js#v2.5.207")) {
-        exit(1);
-    }
+  if (!exec("npm install --ignore-scripts --no-save mozilla/pdf.js#v2.5.207")) {
+    exit(1);
+  }
 }
 // mkdir("-p", "./assets");
 // cp("-R", "node_modules/pdfjs-dist/cmaps", "./assets/");

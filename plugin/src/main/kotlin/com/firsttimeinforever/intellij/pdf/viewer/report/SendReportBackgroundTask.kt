@@ -16,36 +16,36 @@ import io.sentry.event.Event
 import io.sentry.event.EventBuilder
 
 internal class SendReportBackgroundTask(
-    private val sentryClient: SentryClient,
-    project: Project?,
-    private val event: EventBuilder,
-    private val consumer: Consumer<in SubmittedReportInfo>
-): Task.Backgroundable(project, PdfViewerBundle.message("pdf.viewer.error.report.sending")) {
-    override fun run(indicator: ProgressIndicator) {
-        sentryClient.sendEvent(event)
-        sentryClient.addEventSendCallback(object: EventSendCallback {
-            override fun onSuccess(event: Event?) {
-                ApplicationManager.getApplication().invokeLater {
-                    val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
-                    group.createNotification(
-                        PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.success"),
-                        NotificationType.INFORMATION
-                    ).notify(project)
-                    consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.NEW_ISSUE))
-                }
-            }
+  private val sentryClient: SentryClient,
+  project: Project?,
+  private val event: EventBuilder,
+  private val consumer: Consumer<in SubmittedReportInfo>
+) : Task.Backgroundable(project, PdfViewerBundle.message("pdf.viewer.error.report.sending")) {
+  override fun run(indicator: ProgressIndicator) {
+    sentryClient.sendEvent(event)
+    sentryClient.addEventSendCallback(object : EventSendCallback {
+      override fun onSuccess(event: Event?) {
+        ApplicationManager.getApplication().invokeLater {
+          val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
+          group.createNotification(
+            PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.success"),
+            NotificationType.INFORMATION
+          ).notify(project)
+          consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.NEW_ISSUE))
+        }
+      }
 
-            override fun onFailure(event: Event?, exception: Exception?) {
-                ApplicationManager.getApplication().invokeLater {
-                    val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
-                    group.createNotification(
-                        PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
-                        NotificationType.ERROR
-                    ).notify(project)
-                    thisLogger().error(exception)
-                    consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED))
-                }
-            }
-        })
-    }
+      override fun onFailure(event: Event?, exception: Exception?) {
+        ApplicationManager.getApplication().invokeLater {
+          val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
+          group.createNotification(
+            PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
+            NotificationType.ERROR
+          ).notify(project)
+          thisLogger().error(exception)
+          consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED))
+        }
+      }
+    })
+  }
 }

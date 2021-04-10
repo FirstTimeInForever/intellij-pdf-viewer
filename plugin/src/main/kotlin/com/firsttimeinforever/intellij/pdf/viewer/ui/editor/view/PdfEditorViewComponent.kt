@@ -7,19 +7,19 @@ import com.intellij.openapi.vfs.VirtualFile
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 
-class PdfEditorViewComponent(project: Project, virtualFile: VirtualFile): JPanel(), Disposable {
-    val controlPanel = PdfEditorControlPanel(project)
-    val controller = PdfPreviewControllerProvider.createViewController(project, virtualFile)
+class PdfEditorViewComponent(project: Project, virtualFile: VirtualFile) : JPanel(), Disposable {
+  val controlPanel = PdfEditorControlPanel(project)
+  val controller = PdfPreviewControllerProvider.createViewController(project, virtualFile)
 
-    init {
-        Disposer.register(this, controlPanel)
-        if (controller != null) {
-            Disposer.register(this, controller)
-        }
-        layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        add(controlPanel)
-        add(controller?.component ?: PdfUnsupportedViewPanel())
+  init {
+    Disposer.register(this, controlPanel)
+    if (controller != null) {
+      Disposer.register(this, controller)
     }
+    layout = BoxLayout(this, BoxLayout.Y_AXIS)
+    add(controlPanel)
+    add(controller?.component ?: PdfUnsupportedViewPanel())
+  }
 
-    override fun dispose() = Unit
+  override fun dispose() = Unit
 }

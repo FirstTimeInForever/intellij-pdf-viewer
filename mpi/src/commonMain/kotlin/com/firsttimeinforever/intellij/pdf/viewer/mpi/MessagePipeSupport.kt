@@ -5,25 +5,25 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 object MessagePipeSupport {
-    inline fun <reified T: Any> MessagePipe.send(message: T) {
-        send(message::class.simpleName!!, Json.encodeToString(message))
+  inline fun <reified T : Any> MessagePipe.send(message: T) {
+    send(message::class.simpleName!!, Json.encodeToString(message))
+  }
+
+  inline fun <reified T> MessagePipe.subscribe(crossinline handler: (T) -> Unit) {
+    subscribe(T::class.simpleName!!) {
+      handler(Json.decodeFromString(it))
+    }
+  }
+
+  object MessagePacker {
+    fun pack(type: String, data: String): String {
+      val string = Json.encodeToString(PackedMessage(type, data))
+      return MessageEncoder.encode(string)
     }
 
-    inline fun <reified T> MessagePipe.subscribe(crossinline handler: (T) -> Unit) {
-        subscribe(T::class.simpleName!!) {
-            handler(Json.decodeFromString(it))
-        }
+    fun unpack(raw: String): Pair<String, String> {
+      val (type, data) = Json.decodeFromString<PackedMessage>(MessageEncoder.decode(raw))
+      return type to data
     }
-
-    object MessagePacker {
-        fun pack(type: String, data: String): String {
-            val string = Json.encodeToString(PackedMessage(type, data))
-            return MessageEncoder.encode(string)
-        }
-
-        fun unpack(raw: String): Pair<String, String> {
-            val (type, data) = Json.decodeFromString<PackedMessage>(MessageEncoder.decode(raw))
-            return type to data
-        }
-    }
+  }
 }

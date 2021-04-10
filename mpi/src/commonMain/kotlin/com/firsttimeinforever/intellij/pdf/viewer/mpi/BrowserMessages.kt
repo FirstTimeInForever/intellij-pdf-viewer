@@ -7,15 +7,15 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReaso
 import kotlinx.serialization.Serializable
 
 object BrowserMessages {
-    @Serializable
-    data class InitialViewProperties(val properties: ViewProperties)
+  @Serializable
+  data class InitialViewProperties(val properties: ViewProperties)
 
-    @Serializable
-    data class ViewStateChanged(
-        val state: ViewState,
-        val reason: ViewStateChangeReason
-    )
+  @Serializable
+  data class ViewStateChanged(
+    val state: ViewState,
+    val reason: ViewStateChangeReason
+  )
 
-    @Serializable
-    data class DocumentInfoResponse(val info: DocumentInfo)
+  @Serializable
+  data class DocumentInfoResponse(val info: DocumentInfo)
 }

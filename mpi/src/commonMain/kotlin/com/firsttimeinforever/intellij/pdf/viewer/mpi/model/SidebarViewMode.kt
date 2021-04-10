@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class SidebarViewMode {
-    NONE,
-    THUMBNAILS,
-    BOOKMARKS,
-    ATTACHMENTS
+  NONE,
+  THUMBNAILS,
+  BOOKMARKS,
+  ATTACHMENTS
 }

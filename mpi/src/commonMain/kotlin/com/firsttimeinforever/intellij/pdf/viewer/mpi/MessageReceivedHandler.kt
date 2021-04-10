@@ -1,5 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.mpi
 
 fun interface MessageReceivedHandler {
-    fun messageReceived(data: String)
+  fun messageReceived(data: String)
 }

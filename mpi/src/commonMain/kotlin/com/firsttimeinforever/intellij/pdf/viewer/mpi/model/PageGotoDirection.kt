@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class PageGotoDirection {
-    FORWARD,
-    BACKWARD
+  FORWARD,
+  BACKWARD
 }

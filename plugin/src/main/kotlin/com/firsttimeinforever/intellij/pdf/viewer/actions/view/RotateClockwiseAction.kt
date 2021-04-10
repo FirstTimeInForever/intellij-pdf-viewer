@@ -4,10 +4,10 @@ import com.firsttimeinforever.intellij.pdf.viewer.actions.old.pdfjs.PdfPdfjsActi
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 // TODO: Add icon
-class RotateClockwiseAction: PdfPdfjsAction(
-    disabledInIdePresentationMode = false
+class RotateClockwiseAction : PdfPdfjsAction(
+  disabledInIdePresentationMode = false
 ) {
-    override fun actionPerformed(event: AnActionEvent) {
-        // getPanel(event)?.rotateClockwise()
-    }
+  override fun actionPerformed(event: AnActionEvent) {
+    // getPanel(event)?.rotateClockwise()
+  }
 }

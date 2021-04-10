@@ -8,9 +8,9 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 abstract class PdfPdfjsAction(
-    disabledInIdePresentationMode: Boolean = true,
-    val disabledInPresentationMode: Boolean = false
-): PdfAction(disabledInIdePresentationMode) {
+  disabledInIdePresentationMode: Boolean = true,
+  val disabledInPresentationMode: Boolean = false
+) : PdfAction(disabledInIdePresentationMode) {
 //     override fun haveVisibleEditor(event: AnActionEvent): Boolean {
 //         return false
 // //        return haveVisibleEditor(event) {
@@ -30,22 +30,19 @@ abstract class PdfPdfjsAction(
 // //        }
 //     }
 
-    override fun update(event: AnActionEvent) {
-        super.update(event)
-        // val panel = getPanel(event)?: return
-        // event.presentation.isEnabled = !(panel.presentationModeController.isPresentationModeActive() && disabledInPresentationMode)
+  companion object {
+    fun showUnsupportedActionNotification(event: AnActionEvent) {
+      Notifications.Bus.notify(
+        Notification(
+          PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
+          PdfViewerBundle.message("pdf.viewer.actions.pdfjs.notifications.usupported.action.title"),
+          PdfViewerBundle.message(
+            "pdf.viewer.actions.pdfjs.notifications.unsupported.action.content",
+            event.presentation.text
+          ),
+          NotificationType.ERROR
+        )
+      )
     }
-
-    companion object {
-        fun showUnsupportedActionNotification(event: AnActionEvent) {
-            Notifications.Bus.notify(
-                Notification(
-                    PdfViewerBundle.message("pdf.viewer.notifications.group.id"),
-                    PdfViewerBundle.message("pdf.viewer.actions.pdfjs.notifications.usupported.action.title"),
-                    PdfViewerBundle.message("pdf.viewer.actions.pdfjs.notifications.unsupported.action.content", event.presentation.text),
-                    NotificationType.ERROR
-                )
-            )
-        }
-    }
+  }
 }

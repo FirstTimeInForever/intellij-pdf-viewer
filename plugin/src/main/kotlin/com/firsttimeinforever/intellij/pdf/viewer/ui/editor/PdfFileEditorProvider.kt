@@ -7,14 +7,14 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
-class PdfFileEditorProvider: FileEditorProvider, DumbAware {
-    override fun getEditorTypeId() = "PDF"
+class PdfFileEditorProvider : FileEditorProvider, DumbAware {
+  override fun getEditorTypeId() = "PDF"
 
-    override fun accept(project: Project, file: VirtualFile): Boolean {
-        return file.fileType == PdfFileType
-    }
+  override fun accept(project: Project, file: VirtualFile): Boolean {
+    return file.fileType == PdfFileType
+  }
 
-    override fun createEditor(project: Project, file: VirtualFile) = PdfFileEditor(project, file)
+  override fun createEditor(project: Project, file: VirtualFile) = PdfFileEditor(project, file)
 
-    override fun getPolicy() = FileEditorPolicy.HIDE_DEFAULT_EDITOR
+  override fun getPolicy() = FileEditorPolicy.HIDE_DEFAULT_EDITOR
 }

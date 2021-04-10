@@ -7,10 +7,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types
 // scale: "auto"
 // top: 240
 external class PdfViewerLocation {
-    val left: Int
-    val pageNumber: Int
-    val pdfOpenParams: String
-    val rotation: Int
-    val scale: String
-    val top: Int
+  val left: Int
+  val pageNumber: Int
+  val pdfOpenParams: String
+  val rotation: Int
+  val scale: String
+  val top: Int
 }
