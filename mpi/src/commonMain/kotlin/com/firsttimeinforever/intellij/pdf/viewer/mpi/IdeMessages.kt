@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.mpi
 
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageGotoDirection
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SearchDirection
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
 import kotlinx.serialization.Serializable
@@ -11,6 +12,9 @@ object IdeMessages {
 
   @Serializable
   data class SidebarViewModeSetRequest(val mode: SidebarViewMode)
+
+  @Serializable
+  data class PageSpreadStateSetRequest(val state: PageSpreadState)
 
   @Serializable
   data class GotoExactPage(val page: Int)

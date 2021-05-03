@@ -17,10 +17,6 @@ class PdfSidebarViewModeActionGroup : DefaultActionGroup() {
   override fun isPopup(): Boolean = true
 
   override fun update(event: AnActionEvent) {
-    event.presentation.isEnabled = false
-    val project = event.project ?: return
-    val editor = FileEditorManager.getInstance(project).selectedEditor ?: return
-    // TODO: Should be disabled in presentation mode
-    event.presentation.isEnabled = editor is PdfFileEditor && editor.viewComponent.controller != null
+    event.presentation.isEnabled = PdfAction.findController(event) != null
   }
 }

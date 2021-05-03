@@ -32,17 +32,17 @@ abstract class PdfSetSidebarViewModeAction(
   private fun canBeEnabled(controller: PdfJcefPreviewController?): Boolean {
     return controller != null && targetViewMode in controller.viewProperties.availableSidebarViewModes
   }
-}
 
-class PdfHideSidebarAction : PdfSetSidebarViewModeAction(SidebarViewMode.NONE) {
-  override fun update(event: AnActionEvent) {
-    super.update(event)
-    event.presentation.isEnabled = true
+  class Hide : PdfSetSidebarViewModeAction(SidebarViewMode.NONE) {
+    override fun update(event: AnActionEvent) {
+      super.update(event)
+      event.presentation.isEnabled = true
+    }
   }
+
+  class Thumbnails : PdfSetSidebarViewModeAction(SidebarViewMode.THUMBNAILS)
+
+  class Outline : PdfSetSidebarViewModeAction(SidebarViewMode.OUTLINE)
+
+  class Attachments : PdfSetSidebarViewModeAction(SidebarViewMode.ATTACHMENTS)
 }
-
-class PdfSetSidebarThumbnailsViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.THUMBNAILS)
-
-class PdfPdfSetSidebarOutlineViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.OUTLINE)
-
-class PdfSetSidebarAttachmentsViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.ATTACHMENTS)

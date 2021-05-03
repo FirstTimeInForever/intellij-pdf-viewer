@@ -20,12 +20,18 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
       viewerApp.pdfViewer.currentPageNumber = value
     }
 
-  val pageSpreadState: PageSpreadState
-    get() = when (viewerApp.pdfViewer.spreadMode) {
-      0 -> PageSpreadState.NONE
-      1 -> PageSpreadState.ODD
-      2 -> PageSpreadState.EVEN
-      else -> throw MappingException()
+  /*
+  const SpreadMode = {
+    UNKNOWN: -1,
+    NONE: 0, // Default value.
+    ODD: 1,
+    EVEN: 2,
+  };
+   */
+  var pageSpreadState: PageSpreadState
+    get() = PageSpreadState.values()[viewerApp.pdfViewer.spreadMode]
+    set(value) {
+      viewerApp.pdfViewer.spreadMode = value.ordinal
     }
 
   val zoomState: ZoomState

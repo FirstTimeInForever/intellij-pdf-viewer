@@ -109,6 +109,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.GotoPage(direction))
   }
 
+  fun setPageSpreadState(state: PageSpreadState) {
+    pipe.send(IdeMessages.PageSpreadStateSetRequest(state))
+  }
+
   override fun dispose() = Unit
 
   companion object {

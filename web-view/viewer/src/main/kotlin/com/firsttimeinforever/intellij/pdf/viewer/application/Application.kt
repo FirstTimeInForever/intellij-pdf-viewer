@@ -39,6 +39,18 @@ class Application(private val viewer: ViewerAdapter) {
         PageGotoDirection.BACKWARD -> viewer.currentPageNumber -= 1
       }
     }
+    pipe.subscribe<IdeMessages.PageSpreadStateSetRequest> {
+      console.log(it)
+      if (it.state != viewer.pageSpreadState) {
+        viewer.pageSpreadState = it.state
+        pipe.send(
+          BrowserMessages.ViewStateChanged(
+            collectViewState(),
+            ViewStateChangeReason.PAGE_SPREAD_STATE
+          )
+        )
+      }
+    }
   }
 
   private fun collectViewProperties(): Promise<ViewProperties> {
