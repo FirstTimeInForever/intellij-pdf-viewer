@@ -5,7 +5,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageGotoDirection
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 
-class PdfGotoNextPageAction : PdfAction(disableInIdePresentationMode = false), DumbAware {
+class PdfGotoNextPageAction : PdfAction(), DumbAware {
   override fun actionPerformed(event: AnActionEvent) {
     findController(event)?.goToPage(PageGotoDirection.FORWARD)
   }

@@ -9,15 +9,14 @@ abstract class PdfToggleAction(
   protected open val base: PdfAction = StubAction(isDisabledInIdePresentationMode)
 
   open val disabledInIdePresentationMode
-    get() = base.disableInIdePresentationMode
+    get() = false
 
   override fun update(event: AnActionEvent) {
     super.update(event)
     base.update(event)
   }
 
-  private inner class StubAction(isDisabledInIdePresentationMode: Boolean) :
-    PdfAction(isDisabledInIdePresentationMode) {
+  class StubAction(isDisabledInIdePresentationMode: Boolean) : PdfAction() {
     override fun actionPerformed(event: AnActionEvent) {
       throw IllegalStateException("This method should not be called")
     }

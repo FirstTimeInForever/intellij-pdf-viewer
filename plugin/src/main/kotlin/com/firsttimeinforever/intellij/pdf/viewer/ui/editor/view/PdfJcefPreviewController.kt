@@ -1,6 +1,9 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefBrowserMessagePipe
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadEndHandler
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadHandler
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.invokeAndWaitForLoadEnd
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
@@ -9,6 +12,9 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscri
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.Application
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.invokeAndWaitIfNeeded
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
@@ -18,12 +24,17 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.jcef.JCEFHtmlPanel
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.locks.ReentrantLock
 
 class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile) : Disposable, DumbAware {
+  // TODO: Migrate to OSR when it's ready
   val browser = JCEFHtmlPanel("about:blank")
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController()
   private val busConnection = project.messageBus.connect(this)
+
+  private val loadLock = ReentrantLock()
 
   var viewState = ViewState()
     private set
@@ -33,6 +44,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   init {
     Disposer.register(this, browser)
+    Disposer.register(this, busConnection)
     pipe.subscribe<BrowserMessages.InitialViewProperties> {
       logger.debug(it.toString())
       viewProperties = it.properties
@@ -66,13 +78,23 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   val component get() = browser.component
 
   fun reload(tryToPreserveState: Boolean = false) {
-    val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path)
-    val url = when {
-      tryToPreserveState -> buildUrlWithState(base, viewState)
-      else -> base
+    // FIXME: Replace with BrowserCommunicationChannel on it's availability in the platform
+    try {
+      loadLock.lock()
+      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path)
+      val url = when {
+        tryToPreserveState -> buildUrlWithState(base, viewState)
+        else -> base
+      }
+      browser.invokeAndWaitForLoadEnd {
+        logger.debug("Loading url $url")
+        browser.loadURL(url)
+      }
+    } catch(exception: Throwable) {
+      logger.error(exception)
+    } finally {
+      loadLock.unlock()
     }
-    logger.debug("Loading url $url")
-    browser.loadURL(url)
   }
 
   fun find(text: String, direction: SearchDirection) {

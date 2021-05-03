@@ -15,6 +15,7 @@ internal object PdfActionUtils {
   fun performAction(actionId: String, component: Component) {
     val manager = ActionManager.getInstance()
     val action = manager.getAction(actionId)
+    checkNotNull(action)
     val context = DataManager.getInstance().getDataContext(component)
     action.actionPerformed(
       AnActionEvent(

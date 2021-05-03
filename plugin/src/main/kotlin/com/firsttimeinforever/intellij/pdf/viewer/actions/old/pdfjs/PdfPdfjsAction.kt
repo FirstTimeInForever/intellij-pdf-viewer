@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 abstract class PdfPdfjsAction(
   disabledInIdePresentationMode: Boolean = true,
   val disabledInPresentationMode: Boolean = false
-) : PdfAction(disabledInIdePresentationMode) {
+) : PdfAction() {
 //     override fun haveVisibleEditor(event: AnActionEvent): Boolean {
 //         return false
 // //        return haveVisibleEditor(event) {

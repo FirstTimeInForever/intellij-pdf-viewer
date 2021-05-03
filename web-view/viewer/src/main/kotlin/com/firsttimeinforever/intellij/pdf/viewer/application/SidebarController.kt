@@ -15,7 +15,7 @@ class SidebarController(private val viewer: ViewerAdapter) {
           add(SidebarViewMode.ATTACHMENTS)
         }
         if (viewer.viewerApp.pdfOutlineViewer.outline != null || outline != null) {
-          add(SidebarViewMode.BOOKMARKS)
+          add(SidebarViewMode.OUTLINE)
         }
       }
     }

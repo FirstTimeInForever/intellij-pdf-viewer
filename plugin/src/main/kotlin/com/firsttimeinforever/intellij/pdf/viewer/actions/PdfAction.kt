@@ -8,9 +8,10 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.fileEditor.FileEditorManager
 
-abstract class PdfAction(val disableInIdePresentationMode: Boolean = true) : AnAction() {
+abstract class PdfAction : AnAction() {
   override fun update(event: AnActionEvent) {
     val controller = findController(event)
     event.presentation.isEnabledAndVisible = controller != null
@@ -21,16 +22,13 @@ abstract class PdfAction(val disableInIdePresentationMode: Boolean = true) : AnA
 
   companion object {
     fun findEditor(event: AnActionEvent): PdfFileEditor? {
-      val project = event.project ?: return null
-      val editor = FileEditorManager.getInstance(project).selectedEditor
-      // val editor: Any = event.getData(CommonDataKeys.EDITOR) ?: return null
-      // println(editor)
-      return editor.takeIf { it is PdfFileEditor } as PdfFileEditor?
+      return event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor ?: findFirstSelectedEditor(event)
     }
 
-    fun haveAnyVisibleEditors(event: AnActionEvent): Boolean {
-      val project = event.project ?: return false
-      return FileEditorManager.getInstance(project).selectedEditors.any { it is PdfFileEditor }
+    fun findFirstSelectedEditor(event: AnActionEvent): PdfFileEditor? {
+      val project = event.project ?: return null
+      val file = event.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return null
+      return FileEditorManager.getInstance(project)?.getSelectedEditor(file) as? PdfFileEditor
     }
 
     fun findController(event: AnActionEvent): PdfJcefPreviewController? {

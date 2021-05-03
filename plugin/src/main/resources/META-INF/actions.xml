@@ -15,8 +15,8 @@
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarThumbnailsViewModeAction"/>
       <action id="pdf.viewer.SetSidebarAttachmentsViewModeAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarAttachmentsViewModeAction"/>
-      <action id="pdf.viewer.SetSidebarBookmarksViewModeAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfPdfSetSidebarBookmarksViewModeAction"/>
+      <action id="pdf.viewer.SetSidebarOutlineViewModeAction"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfPdfSetSidebarOutlineViewModeAction"/>
 
       <action id="pdf.viewer.GotoNextPageAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
@@ -33,7 +33,7 @@
       <separator/>
       <reference ref="pdf.viewer.SetSidebarThumbnailsViewModeAction"/>
       <reference ref="pdf.viewer.SetSidebarAttachmentsViewModeAction"/>
-      <reference ref="pdf.viewer.SetSidebarBookmarksViewModeAction"/>
+      <reference ref="pdf.viewer.SetSidebarOutlineViewModeAction"/>
     </group>
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfLeftToolbarActionGroup"
            id="pdf.viewer.LeftToolbarActionGroup">

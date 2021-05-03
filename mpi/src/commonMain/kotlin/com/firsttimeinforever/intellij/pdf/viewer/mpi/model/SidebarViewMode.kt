@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 enum class SidebarViewMode {
   NONE,
   THUMBNAILS,
-  BOOKMARKS,
+  OUTLINE,
   ATTACHMENTS
 }

@@ -3,9 +3,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.firsttimeinforever.intellij.pdf.viewer.actions.old.pdfjs.PdfToggleActionAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-abstract class PdfSetSidebarViewModeActions(
+abstract class PdfSetSidebarViewModeAction(
   private val targetViewMode: SidebarViewMode
 ) : PdfToggleActionAdapter(
   isDisabledInPresentationMode = true,
@@ -23,20 +24,25 @@ abstract class PdfSetSidebarViewModeActions(
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    val viewController = PdfAction.findController(event) ?: return
-    event.presentation.isEnabledAndVisible = true
-    // targetViewMode in viewController.viewProperties.availableSidebarViewModes
+    val controller = PdfAction.findController(event)
+    event.presentation.isVisible = controller != null
+    event.presentation.isEnabled = canBeEnabled(controller)
+  }
+
+  private fun canBeEnabled(controller: PdfJcefPreviewController?): Boolean {
+    return controller != null && targetViewMode in controller.viewProperties.availableSidebarViewModes
   }
 }
 
-class PdfHideSidebarAction :
-  PdfSetSidebarViewModeActions(SidebarViewMode.NONE)
+class PdfHideSidebarAction : PdfSetSidebarViewModeAction(SidebarViewMode.NONE) {
+  override fun update(event: AnActionEvent) {
+    super.update(event)
+    event.presentation.isEnabled = true
+  }
+}
 
-class PdfSetSidebarThumbnailsViewModeAction :
-  PdfSetSidebarViewModeActions(SidebarViewMode.THUMBNAILS)
+class PdfSetSidebarThumbnailsViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.THUMBNAILS)
 
-class PdfPdfSetSidebarBookmarksViewModeAction :
-  PdfSetSidebarViewModeActions(SidebarViewMode.BOOKMARKS)
+class PdfPdfSetSidebarOutlineViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.OUTLINE)
 
-class PdfSetSidebarAttachmentsViewModeAction :
-  PdfSetSidebarViewModeActions(SidebarViewMode.ATTACHMENTS)
+class PdfSetSidebarAttachmentsViewModeAction : PdfSetSidebarViewModeAction(SidebarViewMode.ATTACHMENTS)
