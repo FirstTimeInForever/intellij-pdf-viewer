@@ -9,5 +9,6 @@ enum class ViewStateChangeReason {
   PAGE_SPREAD_STATE,
   ZOOM,
   PAGE_NUMBER,
-  SIDEBAR_VIEW_MODE
+  SIDEBAR_VIEW_MODE,
+  SCROLL_DIRECTION
 }

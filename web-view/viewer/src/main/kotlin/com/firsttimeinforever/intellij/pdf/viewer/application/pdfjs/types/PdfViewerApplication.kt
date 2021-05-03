@@ -13,4 +13,8 @@ external class PdfViewerApplication {
   val eventBus: PdfEventBus
 
   val initializedPromise: dynamic
+
+  val pdfDocumentProperties: dynamic
+
+  val baseUrl: String
 }

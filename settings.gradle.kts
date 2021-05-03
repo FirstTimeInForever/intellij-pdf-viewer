@@ -7,11 +7,11 @@ include(":plugin")
 include(":mpi")
 
 pluginManagement {
-    plugins {
-        val kotlinVersion: String by settings
-        kotlin("jvm") version kotlinVersion
-        kotlin("plugin.serialization") version kotlinVersion
-        kotlin("multiplatform") version kotlinVersion
-        kotlin("js") version kotlinVersion
-    }
+  plugins {
+    val kotlinVersion: String by settings
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
+    kotlin("multiplatform") version kotlinVersion
+    kotlin("js") version kotlinVersion
+  }
 }

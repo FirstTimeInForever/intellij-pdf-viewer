@@ -10,6 +10,8 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
+import com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs.Dialogs
+import com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs.DocumentInfoDialogPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.Application
@@ -52,6 +54,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.subscribe<BrowserMessages.ViewStateChanged> {
       logger.debug(it.toString())
       viewStateChanged(it.state, it.reason)
+    }
+    pipe.subscribe<BrowserMessages.DocumentInfoResponse> {
+      Dialogs.showDocumentInfoDialog(it.info)
     }
     busConnection.subscribe(EditorColorsManager.TOPIC, EditorColorsListener { scheme ->
       scheme?.let {
@@ -111,6 +116,22 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   fun setPageSpreadState(state: PageSpreadState) {
     pipe.send(IdeMessages.PageSpreadStateSetRequest(state))
+  }
+
+  fun requestDocumentInfo() {
+    pipe.send(IdeMessages.DocumentInfoRequest())
+  }
+
+  fun steppedChangeScale(increase: Boolean = true) {
+    pipe.send(IdeMessages.ChangeScaleStepped(increase))
+  }
+
+  fun rotate(clockwise: Boolean = true) {
+    pipe.send(IdeMessages.RotatePages(clockwise))
+  }
+
+  fun setScrollDirection(direction: ScrollDirection) {
+    pipe.send(IdeMessages.SetScrollDirection(direction))
   }
 
   override fun dispose() = Unit

@@ -7,6 +7,7 @@ data class ViewState(
   val page: Int = 0,
   val zoom: ZoomState = ZoomState(),
   val sidebarViewMode: SidebarViewMode = SidebarViewMode.NONE,
-  val pageSpreadState: PageSpreadState = PageSpreadState.NONE
+  val pageSpreadState: PageSpreadState = PageSpreadState.NONE,
+  val scrollDirection: ScrollDirection = ScrollDirection.VERTICAL
 )
 

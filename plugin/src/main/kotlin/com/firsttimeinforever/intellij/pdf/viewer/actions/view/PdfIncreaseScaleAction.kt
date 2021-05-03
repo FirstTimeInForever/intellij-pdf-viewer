@@ -5,6 +5,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfIncreaseScaleAction : PdfAction() {
   override fun actionPerformed(event: AnActionEvent) {
-//        findPdfFileEditor(event)?.viewPanel?.increaseScale()
+    findController(event)?.steppedChangeScale(increase = true)
   }
 }

@@ -1,10 +1,11 @@
-package com.firsttimeinforever.intellij.pdf.viewer.actions.common
+package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class PdfShowDocumentInfoAction : PdfAction() {
+// TODO: Add icon
+class PdfRotateClockwiseAction : PdfAction() {
   override fun actionPerformed(event: AnActionEvent) {
-    findController(event)?.requestDocumentInfo()
+    findController(event)?.rotate(clockwise = true)
   }
 }

@@ -1,17 +1,12 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
-import com.firsttimeinforever.intellij.pdf.viewer.actions.old.pdfjs.PdfToggleActionAdapter
+import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToggleAction
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-abstract class PdfSetSidebarViewModeAction(
-  private val targetViewMode: SidebarViewMode
-) : PdfToggleActionAdapter(
-  isDisabledInPresentationMode = true,
-  isDisabledInIdePresentationMode = false
-) {
+abstract class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarViewMode) : PdfToggleAction() {
   override fun isSelected(event: AnActionEvent): Boolean {
     val viewController = PdfAction.findController(event) ?: return false
     return viewController.viewState.sidebarViewMode == targetViewMode

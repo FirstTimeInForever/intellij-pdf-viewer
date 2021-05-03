@@ -1,9 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.mpi
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageGotoDirection
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SearchDirection
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import kotlinx.serialization.Serializable
 
 object IdeMessages {
@@ -24,6 +21,15 @@ object IdeMessages {
 
   @Serializable
   class DocumentInfoRequest
+
+  @Serializable
+  data class ChangeScaleStepped(val increase: Boolean)
+
+  @Serializable
+  data class RotatePages(val clockwise: Boolean)
+
+  @Serializable
+  data class SetScrollDirection(val direction: ScrollDirection)
 
   @Serializable
   data class LafChanged(

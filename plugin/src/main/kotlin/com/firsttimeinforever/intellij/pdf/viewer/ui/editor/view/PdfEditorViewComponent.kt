@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.controls.PdfEditorControlPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer

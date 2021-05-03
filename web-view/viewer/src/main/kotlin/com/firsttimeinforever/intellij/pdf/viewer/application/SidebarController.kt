@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
-import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.Internals.mapToInternalValue
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
 import kotlin.js.Promise
@@ -26,7 +25,7 @@ class SidebarController(private val viewer: ViewerAdapter) {
     if (currentViewMode == SidebarViewMode.NONE) {
       viewer.viewerApp.pdfSidebar.open()
     }
-    viewer.viewerApp.pdfSidebar.switchView(viewMode.mapToInternalValue())
+    viewer.viewerApp.pdfSidebar.switchView(viewMode.ordinal)
   }
 
   val currentViewMode: SidebarViewMode
@@ -34,6 +33,6 @@ class SidebarController(private val viewer: ViewerAdapter) {
       console.log(viewer.viewerApp.pdfSidebar)
       val viewValue = viewer.viewerApp.pdfSidebar.visibleView as Int
       console.log("Got viewMode value: $viewValue")
-      return SidebarViewMode.values().first { it.mapToInternalValue() == viewValue }
+      return SidebarViewMode.values()[viewValue]
     }
 }

@@ -1,3 +1,3 @@
 subprojects {
-    val viewerApplicationBundle: Configuration by configurations.creating
+  val viewerApplicationBundle: Configuration by configurations.creating
 }

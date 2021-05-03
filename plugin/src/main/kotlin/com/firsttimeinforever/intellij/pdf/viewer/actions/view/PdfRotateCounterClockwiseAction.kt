@@ -3,8 +3,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class PdfDecreaseScaleAction : PdfAction() {
+// TODO: Add icon
+class PdfRotateCounterClockwiseAction : PdfAction() {
   override fun actionPerformed(event: AnActionEvent) {
-    findController(event)?.steppedChangeScale(increase = false)
+    findController(event)?.rotate(clockwise = false)
   }
 }
