@@ -15,6 +15,7 @@ class PdfSidebarViewModeActionGroup : DefaultActionGroup() {
   override fun isPopup(): Boolean = true
 
   override fun update(event: AnActionEvent) {
+    event.presentation.isVisible = PdfAction.hasOpenedEditor(event)
     event.presentation.isEnabled = PdfAction.findController(event) != null
   }
 }
@@ -23,6 +24,7 @@ class PdfPageSpreadActionGroup : DefaultActionGroup() {
   override fun isPopup(): Boolean = true
 
   override fun update(event: AnActionEvent) {
+    event.presentation.isVisible = PdfAction.hasOpenedEditor(event)
     event.presentation.isEnabled = PdfAction.findController(event) != null
   }
 }

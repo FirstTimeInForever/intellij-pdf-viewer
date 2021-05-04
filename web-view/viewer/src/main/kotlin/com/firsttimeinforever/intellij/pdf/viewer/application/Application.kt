@@ -120,7 +120,7 @@ class Application(private val viewer: ViewerAdapter) {
       viewer.viewerApp.pdfDocumentProperties.pdfDocumentProperties.open()
       viewer.viewerApp.pdfDocumentProperties.pdfDocumentProperties.close()
     } catch (error: Throwable) {
-      console.error(error)
+      console.warn(error)
     }
   }
 

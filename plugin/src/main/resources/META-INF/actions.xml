@@ -13,17 +13,12 @@
               icon="AllIcons.Actions.ForceRefresh"/>
       <action id="pdf.viewer.ShowDocumentInfoAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfShowDocumentInfoAction"
-              text="Show Document Info"
               icon="AllIcons.General.Information"/>
       <action id="pdf.viewer.ToggleScrollDirectionAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleScrollDirectionAction"
-              text="Set Vertical Scrolling"
-              description="Sets vertical scrolling for document pages"
               icon="AllIcons.Actions.SplitVertically"/>
       <action id="pdf.viewer.ToggleInvertDocumentColorsAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleInvertDocumentColorsAction"
-              text="Invert Document Colors"
-              description="Applies invert filter to every document page (experimental)"/>
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleInvertDocumentColorsAction"/>
 
       <!--Sidebar view mode actions-->
       <action id="pdf.viewer.HideSidebarAction"
@@ -47,17 +42,13 @@
       <!--Change scale actions-->
       <action id="pdf.viewer.IncreaseScaleAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfIncreaseScaleAction"
-              text="Increase Current Document Scale"
-              icon="AllIcons.General.Add"
-              description="Increases document scale in current editor">
+              icon="AllIcons.General.Add">
         <keyboard-shortcut keymap="$default" first-keystroke="shift control EQUALS"/>
         <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
       </action>
       <action id="pdf.viewer.DecreaseScaleAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfDecreaseScaleAction"
-              text="Decrease Current Document Scale"
-              icon="AllIcons.General.Remove"
-              description="Decreases document scale in current editor">
+              icon="AllIcons.General.Remove">
         <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
         <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
       </action>
@@ -65,31 +56,23 @@
       <!--Page spread actions-->
       <action id="pdf.viewer.SetPageSpreadNoneAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$None"
-              text="Disable Page Spread"
-              description="Disables page spread"
               icon="/icons/actions/spreadNone.svg"/>
       <action id="pdf.viewer.SetPageSpreadOddAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$Odd"
-              text="Spread Odd Pages"
-              description="Spreads pages in odd pairs"
               icon="/icons/actions/spreadOdd.svg"/>
       <action id="pdf.viewer.SetPageSpreadEvenAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$Even"
-              text="Spread Even Pages"
-              description="Spreads pages in even pairs"
               icon="/icons/actions/spreadEven.svg"/>
 
       <!--Search actions-->
       <action id="pdf.viewer.FindForwardAction"
               icon="AllIcons.Actions.FindForward"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Forward"
-              text="Find In Document">
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Forward">
         <keyboard-shortcut keymap="$default" first-keystroke="control F"/>
         <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
       </action>
       <action id="pdf.viewer.FindBackwardAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Backward"
-              text="Find Previous In Document"
               icon="AllIcons.Actions.FindBackward">
         <keyboard-shortcut keymap="$default" first-keystroke="shift control F"/>
         <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
@@ -98,13 +81,9 @@
       <!--Rotate actions-->
       <action id="pdf.viewer.RotateClockwiseAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateClockwiseAction"
-              text="Rotate Document Clockwise"
-              description="Rotates document clockwise"
               icon="/icons/actions/rotateRight.svg"/>
       <action id="pdf.viewer.RotateCounterClockwiseAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateCounterClockwiseAction"
-              text="Rotate Document Counterclockwise"
-              description="Rotates document counterclockwise"
               icon="/icons/actions/rotateLeft.svg"/>
     </group>
 
@@ -149,7 +128,6 @@
 
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToolbarSearchActionGroup"
            id="pdf.viewer.PdfEditorToolbarSearchActionGroup"
-           text="Pdf Viewer Toolbar Search Actions"
            popup="true"
            compact="true">
       <reference ref="pdf.viewer.FindForwardAction"/>

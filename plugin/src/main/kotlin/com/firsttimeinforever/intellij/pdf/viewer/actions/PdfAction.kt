@@ -13,26 +13,33 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 
 abstract class PdfAction : AnAction() {
   override fun update(event: AnActionEvent) {
-    val controller = findController(event)
-    event.presentation.isEnabledAndVisible = controller != null
-    // if (UISettings.instance.presentationMode && disableInIdePresentationMode) {
-    //     event.presentation.isEnabledAndVisible = false
-    // }
+    with(event.presentation) {
+      isVisible = hasOpenedEditor(event)
+      isEnabled = findController(event) != null
+    }
   }
 
   companion object {
     fun findEditor(event: AnActionEvent): PdfFileEditor? {
-      return event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor ?: findFirstSelectedEditor(event)
+      return event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
     }
 
-    fun findFirstSelectedEditor(event: AnActionEvent): PdfFileEditor? {
+    fun findAnyEditor(event: AnActionEvent): PdfFileEditor? {
       val project = event.project ?: return null
-      val file = event.getData(PlatformDataKeys.VIRTUAL_FILE) ?: return null
-      return FileEditorManager.getInstance(project)?.getSelectedEditor(file) as? PdfFileEditor
+      val editorManager = FileEditorManager.getInstance(project)
+      return editorManager.allEditors.firstOrNull { it is PdfFileEditor } as? PdfFileEditor
+    }
+
+    fun hasOpenedEditor(event: AnActionEvent): Boolean {
+      return findAnyEditor(event) != null
     }
 
     fun findController(event: AnActionEvent): PdfJcefPreviewController? {
       return findEditor(event)?.viewComponent?.controller
+    }
+
+    fun findController(editor: PdfFileEditor?): PdfJcefPreviewController? {
+      return editor?.viewComponent?.controller
     }
 
     fun showUnsupportedActionNotification(event: AnActionEvent) {

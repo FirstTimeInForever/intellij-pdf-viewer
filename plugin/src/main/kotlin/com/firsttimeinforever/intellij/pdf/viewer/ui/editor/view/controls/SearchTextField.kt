@@ -10,6 +10,7 @@ import javax.swing.JTextField
 import javax.swing.KeyStroke.getKeyStroke
 import javax.swing.event.DocumentEvent
 
+// TODO: Replace with EditorTextField
 @ApiStatus.Internal
 internal class SearchTextField : JTextField() {
   init {

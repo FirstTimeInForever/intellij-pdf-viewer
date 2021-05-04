@@ -19,9 +19,8 @@ abstract class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarVi
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    val controller = PdfAction.findController(event)
-    event.presentation.isVisible = controller != null
-    event.presentation.isEnabled = canBeEnabled(controller)
+    event.presentation.isVisible = PdfAction.hasOpenedEditor(event)
+    event.presentation.isEnabled = canBeEnabled(PdfAction.findController(event))
   }
 
   private fun canBeEnabled(controller: PdfJcefPreviewController?): Boolean {

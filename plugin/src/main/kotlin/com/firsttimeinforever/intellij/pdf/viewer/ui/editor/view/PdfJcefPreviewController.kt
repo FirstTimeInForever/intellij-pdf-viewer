@@ -1,6 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefBrowserMessagePipe
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addConsoleMessageListener
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.createDefaultConsoleMessageListener
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.invokeAndWaitForLoadEnd
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
@@ -25,6 +27,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
@@ -56,6 +59,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   init {
     Disposer.register(this, browser)
     Disposer.register(this, messageBusConnection)
+
+    if (Registry.`is`("pdf.viewer.debug", false)) {
+      browser.addConsoleMessageListener(createDefaultConsoleMessageListener(logger))
+    }
 
     pipe.subscribe<BrowserMessages.InitialViewProperties> {
       logger.debug(it.toString())
