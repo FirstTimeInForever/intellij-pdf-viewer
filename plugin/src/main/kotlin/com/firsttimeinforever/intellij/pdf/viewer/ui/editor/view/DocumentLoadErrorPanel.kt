@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.salvaged
+package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import javax.swing.BorderFactory
