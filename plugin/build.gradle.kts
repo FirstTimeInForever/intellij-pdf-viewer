@@ -7,7 +7,7 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "0.6.5"
+  id("org.jetbrains.intellij") version "0.7.3"
   id("org.jetbrains.changelog") version "0.6.2"
   id("com.github.ben-manes.versions") version "0.36.0"
 }
@@ -36,7 +36,10 @@ dependencies {
 }
 
 intellij {
-  version = "IC-2020.3"
+  version = "2021.1.1"
+  setPlugins("nl.rubensten.texifyidea:0.7.5")
+  sameSinceUntilBuild = true
+  updateSinceUntilBuild = false
 }
 
 tasks {

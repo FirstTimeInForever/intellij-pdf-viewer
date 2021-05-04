@@ -75,7 +75,7 @@ internal class PdfStaticServer : HttpRequestHandler() {
     }
     val contentType = FileResponses.getContentType(targetFile.toString())
     logger.debug("Sending internal file: $targetFile with contentType: $contentType")
-    val resultBuffer = Unpooled.wrappedBuffer(PdfResourceLoader.load(targetFile))
+    val resultBuffer = Unpooled.wrappedBuffer(PdfResourceLoader.loadFromRoot(targetFile))
     val response = response(contentType, resultBuffer)
     response.send(context.channel(), request)
   }

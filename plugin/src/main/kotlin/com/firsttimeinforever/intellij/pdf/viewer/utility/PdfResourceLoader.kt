@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.utility
 
-import java.io.File
+import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import java.io.FileNotFoundException
 import java.nio.charset.Charset
 import java.nio.file.Path
@@ -10,35 +10,24 @@ internal object PdfResourceLoader {
   private val shouldFixPaths = System.getProperty("os.name").toLowerCase().contains("windows")
 
   // FIXME: Determine resource charset
-  fun load(file: File): ByteArray {
-    val targetPath = ensureCorrectFormedPath(file)
-    return this::class.java.getResourceAsStream(targetPath).use {
+  inline fun <reified T> load(path: Path): ByteArray {
+    return T::class.java.getResourceAsStream(path.toString()).use {
       if (it == null) {
-        throw FileNotFoundException("Could not load resource file: $targetPath")
+        throw FileNotFoundException("Could not load resource file: $path")
       }
       it.readBytes()
     }
   }
 
-  fun load(path: Path): ByteArray {
-    return load(path.toFile())
+  fun loadFromRoot(path: Path): ByteArray {
+    return load<PdfViewerBundle>(path)
   }
 
-  fun load(first: String, vararg rest: String): ByteArray {
-    return load(Paths.get(first, *rest))
+  inline fun <reified T> load(first: String, vararg rest: String): ByteArray {
+    return load<T>(Paths.get(first, *rest))
   }
 
-  fun loadString(first: String, vararg rest: String): String {
-    return load(first, *rest).toString(Charset.defaultCharset())
-  }
-
-  // FIXME: Use correct resolve methods
-  // Fix incorrect pathing on windows, duh
-  private fun ensureCorrectFormedPath(file: File): String {
-    val path = file.toString()
-    return when {
-      shouldFixPaths -> path.replace('\\', '/')
-      else -> path
-    }
+  inline fun <reified T> loadString(first: String, vararg rest: String): String {
+    return load<T>(first, *rest).toString(Charset.defaultCharset())
   }
 }

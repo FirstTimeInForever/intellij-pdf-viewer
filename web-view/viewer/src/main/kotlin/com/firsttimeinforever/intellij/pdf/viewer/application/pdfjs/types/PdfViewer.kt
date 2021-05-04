@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types
 
 external class PdfViewer {
   val _location: PdfViewerLocation
+  val _pages: Array<InternalPageObject>
   var spreadMode: Int
   val scrollMode: Int
   val pagesRotation: Int

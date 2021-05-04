@@ -32,9 +32,7 @@ class PdfUnsupportedViewPanel : JPanel(), DumbAware {
 
   companion object {
     private val content by lazy {
-      PdfResourceLoader.load(
-        Paths.get("messages", "stubPanelContent.html").toFile()
-      ).toString(Charset.defaultCharset())
+      PdfResourceLoader.loadString<PdfUnsupportedViewPanel>("stubPanelContent.html")
     }
   }
 }

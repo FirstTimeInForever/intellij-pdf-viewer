@@ -1,21 +1,19 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
-import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.Internals
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ThemeUtils
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Object
+import com.firsttimeinforever.intellij.pdf.viewer.application.tex.SynctexSearchController
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
-import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.Document
-import org.w3c.dom.HTMLElement
 import kotlin.js.Promise
 import kotlin.js.json
 
@@ -26,9 +24,13 @@ class Application(private val viewer: ViewerAdapter) {
   private val pipe = BrowserMessagePipe()
   private val sidebarController = SidebarController(viewer)
 
+  private val synctexSearchController = SynctexSearchController(pipe, viewer)
+
+  @Suppress("MemberVisibilityCanBePrivate")
   val documentInfo by lazy { collectDocumentInfo() }
 
   // FIXME: This is incorrect
+  @Suppress("MemberVisibilityCanBePrivate")
   val fileName by lazy { viewer.viewerApp.baseUrl.split('/').last() }
 
   init {
@@ -90,6 +92,7 @@ class Application(private val viewer: ViewerAdapter) {
       updateTheme(it.theme)
     }
     ensureDocumentPropertiesReady()
+    synctexSearchController.finishInitialization()
   }
 
   private fun updateTheme(viewTheme: ViewTheme) {
@@ -142,6 +145,11 @@ class Application(private val viewer: ViewerAdapter) {
     notifyViewStateChanged(ViewStateChangeReason.ZOOM)
   }
 
+  @Suppress("UNUSED_PARAMETER")
+  private fun pageChangeListener(event: dynamic) {
+    notifyViewStateChanged(ViewStateChangeReason.PAGE_NUMBER)
+  }
+
   private fun notifyViewStateChanged(reason: ViewStateChangeReason = ViewStateChangeReason.UNSPECIFIED) {
     pipe.send(BrowserMessages.ViewStateChanged(collectViewState(), reason))
   }
@@ -151,12 +159,12 @@ class Application(private val viewer: ViewerAdapter) {
       pipe.send(BrowserMessages.InitialViewProperties(it))
     }
     notifyViewStateChanged(ViewStateChangeReason.INITIAL)
-    viewer.addEventListener(ViewerEvents.PAGE_CHANGING) {
-      notifyViewStateChanged(ViewStateChangeReason.PAGE_NUMBER)
+    with(viewer) {
+      addEventListener(ViewerEvents.PAGE_CHANGING, ::pageChangeListener)
+      addEventListener(ViewerEvents.ZOOM_IN, ::zoomChangeListener)
+      addEventListener(ViewerEvents.ZOOM_OUT, ::zoomChangeListener)
+      addEventListener(ViewerEvents.ZOOM_RESET, ::zoomChangeListener)
     }
-    viewer.addEventListener(ViewerEvents.ZOOM_IN, ::zoomChangeListener)
-    viewer.addEventListener(ViewerEvents.ZOOM_OUT, ::zoomChangeListener)
-    viewer.addEventListener(ViewerEvents.ZOOM_RESET, ::zoomChangeListener)
     // viewer.viewerApp.initializedPromise.then { start() }
   }
 }

@@ -9,8 +9,12 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewThemeUtils.create
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.tex.SynctexPreciseLocation
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexFileAvailable
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexInstalled
+import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
 import com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs.Dialogs
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
 import com.intellij.openapi.Disposable
@@ -47,14 +51,18 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   var viewProperties = ViewProperties()
     private set
 
+  private var currentForwardSearchData: SynctexPreciseLocation? = null
+
   init {
     Disposer.register(this, browser)
     Disposer.register(this, messageBusConnection)
+
     pipe.subscribe<BrowserMessages.InitialViewProperties> {
       logger.debug(it.toString())
       viewProperties = it.properties
       // TODO: Move to dedicated in-memory stylesheet and serve it as a resource
       updateViewTheme(collectThemeColors())
+      pipe.send(IdeMessages.SynctexAvailability(virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
     }
     pipe.subscribe<BrowserMessages.ViewStateChanged> {
       logger.debug(it.toString())
@@ -63,6 +71,16 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.subscribe<BrowserMessages.DocumentInfoResponse> {
       Dialogs.showDocumentInfoDialog(it.info)
     }
+
+    pipe.subscribe<BrowserMessages.SynctexSyncEditor> {
+      TexFileInfo.fromSynctexInfoData(virtualFile, it.coordinates)?.syncEditor(project)
+    }
+    pipe.subscribe<BrowserMessages.AskForwardSearchData> {
+      currentForwardSearchData?.let {
+        pipe.send(IdeMessages.SynctexForwardSearch(it))
+      }
+    }
+
     reload(tryToPreserveState = true)
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
     messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
@@ -171,6 +189,11 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   fun updateViewTheme(viewTheme: ViewTheme) {
     pipe.send(IdeMessages.UpdateThemeColors(viewTheme))
+  }
+
+  fun setForwardSearchData(data: SynctexPreciseLocation) {
+    currentForwardSearchData = data
+    pipe.send(IdeMessages.SynctexForwardSearch(data))
   }
 
   override fun dispose() = Unit

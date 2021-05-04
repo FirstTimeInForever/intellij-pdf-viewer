@@ -12,9 +12,6 @@ class DocumentLoadErrorPanel : JTextPane() {
   }
 
   companion object {
-    private val content = PdfResourceLoader.loadString(
-      "messages",
-      "documentLoadErrorPanelContent.html"
-    )
+    private val content = PdfResourceLoader.loadString<DocumentLoadErrorPanel>("documentLoadErrorPanelContent.html")
   }
 }

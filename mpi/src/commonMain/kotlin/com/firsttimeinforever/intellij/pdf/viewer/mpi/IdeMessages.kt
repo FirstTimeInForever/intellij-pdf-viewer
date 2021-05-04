@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.mpi
 
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.tex.SynctexPreciseLocation
 import kotlinx.serialization.Serializable
 
 object IdeMessages {
@@ -33,4 +34,10 @@ object IdeMessages {
 
   @Serializable
   data class UpdateThemeColors(val theme: ViewTheme)
+
+  @Serializable
+  data class SynctexForwardSearch(val location: SynctexPreciseLocation)
+
+  @Serializable
+  data class SynctexAvailability(val isAvailable: Boolean)
 }
