@@ -1,5 +1,6 @@
 .gradle
-.idea
+.idea/*
 build
 /src/main/resources/sentry.properties
 /src/main/web-view/node_modules/
+!.idea/icon.png
