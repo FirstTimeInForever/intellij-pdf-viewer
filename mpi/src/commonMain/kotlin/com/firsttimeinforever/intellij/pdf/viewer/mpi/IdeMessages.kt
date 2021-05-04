@@ -32,9 +32,5 @@ object IdeMessages {
   data class SetScrollDirection(val direction: ScrollDirection)
 
   @Serializable
-  data class LafChanged(
-    val background: String,
-    val foreground: String,
-    val isDarkMode: Boolean = false
-  )
+  data class UpdateThemeColors(val theme: ViewTheme)
 }

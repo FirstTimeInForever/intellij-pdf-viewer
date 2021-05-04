@@ -1,11 +1,14 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs
 
 internal object Internals {
-  // --treeitem-expanded-icon: url(images/treeitem-expanded.png);
-  // --treeitem-collapsed-icon: url(images/treeitem-collapsed.png);
   object StyleVariables {
     const val mainColor = "--main-color"
     const val bodyBackgroundColor = "--body-bg-color"
     const val sidebarBackgroundColor = "--sidebar-bg-color"
+    const val iconsBackgroundColor = "--toolbar-icon-bg-color"
+    const val treeItemColor = "--treeitem-color"
+    const val treeItemHoverColor = "--treeitem-hover-color"
+    const val treeItemSelectedColor = "--treeitem-selected-color"
+    const val treeItemSelectedBackgroundColor = "--treeitem-selected-bg-color"
   }
 }

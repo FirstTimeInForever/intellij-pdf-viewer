@@ -20,6 +20,10 @@
               text="Set Vertical Scrolling"
               description="Sets vertical scrolling for document pages"
               icon="AllIcons.Actions.SplitVertically"/>
+      <action id="pdf.viewer.ToggleInvertDocumentColorsAction"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleInvertDocumentColorsAction"
+              text="Invert Document Colors"
+              description="Applies invert filter to every document page (experimental)"/>
 
       <!--Sidebar view mode actions-->
       <action id="pdf.viewer.HideSidebarAction"

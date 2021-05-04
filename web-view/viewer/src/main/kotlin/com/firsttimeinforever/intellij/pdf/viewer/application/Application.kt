@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.Internals
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ThemeUtils
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Object
@@ -13,6 +14,7 @@ import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
+import org.w3c.dom.Document
 import org.w3c.dom.HTMLElement
 import kotlin.js.Promise
 import kotlin.js.json
@@ -33,10 +35,6 @@ class Application(private val viewer: ViewerAdapter) {
     pipe.subscribe<IdeMessages.SidebarViewModeSetRequest> {
       sidebarController.switchViewMode(it.mode)
       notifyViewStateChanged(ViewStateChangeReason.SIDEBAR_VIEW_MODE)
-    }
-    pipe.subscribe<IdeMessages.LafChanged> {
-      console.log(it)
-      updateColors(it.background, it.foreground)
     }
     pipe.subscribe<IdeMessages.GotoPage> {
       console.log(it)
@@ -87,7 +85,19 @@ class Application(private val viewer: ViewerAdapter) {
       }
       notifyViewStateChanged(ViewStateChangeReason.SCROLL_DIRECTION)
     }
+    pipe.subscribe<IdeMessages.UpdateThemeColors> {
+      console.log("Received theme update request $it")
+      updateTheme(it.theme)
+    }
     ensureDocumentPropertiesReady()
+  }
+
+  private fun updateTheme(viewTheme: ViewTheme) {
+    val appConfig = viewer.viewerApp.asDynamic().appConfig
+    // appConfig.appContainer.style.background = viewTheme.background
+    val document = appConfig.appContainer.ownerDocument as Document
+    ThemeUtils.updateColors(document, viewTheme)
+    // ThemeUtils.attachStylesheet(document, ThemeUtils.generateStylesheet(viewTheme))
   }
 
   // FIXME: Reimplement document info collection without open/close hack and
@@ -130,16 +140,6 @@ class Application(private val viewer: ViewerAdapter) {
   @Suppress("UNUSED_PARAMETER")
   private fun zoomChangeListener(event: dynamic) {
     notifyViewStateChanged(ViewStateChangeReason.ZOOM)
-  }
-
-  @Suppress("CAST_NEVER_SUCCEEDS")
-  private fun updateColors(background: String, foreground: String) {
-    val root = window.document.documentElement as HTMLElement
-    with(root.style) {
-      setProperty(Internals.StyleVariables.bodyBackgroundColor, background)
-      setProperty(Internals.StyleVariables.sidebarBackgroundColor, background)
-      setProperty(Internals.StyleVariables.mainColor, foreground)
-    }
   }
 
   private fun notifyViewStateChanged(reason: ViewStateChangeReason = ViewStateChangeReason.UNSPECIFIED) {

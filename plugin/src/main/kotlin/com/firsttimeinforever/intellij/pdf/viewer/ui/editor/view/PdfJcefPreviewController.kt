@@ -1,8 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefBrowserMessagePipe
-import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadEndHandler
-import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadHandler
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.invokeAndWaitForLoadEnd
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
@@ -10,31 +8,36 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewThemeUtils.create
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs.Dialogs
-import com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs.DocumentInfoDialogPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.Application
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.invokeAndWaitIfNeeded
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.ui.ColorUtil
 import com.intellij.ui.jcef.JCEFHtmlPanel
-import java.util.concurrent.CountDownLatch
+import com.intellij.util.ui.UIUtil
+import java.awt.Color
 import java.util.concurrent.locks.ReentrantLock
 
-class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile) : Disposable, DumbAware {
+class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile) :
+  PdfViewerSettingsListener,
+  EditorColorsListener,
+  Disposable,
+  DumbAware
+{
   // TODO: Migrate to OSR when it's ready
   val browser = JCEFHtmlPanel("about:blank")
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController()
-  private val busConnection = project.messageBus.connect(this)
+  private val messageBusConnection = project.messageBus.connect(this)
 
   private val loadLock = ReentrantLock()
 
@@ -46,10 +49,12 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   init {
     Disposer.register(this, browser)
-    Disposer.register(this, busConnection)
+    Disposer.register(this, messageBusConnection)
     pipe.subscribe<BrowserMessages.InitialViewProperties> {
       logger.debug(it.toString())
       viewProperties = it.properties
+      // TODO: Move to dedicated in-memory stylesheet and serve it as a resource
+      updateViewTheme(collectThemeColors())
     }
     pipe.subscribe<BrowserMessages.ViewStateChanged> {
       logger.debug(it.toString())
@@ -58,17 +63,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.subscribe<BrowserMessages.DocumentInfoResponse> {
       Dialogs.showDocumentInfoDialog(it.info)
     }
-    busConnection.subscribe(EditorColorsManager.TOPIC, EditorColorsListener { scheme ->
-      scheme?.let {
-        pipe.send(
-          IdeMessages.LafChanged(
-            "#${ColorUtil.toHex(it.defaultBackground, true)}",
-            "#${ColorUtil.toHex(it.defaultForeground, true)}"
-          )
-        )
-      }
-    })
     reload(tryToPreserveState = true)
+    messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
+    messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
   }
 
   private fun viewStateChanged(viewState: ViewState, reason: ViewStateChangeReason) {
@@ -102,6 +99,44 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     }
   }
 
+  private fun collectThemeColors(
+    background: Color = UIUtil.getPanelBackground(),
+    foreground: Color = UIUtil.getLabelForeground()
+  ): ViewTheme {
+    val colorInvertIntensity = PdfViewerSettings.instance.run {
+      when {
+        invertDocumentColors -> documentColorsInvertIntensity
+        else -> 0
+      }
+    }
+    return when {
+      PdfViewerSettings.instance.useCustomColors -> PdfViewerSettings.instance.run {
+        ViewTheme.create(
+          Color(customBackgroundColor),
+          Color(customForegroundColor),
+          Color(customIconColor),
+          colorInvertIntensity
+        )
+      }
+      else -> ViewTheme.create(
+        background,
+        foreground,
+        PdfViewerSettings.defaultIconColor,
+        colorInvertIntensity
+      )
+    }
+  }
+
+  override fun globalSchemeChange(scheme: EditorColorsScheme?) {
+    logger.info("Global color scheme changed")
+    updateViewTheme(collectThemeColors())
+  }
+
+  override fun settingsChanged(settings: PdfViewerSettings) {
+    logger.info("Settings changed")
+    updateViewTheme(collectThemeColors())
+  }
+
   fun find(text: String, direction: SearchDirection) {
     pipe.send(IdeMessages.Search(text, direction))
   }
@@ -132,6 +167,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   fun setScrollDirection(direction: ScrollDirection) {
     pipe.send(IdeMessages.SetScrollDirection(direction))
+  }
+
+  fun updateViewTheme(viewTheme: ViewTheme) {
+    pipe.send(IdeMessages.UpdateThemeColors(viewTheme))
   }
 
   override fun dispose() = Unit

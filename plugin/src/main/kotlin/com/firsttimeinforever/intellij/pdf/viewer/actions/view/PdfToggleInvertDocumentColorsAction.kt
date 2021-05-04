@@ -5,7 +5,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.util.registry.Registry
 
-class ToggleInvertDocumentColorsAction : PdfToggleAction() {
+class PdfToggleInvertDocumentColorsAction : PdfToggleAction() {
   override fun isSelected(event: AnActionEvent) = PdfViewerSettings.instance.invertDocumentColors
 
   override fun setSelected(event: AnActionEvent, state: Boolean) {
@@ -15,10 +15,8 @@ class ToggleInvertDocumentColorsAction : PdfToggleAction() {
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    @Suppress("UnresolvedPluginConfigReference")
     if (!Registry.`is`("pdf.viewer.enableExperimentalFeatures")) {
-      event.presentation.isEnabled = false
-      event.presentation.isVisible = false
+      event.presentation.isEnabledAndVisible = false
     }
   }
 }

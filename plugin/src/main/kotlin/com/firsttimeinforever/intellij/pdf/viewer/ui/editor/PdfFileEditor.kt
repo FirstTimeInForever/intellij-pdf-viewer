@@ -1,6 +1,9 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfEditorViewComponent
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfViewStateChangedListener
 import com.intellij.diff.util.FileEditorBase
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.DumbAware
@@ -31,6 +34,9 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
 
   private inner class FileChangedListener(var isEnabled: Boolean = false) : BulkFileListener {
     override fun after(events: MutableList<out VFileEvent>) {
+      if (!PdfViewerSettings.instance.enableDocumentAutoReload) {
+        return
+      }
       if (viewComponent.controller == null) {
         logger.warn("FileChangedListener was called for view with controller == null!")
       } else if (isEnabled && events.any { it == virtualFile }) {

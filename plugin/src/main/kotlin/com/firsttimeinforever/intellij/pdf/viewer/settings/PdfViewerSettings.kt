@@ -2,9 +2,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager.getService
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.util.messages.Topic
@@ -35,7 +35,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
     val TOPIC = Topic(PdfViewerSettingsListener::class.java)
 
     val instance: PdfViewerSettings
-      get() = getService(PdfViewerSettings::class.java)
+      get() = service()
 
     val defaultBackgroundColor
       get() = EditorColorsManager.getInstance().globalScheme.defaultBackground

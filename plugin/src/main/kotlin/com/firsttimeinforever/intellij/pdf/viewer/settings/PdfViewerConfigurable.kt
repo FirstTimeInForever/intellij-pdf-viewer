@@ -4,7 +4,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
-class PdfVieverConfigurable : Configurable {
+class PdfViewerConfigurable : Configurable {
   private var settingsForm: PdfViewerSettingsForm? = null
   private val settings = PdfViewerSettings.instance
 
