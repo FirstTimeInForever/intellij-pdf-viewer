@@ -40,4 +40,7 @@ object IdeMessages {
 
   @Serializable
   data class SynctexAvailability(val isAvailable: Boolean)
+
+  @Serializable
+  data class NavigateTo(val destination: String)
 }

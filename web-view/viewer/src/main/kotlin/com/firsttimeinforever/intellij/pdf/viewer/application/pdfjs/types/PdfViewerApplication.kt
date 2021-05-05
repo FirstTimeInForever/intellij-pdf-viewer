@@ -7,6 +7,7 @@ external class PdfViewerApplication {
   val pdfDocument: PdfDocument
   val pdfOutlineViewer: PdfOutlineViewer
   val pdfHistory: dynamic
+  val pdfLinkService: PdfLinkService
 
   val pdfViewer: PdfViewer
 

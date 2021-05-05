@@ -20,6 +20,7 @@ val webViewSourceDirectory = file("$projectDir/src/main/web-view")
 repositories {
   mavenCentral()
   maven("https://www.jetbrains.com/intellij-repository/snapshots")
+  maven("http://maven.geotoolkit.org/")
 }
 
 val webView: Configuration by configurations.creating
@@ -27,6 +28,8 @@ val webView: Configuration by configurations.creating
 dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+  implementation("org.apache.pdfbox:pdfbox:3.0.0-RC1")
+  // implementation("org.apache.pdfbox:preflight:3.0.0-RC1")
   implementation("io.sentry:sentry:1.7.30") {
     // IntelliJ already bundles it and will report a classloader problem if this isn't excluded
     exclude("org.slf4j")

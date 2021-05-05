@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.application
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ThemeUtils
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.InternalOutline
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Object
 import com.firsttimeinforever.intellij.pdf.viewer.application.tex.SynctexSearchController
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
@@ -91,8 +92,38 @@ class Application(private val viewer: ViewerAdapter) {
       console.log("Received theme update request $it")
       updateTheme(it.theme)
     }
+    pipe.subscribe<IdeMessages.NavigateTo> {
+      viewer.viewerApp.pdfLinkService.navigateTo(it.destination)
+    }
     ensureDocumentPropertiesReady()
+    sendOutline()
     synctexSearchController.finishInitialization()
+  }
+
+  private fun sendOutline() {
+    viewer.viewerApp.pdfDocument.getOutline().then { outline ->
+      if (outline != null) {
+        val nodes = Json.decodeFromDynamic<Array<InternalOutline>>(outline)
+        val root = PdfOutlineNode.createRootNode(nodes.map(::traverseOutline))
+        pipe.send(BrowserMessages.DocumentOutline(root))
+      }
+    }
+  }
+
+  private fun traverseOutline(node: InternalOutline): PdfOutlineNode {
+    return when {
+      node.items.isNotEmpty() -> PdfOutlineNode(
+        page = -2,
+        name = node.title,
+        children = node.items.map(::traverseOutline),
+        navigationReference = node.dest
+      )
+      else -> PdfOutlineNode(
+        page = -2,
+        name = node.title,
+        navigationReference = node.dest
+      )
+    }
   }
 
   private fun updateTheme(viewTheme: ViewTheme) {

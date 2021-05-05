@@ -7,13 +7,13 @@ import kotlin.js.Promise
 class SidebarController(private val viewer: ViewerAdapter) {
   @ExperimentalStdlibApi
   fun getAvailableViewModes(): Promise<Set<SidebarViewMode>> {
-    return viewer.viewerApp.pdfDocument.getOutline().then { outline: dynamic ->
+    return viewer.viewerApp.pdfDocument.getOutline().then { outline ->
       buildSet {
         add(SidebarViewMode.THUMBNAILS)
         if (viewer.viewerApp.pdfAttachmentViewer.attachments != null) {
           add(SidebarViewMode.ATTACHMENTS)
         }
-        if (viewer.viewerApp.pdfOutlineViewer.outline != null || outline != null) {
+        if (viewer.viewerApp.pdfOutlineViewer._outline != undefined || outline != null) {
           add(SidebarViewMode.OUTLINE)
         }
       }

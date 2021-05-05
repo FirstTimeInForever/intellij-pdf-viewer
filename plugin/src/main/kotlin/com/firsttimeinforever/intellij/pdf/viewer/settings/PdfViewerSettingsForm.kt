@@ -47,8 +47,8 @@ class PdfViewerSettingsForm : JPanel() {
     it.isEnabled = Registry.`is`("pdf.viewer.enableExperimentalFeatures")
   }
 
-  val enableDocumentAutoReload
-    get() = enableDocumentAutoReloadCheckBox.isSelected
+  var enableDocumentAutoReload = settings.enableDocumentAutoReload
+    private set
 
   val useCustomColors
     get() = useCustomColorsCheckBox.isSelected
@@ -65,6 +65,9 @@ class PdfViewerSettingsForm : JPanel() {
   var documentColorsInvertIntensity = settings.documentColorsInvertIntensity
     private set
 
+  var doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
+    private set
+
   fun loadSettings() {
     enableDocumentAutoReloadCheckBox.isSelected = settings.enableDocumentAutoReload
     useCustomColorsCheckBox.isSelected = settings.useCustomColors
@@ -77,6 +80,7 @@ class PdfViewerSettingsForm : JPanel() {
       iconColorPanel.isEnabled = isSelected
     }
     documentColorsInvertIntensityField.text = settings.documentColorsInvertIntensity.toString()
+    doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
   }
 
   init {
@@ -84,7 +88,10 @@ class PdfViewerSettingsForm : JPanel() {
     add(panel {
       titledRow(PdfViewerBundle.message("pdf.viewer.settings.general")) {
         row {
-          enableDocumentAutoReloadCheckBox()
+          checkBox(PdfViewerBundle.message("pdf.viewer.settings.reload.document"), ::enableDocumentAutoReload)
+        }
+        row {
+          checkBox("Do not open sidebar automatically", ::doNotOpenSidebarAutomatically)
         }
       }
       titledRow(PdfViewerBundle.message("pdf.viewer.settings.viewer.colors")) {

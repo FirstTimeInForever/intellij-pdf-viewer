@@ -1,8 +1,11 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfLocalOutlineBuilder
+import com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfStructureViewBuilder
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfEditorViewComponent
 import com.intellij.diff.util.FileEditorBase
+import com.intellij.ide.structureView.StructureViewBuilder
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -23,6 +26,7 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
     Disposer.register(this, viewComponent)
     Disposer.register(this, messageBusConnection)
     messageBusConnection.subscribe(VirtualFileManager.VFS_CHANGES, fileChangedListener)
+    println(PdfLocalOutlineBuilder.buildTree(virtualFile.toNioPath().toFile()))
   }
 
   override fun getName(): String = NAME
@@ -43,6 +47,10 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
         viewComponent.controller.reload(tryToPreserveState = true)
       }
     }
+  }
+
+  override fun getStructureViewBuilder(): StructureViewBuilder {
+    return PdfStructureViewBuilder(this)
   }
 
   companion object {

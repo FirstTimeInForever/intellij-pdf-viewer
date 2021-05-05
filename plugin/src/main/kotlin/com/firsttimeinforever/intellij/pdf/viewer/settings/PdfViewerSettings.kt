@@ -21,6 +21,8 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var invertDocumentColors = false
     get() = field && Registry.`is`("pdf.viewer.enableExperimentalFeatures")
 
+  var doNotOpenSidebarAutomatically = true
+
   fun notifyListeners() {
     ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).settingsChanged(this)
   }

@@ -47,6 +47,8 @@
     <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable"/>
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+<!--    <structureViewBuilder id="pdf.viewer.StructureView"-->
+<!--                          implementationClass="com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfStructureViewBuilder"/>-->
   </extensions>
 
   <applicationListeners>

@@ -54,6 +54,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   var viewProperties = ViewProperties()
     private set
 
+  var outline: PdfOutlineNode? = null
+    private set
+
   private var currentForwardSearchData: SynctexPreciseLocation? = null
 
   init {
@@ -70,6 +73,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
       // TODO: Move to dedicated in-memory stylesheet and serve it as a resource
       updateViewTheme(collectThemeColors())
       pipe.send(IdeMessages.SynctexAvailability(virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
+    }
+    pipe.subscribe<BrowserMessages.DocumentOutline> {
+      outline = it.outlineNode
+      project.messageBus.syncPublisher(PdfOutlineChangedListener.TOPIC).outlineChanged(it.outlineNode)
     }
     pipe.subscribe<BrowserMessages.ViewStateChanged> {
       logger.debug(it.toString())
@@ -203,13 +210,19 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.SynctexForwardSearch(data))
   }
 
+  fun canNavigate(): Boolean = outline != null
+
+  fun navigate(destinationReference: String) {
+    pipe.send(IdeMessages.NavigateTo(destinationReference))
+  }
+
   override fun dispose() = Unit
 
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
 
     private fun buildUrlWithState(base: String, state: ViewState): String {
-      return with(state) {
+      val positionBase = with(state) {
         val zoom = when (zoom.mode) {
           ZoomMode.CUSTOM -> "${zoom.value},${zoom.leftOffset},${zoom.topOffset}"
           ZoomMode.PAGE_FIT -> "page-fit"
@@ -218,6 +231,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
           ZoomMode.AUTO -> "auto"
         }
         "$base#page=$page&zoom=$zoom"
+      }
+      return when {
+        PdfViewerSettings.instance.doNotOpenSidebarAutomatically -> "$positionBase&pagemode=none"
+        else -> positionBase
       }
     }
   }

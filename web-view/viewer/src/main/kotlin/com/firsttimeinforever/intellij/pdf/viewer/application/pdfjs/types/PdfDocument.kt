@@ -4,5 +4,5 @@ import kotlin.js.Promise
 
 external class PdfDocument {
   val numPages: Int
-  fun getOutline(): Promise<dynamic>
+  fun getOutline(): Promise<Array<InternalOutline>?>
 }

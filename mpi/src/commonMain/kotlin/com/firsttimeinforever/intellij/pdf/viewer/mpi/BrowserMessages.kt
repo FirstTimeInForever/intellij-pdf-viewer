@@ -1,9 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.mpi
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.DocumentInfo
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewProperties
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReason
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.tex.SynctexViewCoordinates
 import kotlinx.serialization.Serializable
 
@@ -25,4 +22,7 @@ object BrowserMessages {
 
   @Serializable
   class AskForwardSearchData
+
+  @Serializable
+  data class DocumentOutline(val outlineNode: PdfOutlineNode)
 }
