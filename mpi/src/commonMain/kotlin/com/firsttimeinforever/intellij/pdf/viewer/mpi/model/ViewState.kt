@@ -10,4 +10,3 @@ data class ViewState(
   val pageSpreadState: PageSpreadState = PageSpreadState.NONE,
   val scrollDirection: ScrollDirection = ScrollDirection.VERTICAL
 )
-

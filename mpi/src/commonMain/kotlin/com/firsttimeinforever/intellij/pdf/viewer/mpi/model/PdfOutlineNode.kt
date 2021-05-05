@@ -3,6 +3,13 @@ package com.firsttimeinforever.intellij.pdf.viewer.mpi.model
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
+/**
+ * Represents a node in PDF outline.
+ * @param name Presentable text of current node
+ * @param children Child nodes
+ * @param page Page number (is not null only for trees built with PdfBox)
+ * @param navigationReference Navigation destination
+ */
 @Serializable
 data class PdfOutlineNode(
   val name: String,
@@ -19,6 +26,6 @@ data class PdfOutlineNode(
     }
 
     @Transient
-    const val ROOT_NAME = "__##root"
+    private const val ROOT_NAME = "__##root"
   }
 }

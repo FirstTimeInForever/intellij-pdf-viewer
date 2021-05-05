@@ -48,12 +48,18 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   private val loadLock = ReentrantLock()
 
+  /**
+   * Current view state of the preview.
+   */
   var viewState = ViewState()
     private set
 
   var viewProperties = ViewProperties()
     private set
 
+  /**
+   * Is null if current document does not have bookmarks.
+   */
   var outline: PdfOutlineNode? = null
     private set
 

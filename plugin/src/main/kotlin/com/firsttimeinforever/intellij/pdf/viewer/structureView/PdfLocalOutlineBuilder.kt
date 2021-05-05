@@ -10,6 +10,10 @@ import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlin
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineNode
 import java.io.File
 
+/**
+ * Uses PdfBox library to extract contents of the [document] outline and builds a tree
+ * out of [PdfOutlineNode].
+ */
 class PdfLocalOutlineBuilder(private val document: PDDocument, private val root: PDOutlineNode) {
   fun build(): PdfOutlineNode? {
     return when {

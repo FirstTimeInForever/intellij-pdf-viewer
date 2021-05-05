@@ -6,7 +6,6 @@ import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
-
 object PdfEditorUtils {
   fun findPdfEditor(project: Project, file: VirtualFile): PdfFileEditor? {
     val editorManager = FileEditorManagerEx.getInstance(project) ?: return null

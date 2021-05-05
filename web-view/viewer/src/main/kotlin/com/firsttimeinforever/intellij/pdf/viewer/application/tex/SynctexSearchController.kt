@@ -182,59 +182,6 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
     targetElement.removeChild(dummyElement)
   }
 
-  /**
-   * Draw a box around the forward search result that is stored in this.forwardSearchData.
-   *
-   * We do NOT explicitly set the page data because then we cannot scroll to the rectangle if the page just changed.
-   * However, we first scroll to the page manually to make sure that the page has been loaded before we request the
-   * canvas to draw on.
-   * @private
-   */
-  // private executeForwardSearch(document: Document) {
-  //   this.resetCanvas();
-  //   const res = 72 / (this.delayedScaleValue * 96);
-  //
-  //   // Scroll to the page before requesting the canvas, to ensure that the page has been loaded.
-  //   const pages = Array.from(AppComponent.getPages(document)).map(p => p as HTMLElement);
-  //   const page = pages[this.forwardSearchData.page - 1];
-  //   page.scrollIntoView();
-  //   const canvas = page.querySelector("canvas") as HTMLCanvasElement;
-  //
-  //   // Create a new canvas to draw on, on top of the already existing canvas.
-  //   const drawingCanvas = document.createElement("canvas");
-  //   drawingCanvas.height = canvas.height;
-  //   drawingCanvas.width = canvas.width;
-  //   drawingCanvas.style.position = "absolute";
-  //   drawingCanvas.style.top = "0px";
-  //   drawingCanvas.style.left = "0px";
-  //   canvas.parentElement.appendChild(drawingCanvas);
-  //
-  //   // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
-  //   this.drawingCanvases = this.drawingCanvases.concat(drawingCanvas);
-  //
-  //   const rectangle = {
-  //     x: this.forwardSearchData.x / res,
-  //     y: this.forwardSearchData.y / res - this.forwardSearchData.height / res,
-  //     width: this.forwardSearchData.width / res,
-  //     height: this.forwardSearchData.height / res
-  //   };
-  //
-  //   const context = drawingCanvas.getContext("2d");
-  //   context.strokeStyle = "red";
-  //   context.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-  //
-  //   // Create a dummy element so we can scroll to the rectangle we have just drawn.
-  //   const scrollDummy = document.createElement("scrollDummy");
-  //   scrollDummy.style.position = "absolute";
-  //   scrollDummy.style.left = `${rectangle.x}px`;
-  //   scrollDummy.style.top = `${rectangle.y}px`;
-  //   canvas.parentElement.appendChild(scrollDummy);
-  //   // Center the rectangle/forward search result in the pdf view.
-  //   scrollDummy.scrollIntoView({block: "center", inline: "center"});
-  //   canvas.parentElement.removeChild(scrollDummy);
-  // }
-
-
   companion object {
     private fun getPages(document: Document): NodeList {
       return document.querySelectorAll(".page")

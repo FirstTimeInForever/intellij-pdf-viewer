@@ -28,6 +28,7 @@ class PdfStructureViewModel(
   override fun outlineChanged(outline: PdfOutlineNode) {
     tree = PdfStructureViewTreeBuilder.build(editor)
     modelListeners.forEach { it.onModelChanged() }
+    // Needed to refresh structure view component
     val wrapper = StructureViewFactoryEx.getInstanceEx(project).structureViewWrapper
     if (wrapper is StructureViewWrapperImpl) {
       ApplicationManager.getApplication().invokeLater {
