@@ -1,5 +1,11 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.12.0
+- Web-view is now mostly rewritten in Kotlin
+- Cleaned plugin code
+- Added structure view with support for navigation (only for documents with outline)
+- Added view state persistence (do not lose zoom or page position on reloads)
+
 ## 0.11.0
 - [Added Add SyncTeX support](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/24) by [
   Abby Berkers](https://github.com/slideclimb), [Thomas Schouten](https://github.com/PHPirates) and [@ZhengKeli](https://github.com/ZhengKeli)
