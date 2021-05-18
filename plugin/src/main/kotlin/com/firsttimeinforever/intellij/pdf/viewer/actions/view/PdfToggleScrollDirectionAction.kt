@@ -1,13 +1,13 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
+import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ScrollDirection
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class PdfToggleScrollDirectionAction : PdfAction() {
+class PdfToggleScrollDirectionAction : PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
     val controller = findController(event) ?: return
     with(controller) {
