@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfLocalOutlineBuilder
 import com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfStructureViewBuilder
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfEditorViewComponent
@@ -20,13 +21,16 @@ import javax.swing.JComponent
 class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : FileEditorBase(), DumbAware {
   val viewComponent = PdfEditorViewComponent(project, virtualFile)
   private val messageBusConnection = project.messageBus.connect()
-  private val fileChangedListener = FileChangedListener()
+  private val fileChangedListener = FileChangedListener(PdfViewerSettings.instance.enableDocumentAutoReload)
 
   init {
     Disposer.register(this, viewComponent)
     Disposer.register(this, messageBusConnection)
     messageBusConnection.subscribe(VirtualFileManager.VFS_CHANGES, fileChangedListener)
     println(PdfLocalOutlineBuilder.buildTree(virtualFile.toNioPath().toFile()))
+    messageBusConnection.subscribe(PdfViewerSettings.TOPIC, PdfViewerSettingsListener {
+      fileChangedListener.isEnabled = it.enableDocumentAutoReload
+    })
   }
 
   override fun getName(): String = NAME
@@ -35,14 +39,14 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
 
   override fun getPreferredFocusedComponent(): JComponent = viewComponent.controlPanel
 
-  private inner class FileChangedListener(var isEnabled: Boolean = false) : BulkFileListener {
+  private inner class FileChangedListener(var isEnabled: Boolean = true) : BulkFileListener {
     override fun after(events: MutableList<out VFileEvent>) {
-      if (!PdfViewerSettings.instance.enableDocumentAutoReload) {
+      if (!isEnabled) {
         return
       }
       if (viewComponent.controller == null) {
         logger.warn("FileChangedListener was called for view with controller == null!")
-      } else if (isEnabled && events.any { it.file == virtualFile }) {
+      } else if (events.any { it.file == virtualFile }) {
         logger.debug("Target file ${virtualFile.path} changed. Reloading current view.")
         viewComponent.controller.reload(tryToPreserveState = true)
       }
