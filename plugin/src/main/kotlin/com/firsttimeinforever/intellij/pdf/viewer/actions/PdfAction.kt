@@ -13,9 +13,10 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 
 abstract class PdfAction : AnAction() {
   override fun update(event: AnActionEvent) {
+    val editor = findAnyEditor(event)
     with(event.presentation) {
-      isVisible = hasOpenedEditor(event)
-      isEnabled = findController(event) != null
+      isVisible = editor != null
+      isEnabled = findController(editor) != null
     }
   }
 
@@ -35,7 +36,7 @@ abstract class PdfAction : AnAction() {
     }
 
     fun findController(event: AnActionEvent): PdfJcefPreviewController? {
-      return findEditor(event)?.viewComponent?.controller
+      return findAnyEditor(event)?.viewComponent?.controller
     }
 
     fun findController(editor: PdfFileEditor?): PdfJcefPreviewController? {
