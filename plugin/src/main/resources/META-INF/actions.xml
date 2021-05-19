@@ -55,13 +55,13 @@
 
       <!--Page spread actions-->
       <action id="pdf.viewer.SetPageSpreadNoneAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$None"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$None"
               icon="/icons/actions/spreadNone.svg"/>
       <action id="pdf.viewer.SetPageSpreadOddAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$Odd"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Odd"
               icon="/icons/actions/spreadOdd.svg"/>
       <action id="pdf.viewer.SetPageSpreadEvenAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.SetPageSpreadStateAction$Even"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Even"
               icon="/icons/actions/spreadEven.svg"/>
 
       <!--Search actions-->
