@@ -60,7 +60,7 @@ jobs:
           echo "::set-output name=name::$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')"
 
       - name: Build Plugin
-        run: ./gradlew buildPlugin
+        run: ./gradlew :plugin:buildPlugin
 
 #      - name: Verify Plugin
 #        run: ./gradlew runPluginVerifier
@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: plugin-artifact
-          path: ./build/distributions/${{ steps.properties.outputs.name }}-${{ steps.properties.outputs.version }}.zip
+          path: ./plugin/build/distributions/${{ steps.properties.outputs.name }}-${{ steps.properties.outputs.version }}.zip
 
   # If accepted and published, release workflow would be triggered
   release-draft:
