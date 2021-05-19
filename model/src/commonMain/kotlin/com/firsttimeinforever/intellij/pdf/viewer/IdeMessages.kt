@@ -43,4 +43,7 @@ object IdeMessages {
 
   @Serializable
   data class NavigateTo(val destination: String)
+
+  @Serializable
+  class ExitPresentationMode
 }

@@ -11,6 +11,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
+import kotlinx.browser.document
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
@@ -94,6 +95,12 @@ class Application(private val viewer: ViewerAdapter) {
     }
     pipe.subscribe<IdeMessages.NavigateTo> {
       viewer.viewerApp.pdfLinkService.navigateTo(it.destination)
+    }
+    pipe.subscribe<IdeMessages.ExitPresentationMode> {
+      // ignored promise
+      document.exitFullscreen().catch {
+        console.warn(it)
+      }
     }
     ensureDocumentPropertiesReady()
     sendOutline()
@@ -199,4 +206,3 @@ class Application(private val viewer: ViewerAdapter) {
     // viewer.viewerApp.initializedPromise.then { start() }
   }
 }
-

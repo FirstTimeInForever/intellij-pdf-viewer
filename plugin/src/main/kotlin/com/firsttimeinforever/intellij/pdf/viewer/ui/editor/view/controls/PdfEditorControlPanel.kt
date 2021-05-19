@@ -57,23 +57,15 @@ class PdfEditorControlPanel(project: Project) :
       searchTextField.text = value
     }
 
-  private var presentationModeEnabled = false
-    set(value) {
-      field = value
-      searchTextField.isEnabled = !value
-    }
-
   override fun uiSettingsChanged(settings: UISettings) {
-    // Action buttons will be hidded by their update
+    // Action buttons will be hidden by their update
     searchTextField.isVisible = !settings.presentationMode
     searchTextField.isEnabled = !settings.presentationMode
-    if (presentationModeEnabled) {
-      searchTextField.isEnabled = false
-    }
   }
 
   override fun presentationModeChanged(controller: PdfPresentationController) {
-    TODO("Not yet implemented")
+    searchTextField.isVisible = !controller.isPresentationModeActive
+    searchTextField.isEnabled = !controller.isPresentationModeActive
   }
 
   override fun dispose() = Unit

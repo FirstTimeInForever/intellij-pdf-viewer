@@ -85,6 +85,13 @@
       <action id="pdf.viewer.RotateCounterClockwiseAction"
               class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateCounterClockwiseAction"
               icon="/icons/actions/rotateLeft.svg"/>
+
+      <!-- Presentation mode actions-->
+      <action id="pdf.viewer.ToggleDocumentPresentationAction"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleDocumentPresentationAction"/>
+      <action id="pdf.viewer.ToggleIdePresentationModeAction"
+              class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleIdePresentationModeAction"
+              icon="AllIcons.General.FitContent"/>
     </group>
 
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfSidebarViewModeActionGroup"
@@ -124,6 +131,9 @@
       <reference ref="pdf.viewer.RotateCounterClockwiseAction"/>
       <separator/>
       <reference ref="pdf.viewer.ToggleScrollDirectionAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ToggleDocumentPresentationAction"/>
+      <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>
     </group>
 
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToolbarSearchActionGroup"

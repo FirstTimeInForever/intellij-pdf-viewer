@@ -6,15 +6,15 @@ import com.intellij.openapi.actionSystem.ToggleAction
 /**
  * Ensure [PdfToggleAction.update] is called before your code.
  */
-abstract class PdfToggleAction : ToggleAction() {
-  protected open val base: PdfAction = StubAction()
+abstract class PdfToggleAction(viewModeAwareness: ViewModeAwareness = ViewModeAwareness.IDE_ONLY) : ToggleAction() {
+  protected open val base: PdfAction = StubAction(viewModeAwareness)
 
   override fun update(event: AnActionEvent) {
     super.update(event)
     base.update(event)
   }
 
-  private inner class StubAction : PdfAction() {
+  private inner class StubAction(viewModeAwareness: ViewModeAwareness) : PdfAction(viewModeAwareness) {
     override fun actionPerformed(event: AnActionEvent) {
       throw IllegalStateException("This method should not be called")
     }

@@ -43,7 +43,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   // TODO: Migrate to OSR when it's ready
   val browser = JCEFHtmlPanel("about:blank")
   val pipe = JcefBrowserMessagePipe(browser)
-  val presentationController = PdfPresentationController()
+  val presentationController = PdfPresentationController(this)
   private val messageBusConnection = project.messageBus.connect(this)
 
   private val loadLock = ReentrantLock()

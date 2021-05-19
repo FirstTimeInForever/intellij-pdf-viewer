@@ -18,4 +18,6 @@ external class PdfViewerApplication {
   val pdfDocumentProperties: dynamic
 
   val baseUrl: String
+
+  fun requestPresentationMode()
 }

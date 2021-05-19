@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
+import com.intellij.ide.ui.UISettings
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
@@ -11,12 +12,28 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.fileEditor.FileEditorManager
 
-abstract class PdfAction : AnAction() {
+abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = ViewModeAwareness.IDE) : AnAction() {
   override fun update(event: AnActionEvent) {
     val editor = findAnyEditor(event)
     with(event.presentation) {
       isVisible = editor != null
       isEnabled = findController(editor) != null
+    }
+    adjustPresentationVisibility(event)
+  }
+
+  protected fun adjustPresentationVisibility(event: AnActionEvent) {
+    val controller = findController(event) ?: return
+    val idePresentation = UISettings.instance.presentationMode
+    val documentPresentation = controller.presentationController.isPresentationModeActive
+    event.presentation.isEnabledAndVisible = when (viewModeAwareness) {
+      ViewModeAwareness.NONE -> !idePresentation && !documentPresentation
+      ViewModeAwareness.IDE -> !documentPresentation
+      ViewModeAwareness.IDE_ONLY -> idePresentation && !documentPresentation
+      ViewModeAwareness.DOCUMENT -> !idePresentation
+      ViewModeAwareness.DOCUMENT_ONLY -> !idePresentation && documentPresentation
+      ViewModeAwareness.BOTH -> true
+      ViewModeAwareness.BOTH_ONLY -> idePresentation && documentPresentation
     }
   }
 

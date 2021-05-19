@@ -4,8 +4,8 @@ import com.intellij.AbstractBundle
 import org.jetbrains.annotations.PropertyKey
 import java.util.*
 
-object PdfViewerBundle {
-  private const val BUNDLE_NAME = "messages.PdfViewerBundle"
+object PdfViewerActionsBundle {
+  private const val BUNDLE_NAME = "messages.PdfViewerActionsBundle"
 
   private val bundle by lazy { ResourceBundle.getBundle(BUNDLE_NAME) }
 
