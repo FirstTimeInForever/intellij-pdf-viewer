@@ -44,6 +44,7 @@ intellij {
   setPlugins("nl.rubensten.texifyidea:0.7.5")
   sameSinceUntilBuild = true
   updateSinceUntilBuild = false
+  pluginName = "intellij-pdf-viewer"
 }
 
 tasks {
