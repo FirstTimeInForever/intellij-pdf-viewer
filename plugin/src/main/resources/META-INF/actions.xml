@@ -1,98 +1,96 @@
 <idea-plugin>
   <actions resource-bundle="messages.PdfViewerActionsBundle">
-    <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionGroup"
-           id="pdf.viewer.PdfActionGroup"
-           popup="true"
-           compact="true">
-      <action id="pdf.viewer.OpenDevtoolsAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.debug.PdfOpenDevtoolsAction"/>
+    <action id="pdf.viewer.OpenDevtoolsAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.debug.PdfOpenDevtoolsAction"/>
 
-      <!--Common actions-->
-      <action id="pdf.viewer.ReloadViewAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
-              icon="AllIcons.Actions.ForceRefresh"/>
-      <action id="pdf.viewer.ShowDocumentInfoAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfShowDocumentInfoAction"
-              icon="AllIcons.General.Information"/>
-      <action id="pdf.viewer.ToggleScrollDirectionAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleScrollDirectionAction"
-              icon="AllIcons.Actions.SplitVertically"/>
-      <action id="pdf.viewer.ToggleInvertDocumentColorsAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleInvertDocumentColorsAction"/>
+    <!--Common actions-->
+    <action id="pdf.viewer.ReloadViewAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
+            icon="AllIcons.Actions.ForceRefresh"/>
+    <action id="pdf.viewer.ShowDocumentInfoAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfShowDocumentInfoAction"
+            icon="AllIcons.General.Information"/>
+    <action id="pdf.viewer.ToggleScrollDirectionAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleScrollDirectionAction"
+            icon="AllIcons.Actions.SplitVertically"/>
+    <action id="pdf.viewer.ToggleInvertDocumentColorsAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfToggleInvertDocumentColorsAction"/>
 
-      <!--Sidebar view mode actions-->
-      <action id="pdf.viewer.HideSidebarAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Hide"
-              icon="AllIcons.Actions.PreviewDetails"/>
-      <action id="pdf.viewer.SetSidebarThumbnailsViewModeAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Thumbnails"/>
-      <action id="pdf.viewer.SetSidebarAttachmentsViewModeAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Attachments"/>
-      <action id="pdf.viewer.SetSidebarOutlineViewModeAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Outline"/>
+    <!--Sidebar view mode actions-->
+    <action id="pdf.viewer.HideSidebarAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Hide"
+            icon="AllIcons.Actions.PreviewDetails"/>
+    <action id="pdf.viewer.SetSidebarThumbnailsViewModeAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Thumbnails"/>
+    <action id="pdf.viewer.SetSidebarAttachmentsViewModeAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Attachments"/>
+    <action id="pdf.viewer.SetSidebarOutlineViewModeAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetSidebarViewModeAction$Outline"/>
 
-      <!--Goto page actions-->
-      <action id="pdf.viewer.GotoNextPageAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
-              icon="AllIcons.Actions.Forward"/>
-      <action id="pdf.viewer.GotoPreviousPageAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoPreviousPageAction"
-              icon="AllIcons.Actions.Back"/>
+    <!--Goto page actions-->
+    <action id="pdf.viewer.GotoNextPageAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
+            icon="AllIcons.Actions.Forward"/>
+    <action id="pdf.viewer.GotoPreviousPageAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoPreviousPageAction"
+            icon="AllIcons.Actions.Back"/>
 
-      <!--Change scale actions-->
-      <action id="pdf.viewer.IncreaseScaleAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfIncreaseScaleAction"
-              icon="AllIcons.General.Add">
-        <keyboard-shortcut keymap="$default" first-keystroke="shift control EQUALS"/>
-        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
-      </action>
-      <action id="pdf.viewer.DecreaseScaleAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfDecreaseScaleAction"
-              icon="AllIcons.General.Remove">
-        <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
-        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
-      </action>
+    <!--Change scale actions-->
+    <action id="pdf.viewer.IncreaseScaleAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfIncreaseScaleAction"
+            icon="AllIcons.General.Add">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift control EQUALS"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
+    </action>
+    <action id="pdf.viewer.DecreaseScaleAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfDecreaseScaleAction"
+            icon="AllIcons.General.Remove">
+      <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
+    </action>
 
-      <!--Page spread actions-->
-      <action id="pdf.viewer.SetPageSpreadNoneAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$None"
-              icon="/icons/actions/spreadNone.svg"/>
-      <action id="pdf.viewer.SetPageSpreadOddAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Odd"
-              icon="/icons/actions/spreadOdd.svg"/>
-      <action id="pdf.viewer.SetPageSpreadEvenAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Even"
-              icon="/icons/actions/spreadEven.svg"/>
+    <!--Page spread actions-->
+    <action id="pdf.viewer.SetPageSpreadNoneAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$None"
+            icon="/icons/actions/spreadNone.svg"/>
+    <action id="pdf.viewer.SetPageSpreadOddAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Odd"
+            icon="/icons/actions/spreadOdd.svg"/>
+    <action id="pdf.viewer.SetPageSpreadEvenAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfSetPageSpreadStateAction$Even"
+            icon="/icons/actions/spreadEven.svg"/>
 
-      <!--Search actions-->
-      <action id="pdf.viewer.FindForwardAction"
-              icon="AllIcons.Actions.FindForward"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Forward">
-        <keyboard-shortcut keymap="$default" first-keystroke="control F"/>
-        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
-      </action>
-      <action id="pdf.viewer.FindBackwardAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Backward"
-              icon="AllIcons.Actions.FindBackward">
-        <keyboard-shortcut keymap="$default" first-keystroke="shift control F"/>
-        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
-      </action>
+    <!--Search actions-->
+    <action id="pdf.viewer.FindForwardAction"
+            icon="AllIcons.Actions.FindForward"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Forward">
+      <keyboard-shortcut keymap="$default" first-keystroke="control F"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
+    </action>
+    <action id="pdf.viewer.FindBackwardAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Backward"
+            icon="AllIcons.Actions.FindBackward">
+      <keyboard-shortcut keymap="$default" first-keystroke="shift control F"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
+    </action>
 
-      <!--Rotate actions-->
-      <action id="pdf.viewer.RotateClockwiseAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateClockwiseAction"
-              icon="/icons/actions/rotateRight.svg"/>
-      <action id="pdf.viewer.RotateCounterClockwiseAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateCounterClockwiseAction"
-              icon="/icons/actions/rotateLeft.svg"/>
+    <!--Rotate actions-->
+    <action id="pdf.viewer.RotateClockwiseAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateClockwiseAction"
+            icon="/icons/actions/rotateRight.svg"/>
+    <action id="pdf.viewer.RotateCounterClockwiseAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateCounterClockwiseAction"
+            icon="/icons/actions/rotateLeft.svg"/>
 
-      <!-- Presentation mode actions-->
-      <action id="pdf.viewer.ToggleDocumentPresentationAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleDocumentPresentationAction"/>
-      <action id="pdf.viewer.ToggleIdePresentationModeAction"
-              class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleIdePresentationModeAction"
-              icon="AllIcons.General.FitContent"/>
-    </group>
+    <!-- Presentation mode actions-->
+    <action id="pdf.viewer.ToggleDocumentPresentationAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleDocumentPresentationAction"/>
+    <action id="pdf.viewer.ToggleIdePresentationModeAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleIdePresentationModeAction"
+            icon="AllIcons.General.FitContent"/>
+
+    <action id="pdf.viewer.ActionList"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionList"/>
 
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfSidebarViewModeActionGroup"
            id="pdf.viewer.EditorSidebarViewModeActionGroup"
@@ -113,8 +111,7 @@
       <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>
     </group>
 
-    <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfLeftToolbarActionGroup"
-           id="pdf.viewer.LeftToolbarActionGroup">
+    <group id="pdf.viewer.LeftToolbarActionGroup">
       <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
       <separator/>
       <reference ref="pdf.viewer.GotoPreviousPageAction"/>
@@ -136,16 +133,42 @@
       <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>
     </group>
 
-    <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToolbarSearchActionGroup"
-           id="pdf.viewer.PdfEditorToolbarSearchActionGroup"
+    <group id="pdf.viewer.PdfEditorToolbarSearchActionGroup"
            popup="true"
            compact="true">
       <reference ref="pdf.viewer.FindForwardAction"/>
       <reference ref="pdf.viewer.FindBackwardAction"/>
     </group>
 
-    <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfRightToolbarActionGroup"
-           id="pdf.viewer.RightToolbarActionGroup">
+    <group id="pdf.viewer.RightToolbarActionGroup">
+      <reference ref="pdf.viewer.ShowDocumentInfoAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ReloadViewAction"/>
+    </group>
+
+    <!--Viewer Actions List -->
+    <group id="pdf.viewer.ViewerActionsList">
+      <reference ref="pdf.viewer.OpenDevtoolsAction"/>
+      <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
+      <separator/>
+      <reference ref="pdf.viewer.GotoPreviousPageAction"/>
+      <reference ref="pdf.viewer.GotoNextPageAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.IncreaseScaleAction"/>
+      <reference ref="pdf.viewer.DecreaseScaleAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
+      <reference ref="pdf.viewer.SetPageSpreadOddAction"/>
+      <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.RotateClockwiseAction"/>
+      <reference ref="pdf.viewer.RotateCounterClockwiseAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ToggleScrollDirectionAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ToggleDocumentPresentationAction"/>
+      <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>
+      <separator/>
       <reference ref="pdf.viewer.ShowDocumentInfoAction"/>
       <separator/>
       <reference ref="pdf.viewer.ReloadViewAction"/>
