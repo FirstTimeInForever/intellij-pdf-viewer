@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.tex
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.tex.SynctexPreciseLocation
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.utility.CommandExecutionUtils.getCommandStdoutIfSuccessful
 import com.intellij.execution.configurations.GeneralCommandLine

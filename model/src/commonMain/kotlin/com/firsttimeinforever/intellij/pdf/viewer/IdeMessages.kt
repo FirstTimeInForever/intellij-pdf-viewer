@@ -1,7 +1,7 @@
-package com.firsttimeinforever.intellij.pdf.viewer.mpi
+package com.firsttimeinforever.intellij.pdf.viewer
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.tex.SynctexPreciseLocation
+import com.firsttimeinforever.intellij.pdf.viewer.model.*
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexPreciseLocation
 import kotlinx.serialization.Serializable
 
 object IdeMessages {

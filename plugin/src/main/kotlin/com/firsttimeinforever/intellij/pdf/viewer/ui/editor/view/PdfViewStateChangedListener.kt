@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReason
+import com.firsttimeinforever.intellij.pdf.viewer.model.ViewState
+import com.firsttimeinforever.intellij.pdf.viewer.model.ViewStateChangeReason
 import com.intellij.util.messages.Topic
 
 fun interface PdfViewStateChangedListener {

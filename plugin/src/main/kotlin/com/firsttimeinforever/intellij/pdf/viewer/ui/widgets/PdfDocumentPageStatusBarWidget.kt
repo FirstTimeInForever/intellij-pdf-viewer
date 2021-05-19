@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.widgets
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewStateChangeReason
+import com.firsttimeinforever.intellij.pdf.viewer.model.ViewStateChangeReason
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfViewStateChangedListener
 import com.intellij.openapi.diagnostic.logger

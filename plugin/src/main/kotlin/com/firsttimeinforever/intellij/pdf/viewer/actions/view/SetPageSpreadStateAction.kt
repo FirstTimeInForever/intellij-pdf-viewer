@@ -2,7 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToggleAction
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
+import com.firsttimeinforever.intellij.pdf.viewer.model.PageSpreadState
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 

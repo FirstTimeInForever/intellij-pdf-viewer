@@ -1,11 +1,10 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ViewTheme
+import com.firsttimeinforever.intellij.pdf.viewer.model.ViewTheme
 import kotlinx.browser.window
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.css.StyleSheet
 
 object ThemeUtils {
   // https://github.com/allefeld/atom-pdfjs-viewer/issues/4#issuecomment-622942606

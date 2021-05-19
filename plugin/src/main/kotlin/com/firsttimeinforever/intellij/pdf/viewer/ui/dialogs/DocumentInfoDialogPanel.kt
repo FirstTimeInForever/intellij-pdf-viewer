@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.dialogs
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.DocumentInfo
+import com.firsttimeinforever.intellij.pdf.viewer.model.DocumentInfo
 import java.awt.BorderLayout
 import javax.swing.*
 import javax.swing.border.EmptyBorder

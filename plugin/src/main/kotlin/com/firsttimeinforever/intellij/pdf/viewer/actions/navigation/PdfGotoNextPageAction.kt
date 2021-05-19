@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.navigation
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageGotoDirection
+import com.firsttimeinforever.intellij.pdf.viewer.model.PageGotoDirection
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfGotoNextPageAction : PdfDumbAwareAction() {

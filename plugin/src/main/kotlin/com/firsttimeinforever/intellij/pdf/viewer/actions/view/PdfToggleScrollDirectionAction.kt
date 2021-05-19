@@ -2,8 +2,8 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ScrollDirection
+import com.firsttimeinforever.intellij.pdf.viewer.model.PageSpreadState
+import com.firsttimeinforever.intellij.pdf.viewer.model.ScrollDirection
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 

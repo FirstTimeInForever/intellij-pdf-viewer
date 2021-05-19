@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.structureView
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PdfOutlineNode
+import com.firsttimeinforever.intellij.pdf.viewer.model.PdfOutlineNode
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 
 object PdfStructureViewTreeBuilder {

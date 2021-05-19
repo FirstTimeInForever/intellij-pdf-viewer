@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.mpi.tex
+package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import kotlinx.serialization.Serializable
 

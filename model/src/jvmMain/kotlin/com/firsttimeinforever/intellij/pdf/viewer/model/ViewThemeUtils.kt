@@ -1,4 +1,4 @@
-package com.firsttimeinforever.intellij.pdf.viewer.mpi.model
+package com.firsttimeinforever.intellij.pdf.viewer.model
 
 import java.awt.Color
 

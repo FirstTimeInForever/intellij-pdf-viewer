@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SidebarViewMode
+import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import kotlin.js.Promise
 
 class SidebarController(private val viewer: ViewerAdapter) {

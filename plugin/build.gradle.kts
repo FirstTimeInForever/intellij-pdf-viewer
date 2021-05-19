@@ -35,6 +35,7 @@ dependencies {
     exclude("org.slf4j")
   }
   implementation(project(":mpi"))
+  implementation(project(":model"))
   webView(project(":web-view:bootstrap"))
 }
 

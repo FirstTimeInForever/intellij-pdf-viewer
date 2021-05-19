@@ -5,6 +5,7 @@ include(":web-view:viewer")
 include(":web-view:bootstrap")
 include(":plugin")
 include(":mpi")
+include(":model")
 
 pluginManagement {
   plugins {

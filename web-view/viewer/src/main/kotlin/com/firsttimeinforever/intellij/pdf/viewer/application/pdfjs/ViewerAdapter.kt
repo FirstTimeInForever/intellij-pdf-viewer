@@ -1,10 +1,10 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs
 
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfViewerApplication
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PageSpreadState
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ScrollDirection
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ZoomMode
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.ZoomState
+import com.firsttimeinforever.intellij.pdf.viewer.model.PageSpreadState
+import com.firsttimeinforever.intellij.pdf.viewer.model.ScrollDirection
+import com.firsttimeinforever.intellij.pdf.viewer.model.ZoomMode
+import com.firsttimeinforever.intellij.pdf.viewer.model.ZoomState
 
 class ViewerAdapter(val viewerApp: PdfViewerApplication) {
   fun addEventListener(event: String, listener: (dynamic) -> Unit) {

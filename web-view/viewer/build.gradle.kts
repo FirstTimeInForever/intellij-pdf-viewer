@@ -10,6 +10,7 @@ repositories {
 dependencies {
   implementation(kotlin("stdlib-js"))
   implementation(project(":mpi"))
+  implementation(project(":model"))
 }
 
 kotlin {

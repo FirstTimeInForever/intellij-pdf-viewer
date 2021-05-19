@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.common
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.SearchDirection
+import com.firsttimeinforever.intellij.pdf.viewer.model.SearchDirection
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 open class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction() {

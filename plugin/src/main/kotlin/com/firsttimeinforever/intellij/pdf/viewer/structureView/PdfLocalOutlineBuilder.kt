@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.structureView
 
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.PdfOutlineNode
+import com.firsttimeinforever.intellij.pdf.viewer.model.PdfOutlineNode
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionGoTo

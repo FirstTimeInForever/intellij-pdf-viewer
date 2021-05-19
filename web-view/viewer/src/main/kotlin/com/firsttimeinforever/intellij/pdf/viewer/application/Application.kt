@@ -6,11 +6,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.InternalOutline
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Object
 import com.firsttimeinforever.intellij.pdf.viewer.application.tex.SynctexSearchController
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.BrowserMessages
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.IdeMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.*
+import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
-import com.firsttimeinforever.intellij.pdf.viewer.mpi.model.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
