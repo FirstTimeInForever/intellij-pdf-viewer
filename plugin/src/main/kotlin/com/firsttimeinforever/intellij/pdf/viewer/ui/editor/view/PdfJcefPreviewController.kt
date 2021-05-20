@@ -142,7 +142,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   }
 
   fun reload(tryToPreserveState: Boolean = false) {
-    if (viewLoaded && !isReloading.compareAndExchange(false, true)) {
+    if (viewLoaded && isReloading.compareAndSet(false, true)) {
       when (tryToPreserveState) {
         true -> pipe.send(IdeMessages.BeforeReload())
         else -> doActualReload(tryToPreserveState)
