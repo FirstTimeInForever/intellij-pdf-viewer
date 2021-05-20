@@ -27,13 +27,14 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
     Disposer.register(this, viewComponent)
     Disposer.register(this, messageBusConnection)
     messageBusConnection.subscribe(VirtualFileManager.VFS_CHANGES, fileChangedListener)
-    println(PdfLocalOutlineBuilder.buildTree(virtualFile.toNioPath().toFile()))
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, PdfViewerSettingsListener {
       fileChangedListener.isEnabled = it.enableDocumentAutoReload
     })
   }
 
   override fun getName(): String = NAME
+
+  override fun getFile(): VirtualFile = virtualFile
 
   override fun getComponent(): JComponent = viewComponent
 
