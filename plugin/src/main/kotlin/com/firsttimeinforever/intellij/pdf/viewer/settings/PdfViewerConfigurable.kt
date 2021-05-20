@@ -16,7 +16,8 @@ class PdfViewerConfigurable : Configurable {
         settings.customForegroundColor != customForegroundColor?.rgb ?: settings.customForegroundColor ||
         settings.customIconColor != customIconColor?.rgb ?: settings.customIconColor ||
         settings.documentColorsInvertIntensity != documentColorsInvertIntensity ||
-        settings.doNotOpenSidebarAutomatically != doNotOpenSidebarAutomatically
+        settings.doNotOpenSidebarAutomatically != doNotOpenSidebarAutomatically ||
+        settings.defaultSidebarViewMode != defaultSidebarViewMode
     } ?: false
   }
 
@@ -32,6 +33,7 @@ class PdfViewerConfigurable : Configurable {
       customIconColor = settingsForm?.customIconColor?.rgb ?: customIconColor
       documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity ?: documentColorsInvertIntensity
       doNotOpenSidebarAutomatically = settingsForm?.doNotOpenSidebarAutomatically ?: doNotOpenSidebarAutomatically
+      defaultSidebarViewMode = settingsForm?.defaultSidebarViewMode ?: defaultSidebarViewMode
     }
     if (wasModified) {
       settings.notifyListeners()

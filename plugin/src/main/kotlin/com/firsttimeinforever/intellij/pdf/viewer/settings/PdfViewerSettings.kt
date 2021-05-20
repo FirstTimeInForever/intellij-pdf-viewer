@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
+import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
@@ -22,6 +23,8 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
     get() = field && Registry.`is`("pdf.viewer.enableExperimentalFeatures")
 
   var doNotOpenSidebarAutomatically = true
+
+  var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.NONE
 
   fun notifyListeners() {
     ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).settingsChanged(this)

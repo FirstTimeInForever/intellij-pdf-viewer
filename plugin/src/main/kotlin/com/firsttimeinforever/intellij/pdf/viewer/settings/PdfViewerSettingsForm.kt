@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.components.JBTextField
@@ -10,10 +11,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import javax.swing.JCheckBox
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
@@ -68,6 +66,9 @@ class PdfViewerSettingsForm : JPanel() {
   var doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
     private set
 
+  var defaultSidebarViewMode = settings.defaultSidebarViewMode
+    private set
+
   fun loadSettings() {
     enableDocumentAutoReloadCheckBox.isSelected = settings.enableDocumentAutoReload
     useCustomColorsCheckBox.isSelected = settings.useCustomColors
@@ -81,6 +82,7 @@ class PdfViewerSettingsForm : JPanel() {
     }
     documentColorsInvertIntensityField.text = settings.documentColorsInvertIntensity.toString()
     doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
+    defaultSidebarViewMode = settings.defaultSidebarViewMode
   }
 
   init {
@@ -93,34 +95,36 @@ class PdfViewerSettingsForm : JPanel() {
         row {
           checkBox("Do not open sidebar automatically", ::doNotOpenSidebarAutomatically)
         }
+        // row {
+        //   label("Default sidebar view mode")
+        //   comboBox(DefaultComboBoxModel(SidebarViewMode.values()), ::defaultSidebarViewMode)
+        // }
       }
       titledRow(PdfViewerBundle.message("pdf.viewer.settings.viewer.colors")) {
         row {
           useCustomColorsCheckBox()
         }
         row {
-          object : JPanel(GridBagLayout()) {
-            init {
-              GridBagConstraints().also {
-                it.anchor = GridBagConstraints.LINE_START
-                it.ipadx = 8
-                add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.background")), it)
-                add(backgroundColorPanel, it)
-              }
-              GridBagConstraints().also {
-                it.gridy = 1
-                it.anchor = GridBagConstraints.LINE_START
-                it.ipadx = 8
-                add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.foreground")), it)
-                add(foregroundColorPanel, it)
-              }
-              GridBagConstraints().also {
-                it.gridy = 2
-                it.anchor = GridBagConstraints.LINE_START
-                it.ipadx = 8
-                add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.icons")), it)
-                add(iconColorPanel, it)
-              }
+          JPanel(GridBagLayout()).apply {
+            GridBagConstraints().also {
+              it.anchor = GridBagConstraints.LINE_START
+              it.ipadx = 8
+              add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.background")), it)
+              add(backgroundColorPanel, it)
+            }
+            GridBagConstraints().also {
+              it.gridy = 1
+              it.anchor = GridBagConstraints.LINE_START
+              it.ipadx = 8
+              add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.foreground")), it)
+              add(foregroundColorPanel, it)
+            }
+            GridBagConstraints().also {
+              it.gridy = 2
+              it.anchor = GridBagConstraints.LINE_START
+              it.ipadx = 8
+              add(JLabel(PdfViewerBundle.message("pdf.viewer.settings.icons")), it)
+              add(iconColorPanel, it)
             }
           }()
         }
