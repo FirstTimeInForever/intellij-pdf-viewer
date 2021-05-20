@@ -47,6 +47,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   private val messageBusConnection = project.messageBus.connect(this)
 
   private val isReloading = AtomicBoolean(false)
+  private var viewLoaded = false
 
   /**
    * Current view state of the preview.
@@ -79,6 +80,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
       // TODO: Move to dedicated in-memory stylesheet and serve it as a resource
       updateViewTheme(collectThemeColors())
       pipe.send(IdeMessages.SynctexAvailability(virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
+      viewLoaded = true
     }
     pipe.subscribe<BrowserMessages.DocumentOutline> {
       outline = it.outlineNode
@@ -121,6 +123,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   val component get() = browser.component
 
   private fun doActualReload(tryToPreserveState: Boolean = false) {
+    viewLoaded = false
     try {
       val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path, withReloadSalt = true)
       val url = when {
@@ -139,7 +142,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   }
 
   fun reload(tryToPreserveState: Boolean = false) {
-    if (!isReloading.compareAndExchange(false, true)) {
+    if (viewLoaded && !isReloading.compareAndExchange(false, true)) {
       when (tryToPreserveState) {
         true -> pipe.send(IdeMessages.BeforeReload())
         else -> doActualReload(tryToPreserveState)
