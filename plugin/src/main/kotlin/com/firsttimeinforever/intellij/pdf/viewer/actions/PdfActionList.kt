@@ -9,12 +9,16 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 class PdfActionList: PdfAction() {
   override fun actionPerformed(event: AnActionEvent) {
     val group = ActionManager.getInstance().getAction("pdf.viewer.ViewerActionsList") as ActionGroup
-    JBPopupFactory.getInstance().createActionGroupPopup(
+    val popup = JBPopupFactory.getInstance().createActionGroupPopup(
       PdfViewerActionsBundle.message("action.pdf.viewer.ActionList.text"),
       group,
       event.dataContext,
       JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
       true
-    ).showInFocusCenter()
+    )
+    when (val project = event.project) {
+      null -> popup.showInFocusCenter()
+      else -> popup.showCenteredInCurrentWindow(project)
+    }
   }
 }
