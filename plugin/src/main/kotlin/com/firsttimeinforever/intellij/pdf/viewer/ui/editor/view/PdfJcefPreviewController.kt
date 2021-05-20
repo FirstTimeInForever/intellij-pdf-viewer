@@ -32,7 +32,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import java.awt.Color
-import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.atomic.AtomicBoolean
 
 class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile) :
   PdfViewerSettingsListener,
@@ -46,7 +46,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   val presentationController = PdfPresentationController(this)
   private val messageBusConnection = project.messageBus.connect(this)
 
-  private val loadLock = ReentrantLock()
+  private val isReloading = AtomicBoolean(false)
 
   /**
    * Current view state of the preview.
@@ -100,8 +100,11 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
         pipe.send(IdeMessages.SynctexForwardSearch(it))
       }
     }
-
-    reload(tryToPreserveState = true)
+    pipe.subscribe<BrowserMessages.BeforeReloadViewState> {
+      viewStateChanged(it.state, ViewStateChangeReason.UNSPECIFIED)
+      doActualReload(tryToPreserveState = true)
+    }
+    doActualReload(tryToPreserveState = true)
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
     messageBusConnection.subscribe(EditorColorsManager.TOPIC, this)
   }
@@ -117,11 +120,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   val component get() = browser.component
 
-  fun reload(tryToPreserveState: Boolean = false) {
-    // FIXME: Replace with BrowserCommunicationChannel on it's availability in the platform
+  private fun doActualReload(tryToPreserveState: Boolean = false) {
     try {
-      loadLock.lock()
-      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path)
+      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path, withReloadSalt = true)
       val url = when {
         tryToPreserveState -> buildUrlWithState(base, viewState)
         else -> base
@@ -133,7 +134,16 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     } catch(exception: Throwable) {
       logger.error(exception)
     } finally {
-      loadLock.unlock()
+      isReloading.set(false)
+    }
+  }
+
+  fun reload(tryToPreserveState: Boolean = false) {
+    if (!isReloading.compareAndExchange(false, true)) {
+      when (tryToPreserveState) {
+        true -> pipe.send(IdeMessages.BeforeReload())
+        else -> doActualReload(tryToPreserveState)
+      }
     }
   }
 
@@ -211,6 +221,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.SetScrollDirection(direction))
   }
 
+  @Suppress("MemberVisibilityCanBePrivate")
   fun updateViewTheme(viewTheme: ViewTheme) {
     pipe.send(IdeMessages.UpdateThemeColors(viewTheme))
   }

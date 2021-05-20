@@ -15,6 +15,9 @@ object BrowserMessages {
   )
 
   @Serializable
+  data class BeforeReloadViewState(val state: ViewState)
+
+  @Serializable
   data class DocumentInfoResponse(val info: DocumentInfo)
 
   @Serializable

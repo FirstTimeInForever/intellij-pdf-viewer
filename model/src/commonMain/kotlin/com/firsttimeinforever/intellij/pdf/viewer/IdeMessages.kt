@@ -30,6 +30,9 @@ object IdeMessages {
   data class ChangeScaleStepped(val increase: Boolean)
 
   @Serializable
+  class BeforeReload
+
+  @Serializable
   data class RotatePages(val clockwise: Boolean)
 
   @Serializable

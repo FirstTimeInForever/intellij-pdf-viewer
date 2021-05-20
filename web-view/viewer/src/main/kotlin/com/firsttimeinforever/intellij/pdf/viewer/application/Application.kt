@@ -10,13 +10,17 @@ import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfFindControllerEvents
+import com.firsttimeinforever.intellij.pdf.viewer.application.utility.CommonBrowserUtilities
+import com.firsttimeinforever.intellij.pdf.viewer.application.utility.CommonBrowserUtilities.addEventListener
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.Document
+import org.w3c.dom.events.EventTarget
 import kotlin.js.Promise
 import kotlin.js.json
 
@@ -106,6 +110,9 @@ class Application(private val viewer: ViewerAdapter) {
     sendOutline()
     synctexSearchController.finishInitialization()
     setupSearch()
+    pipe.subscribe<IdeMessages.BeforeReload> {
+      pipe.send(BrowserMessages.BeforeReloadViewState(collectViewState()))
+    }
   }
 
   private fun sendSearchResult(currentMatch: Int, totalMatches: Int) {

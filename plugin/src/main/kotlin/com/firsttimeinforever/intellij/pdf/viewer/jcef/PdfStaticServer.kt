@@ -18,6 +18,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.extension
+import kotlin.random.Random
 
 internal class PdfStaticServer : HttpRequestHandler() {
   private val serverUrl = "http://localhost:${BuiltInServerManager.getInstance().port}/$uuid"
@@ -80,8 +81,9 @@ internal class PdfStaticServer : HttpRequestHandler() {
     response.send(context.channel(), request)
   }
 
-  fun getPreviewUrl(filePath: String): String {
-    return parseEncodedPath("$serverUrl/index.html?file=get-file/$filePath").toExternalForm()
+  fun getPreviewUrl(filePath: String, withReloadSalt: Boolean = false): String {
+    val salt = if (withReloadSalt) Random.nextInt() else 0
+    return parseEncodedPath("$serverUrl/index.html?__reloadSalt=$salt&file=get-file/$filePath").toExternalForm()
   }
 
   private fun parseEncodedPath(target: String): Url {

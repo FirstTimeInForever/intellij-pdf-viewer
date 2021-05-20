@@ -156,8 +156,10 @@
 
     <!--Viewer Actions List -->
     <group id="pdf.viewer.ViewerActionsList">
-      <reference ref="pdf.viewer.OpenDevtoolsAction"/>
       <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
+      <separator/>
+      <reference ref="pdf.viewer.NavigateBackByHistoryAction"/>
+      <reference ref="pdf.viewer.NavigateForwardByHistoryAction"/>
       <separator/>
       <reference ref="pdf.viewer.GotoPreviousPageAction"/>
       <reference ref="pdf.viewer.GotoNextPageAction"/>
