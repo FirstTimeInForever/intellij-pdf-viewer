@@ -8,7 +8,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewC
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 
-abstract class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarViewMode) : PdfToggleAction(), DumbAware {
+sealed class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarViewMode) : PdfToggleAction(), DumbAware {
   override fun isSelected(event: AnActionEvent): Boolean {
     val viewController = PdfAction.findController(event) ?: return false
     return viewController.viewState.sidebarViewMode == targetViewMode

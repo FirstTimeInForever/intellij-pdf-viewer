@@ -226,6 +226,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.NavigateTo(destinationReference))
   }
 
+  fun navigateHistory(direction: HistoryNavigationDirection) {
+    pipe.send(IdeMessages.NavigateHistory(direction))
+  }
+
   override fun dispose() = Unit
 
   companion object {

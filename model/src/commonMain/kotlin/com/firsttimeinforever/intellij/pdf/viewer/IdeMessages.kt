@@ -49,4 +49,7 @@ object IdeMessages {
 
   @Serializable
   class ExitPresentationMode
+
+  @Serializable
+  data class NavigateHistory(val direction: HistoryNavigationDirection)
 }

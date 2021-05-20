@@ -6,7 +6,7 @@ external class PdfViewerApplication {
   val pdfAttachmentViewer: PdfAttachmentViewer
   val pdfDocument: PdfDocument
   val pdfOutlineViewer: PdfOutlineViewer
-  val pdfHistory: dynamic
+  val pdfHistory: PdfHistory
   val pdfLinkService: PdfLinkService
   val pdfViewer: PdfViewer
   val eventBus: PdfEventBus

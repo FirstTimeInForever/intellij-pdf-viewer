@@ -30,10 +30,10 @@
     <!--Goto page actions-->
     <action id="pdf.viewer.GotoNextPageAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
-            icon="AllIcons.Actions.Forward"/>
+            icon="AllIcons.Actions.Play_forward"/>
     <action id="pdf.viewer.GotoPreviousPageAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoPreviousPageAction"
-            icon="AllIcons.Actions.Back"/>
+            icon="AllIcons.Actions.Play_back"/>
 
     <!--Change scale actions-->
     <action id="pdf.viewer.IncreaseScaleAction"
@@ -90,6 +90,15 @@
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleIdePresentationModeAction"
             icon="AllIcons.General.FitContent"/>
 
+    <!--History navigation actions-->
+    <action id="pdf.viewer.NavigateBackByHistoryAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfNavigateByHistoryAction$Back"
+            icon="AllIcons.Actions.Back"/>
+    <action id="pdf.viewer.NavigateForwardByHistoryAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfNavigateByHistoryAction$Forward"
+            icon="AllIcons.Actions.Forward"/>
+
+    <!--Actions list action-->
     <action id="pdf.viewer.ActionList"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionList"/>
 
@@ -114,6 +123,9 @@
 
     <group id="pdf.viewer.LeftToolbarActionGroup">
       <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
+      <separator/>
+      <reference ref="pdf.viewer.NavigateBackByHistoryAction"/>
+      <reference ref="pdf.viewer.NavigateForwardByHistoryAction"/>
       <separator/>
       <reference ref="pdf.viewer.GotoPreviousPageAction"/>
       <reference ref="pdf.viewer.GotoNextPageAction"/>

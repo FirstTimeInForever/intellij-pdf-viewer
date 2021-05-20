@@ -90,6 +90,12 @@ class Application(private val viewer: ViewerAdapter) {
     pipe.subscribe<IdeMessages.NavigateTo> {
       viewer.viewerApp.pdfLinkService.navigateTo(it.destination)
     }
+    pipe.subscribe<IdeMessages.NavigateHistory> {
+      when (it.direction) {
+        HistoryNavigationDirection.FORWARD -> viewer.viewerApp.pdfHistory.forward()
+        HistoryNavigationDirection.BACK -> viewer.viewerApp.pdfHistory.back()
+      }
+    }
     pipe.subscribe<IdeMessages.ExitPresentationMode> {
       // ignored promise
       document.exitFullscreen().catch {
@@ -121,6 +127,8 @@ class Application(private val viewer: ViewerAdapter) {
     }
     pipe.subscribe<IdeMessages.ReleaseSearchHighlighting> {
       console.log("Releasing search highlighting")
+      // Push only last search position onto history stack
+      viewer.viewerApp.pdfHistory.pushCurrentPosition()
       viewer.releaseSearchHighlighting()
     }
   }

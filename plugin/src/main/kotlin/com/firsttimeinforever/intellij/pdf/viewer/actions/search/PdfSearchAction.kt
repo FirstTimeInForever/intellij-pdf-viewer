@@ -4,7 +4,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
 import com.firsttimeinforever.intellij.pdf.viewer.model.SearchDirection
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-open class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction() {
+sealed class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
     val editor = findEditor(event) ?: return
     val controller = findController(event) ?: return
