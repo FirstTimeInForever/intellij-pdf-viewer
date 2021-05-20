@@ -95,7 +95,7 @@ internal object JcefUtils {
   }
 
   private fun formatMessage(message: JcefConsoleMessage): String {
-    return message.run { "[$level][$source:$line]:\n$message" }
+    return message.run { "[$level][$source:$line]:\n${message.message}" }
   }
 
   fun createDefaultConsoleMessageListener(logger: Logger): (JcefConsoleMessage) -> Unit {
