@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.search
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
-import com.firsttimeinforever.intellij.pdf.viewer.actions.ViewModeAwareness
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfShowFindPopupAction: PdfDumbAwareAction() {

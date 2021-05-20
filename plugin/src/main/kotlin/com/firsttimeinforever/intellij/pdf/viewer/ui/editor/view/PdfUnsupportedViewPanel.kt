@@ -4,8 +4,6 @@ import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.components.JBScrollPane
 import java.awt.Desktop
-import java.nio.charset.Charset
-import java.nio.file.Paths
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import javax.swing.JTextPane

@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.components.JBTextField
@@ -11,7 +10,10 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import javax.swing.*
+import javax.swing.JCheckBox
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 

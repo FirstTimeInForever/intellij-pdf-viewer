@@ -1,10 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.controls
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionUtils.createActionToolbar
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationController
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.presentation.PdfPresentationModeListener
-import com.intellij.ide.ui.UISettings
-import com.intellij.ide.ui.UISettingsListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer

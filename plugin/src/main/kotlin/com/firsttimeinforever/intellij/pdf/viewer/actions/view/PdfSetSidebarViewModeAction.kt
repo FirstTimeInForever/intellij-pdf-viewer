@@ -2,7 +2,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.view
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToggleAction
-import com.firsttimeinforever.intellij.pdf.viewer.actions.ViewModeAwareness
 import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.actionSystem.AnActionEvent

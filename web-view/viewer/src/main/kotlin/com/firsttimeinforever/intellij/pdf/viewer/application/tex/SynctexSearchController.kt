@@ -188,7 +188,7 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
     }
 
     private fun isMacos(): Boolean {
-      return window.navigator.platform.toLowerCase().contains("mac")
+      return window.navigator.platform.lowercase().contains("mac")
     }
   }
 }

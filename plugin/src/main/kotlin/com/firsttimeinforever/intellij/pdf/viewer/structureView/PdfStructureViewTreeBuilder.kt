@@ -10,7 +10,7 @@ object PdfStructureViewTreeBuilder {
   }
 
   fun buildLocally(editor: PdfFileEditor): PdfStructureViewElement {
-    val targetFile = editor.file?.toNioPath()?.toFile() ?: return createEmptyLeaf(editor)
+    val targetFile = editor.file.toNioPath().toFile() ?: return createEmptyLeaf(editor)
     val root = PdfLocalOutlineBuilder.buildTree(targetFile) ?: return createEmptyLeaf(editor)
     return traverse(editor, root)
   }

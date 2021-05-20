@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions.presentation
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerActionsBundle
-import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
 import com.firsttimeinforever.intellij.pdf.viewer.actions.ViewModeAwareness
 import com.intellij.icons.AllIcons

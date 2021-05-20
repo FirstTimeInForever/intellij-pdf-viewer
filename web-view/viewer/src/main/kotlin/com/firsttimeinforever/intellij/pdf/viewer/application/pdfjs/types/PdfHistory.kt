@@ -7,5 +7,6 @@ external class PdfHistory {
 
   fun back()
 
+  @Suppress("PropertyName")
   val _position: dynamic
 }

@@ -1,6 +1,5 @@
 package com.firsttimeinforever.intellij.pdf.viewer.jcef
 
-import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.diagnostic.thisLogger
