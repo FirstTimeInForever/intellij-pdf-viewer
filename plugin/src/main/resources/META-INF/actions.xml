@@ -6,6 +6,9 @@
     <!--Common actions-->
     <action id="pdf.viewer.ReloadViewAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfReloadViewAction"
+            icon="AllIcons.Actions.Refresh"/>
+    <action id="pdf.viewer.HardReloadViewAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfHardReloadViewAction"
             icon="AllIcons.Actions.ForceRefresh"/>
     <action id="pdf.viewer.ShowDocumentInfoAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfShowDocumentInfoAction"
@@ -183,6 +186,7 @@
       <separator/>
       <reference ref="pdf.viewer.ShowDocumentInfoAction"/>
       <separator/>
+      <reference ref="pdf.viewer.HardReloadViewAction"/>
       <reference ref="pdf.viewer.ReloadViewAction"/>
     </group>
   </actions>
