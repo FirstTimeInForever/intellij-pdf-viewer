@@ -3,6 +3,8 @@ plugins {
   kotlin("plugin.serialization")
 }
 
+val kotlinxSerializationJsonVersion: String by project
+
 repositories {
   mavenCentral()
 }
@@ -11,6 +13,7 @@ dependencies {
   implementation(kotlin("stdlib-js"))
   implementation(project(":mpi"))
   implementation(project(":model"))
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
 }
 
 kotlin {

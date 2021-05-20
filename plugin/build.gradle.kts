@@ -13,6 +13,7 @@ plugins {
 }
 
 val kotlinVersion: String by project
+val kotlinxSerializationJsonVersion: String by project
 val pluginSinceVersion: String by project
 val pluginUntilVersion: String by project
 val webViewSourceDirectory = file("$projectDir/src/main/web-view")
@@ -27,7 +28,7 @@ val webView: Configuration by configurations.creating
 
 dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
   implementation("org.apache.pdfbox:pdfbox:3.0.0-RC1")
   // implementation("org.apache.pdfbox:preflight:3.0.0-RC1")
   implementation("io.sentry:sentry:1.7.30") {
