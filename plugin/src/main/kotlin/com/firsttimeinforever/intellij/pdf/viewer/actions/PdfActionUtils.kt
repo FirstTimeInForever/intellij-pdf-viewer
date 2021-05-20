@@ -9,13 +9,14 @@ internal object PdfActionUtils {
     val group = ActionManager.getInstance().getAction(groupId)
     checkNotNull(group)
     check(group is ActionGroup)
+    return createActionToolbar(group, horizontal)
+  }
+
+  fun createActionToolbar(group: ActionGroup, horizontal: Boolean = true): ActionToolbar {
     return ActionManager.getInstance().createActionToolbar("", group, horizontal)
   }
 
-  fun performAction(actionId: String, component: Component) {
-    val manager = ActionManager.getInstance()
-    val action = manager.getAction(actionId)
-    checkNotNull(action)
+  fun performAction(action: AnAction, component: Component) {
     val context = DataManager.getInstance().getDataContext(component)
     action.actionPerformed(
       AnActionEvent(
@@ -23,9 +24,16 @@ internal object PdfActionUtils {
         context,
         ActionPlaces.UNKNOWN,
         Presentation(),
-        manager,
+        ActionManager.getInstance(),
         0
       )
     )
+  }
+
+  fun performAction(actionId: String, component: Component) {
+    val manager = ActionManager.getInstance()
+    val action = manager.getAction(actionId)
+    checkNotNull(action)
+    performAction(action, component)
   }
 }

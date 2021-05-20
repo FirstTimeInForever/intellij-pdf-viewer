@@ -8,10 +8,9 @@ external class PdfViewerApplication {
   val pdfOutlineViewer: PdfOutlineViewer
   val pdfHistory: dynamic
   val pdfLinkService: PdfLinkService
-
   val pdfViewer: PdfViewer
-
   val eventBus: PdfEventBus
+  val findController: PdfFindController
 
   val initializedPromise: dynamic
 

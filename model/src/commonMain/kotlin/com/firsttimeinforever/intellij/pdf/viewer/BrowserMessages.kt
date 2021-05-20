@@ -25,4 +25,7 @@ object BrowserMessages {
 
   @Serializable
   data class DocumentOutline(val outlineNode: PdfOutlineNode)
+
+  @Serializable
+  data class SearchResponse(val result: SearchResult)
 }

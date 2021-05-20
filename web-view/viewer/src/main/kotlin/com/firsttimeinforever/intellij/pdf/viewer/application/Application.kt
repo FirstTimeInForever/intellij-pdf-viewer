@@ -9,6 +9,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.application.tex.SynctexSearchC
 import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfFindControllerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import kotlinx.browser.document
@@ -75,13 +76,6 @@ class Application(private val viewer: ViewerAdapter) {
         else -> viewer.rotateCounterClockwise()
       }
     }
-    pipe.subscribe<IdeMessages.Search> {
-      console.log("Executing search query: $it")
-      when (it.direction) {
-        SearchDirection.FORWARD -> viewer.findNext(it.text)
-        SearchDirection.BACKWARD -> viewer.findPrevious(it.text)
-      }
-    }
     pipe.subscribe<IdeMessages.SetScrollDirection> {
       when (it.direction) {
         ScrollDirection.VERTICAL -> viewer.setVerticalScroll()
@@ -105,6 +99,30 @@ class Application(private val viewer: ViewerAdapter) {
     ensureDocumentPropertiesReady()
     sendOutline()
     synctexSearchController.finishInitialization()
+    setupSearch()
+  }
+
+  private fun sendSearchResult(currentMatch: Int, totalMatches: Int) {
+    pipe.send(BrowserMessages.SearchResponse(SearchResult(currentMatch, totalMatches)))
+  }
+
+  private fun setupSearch() {
+    with(viewer.viewerApp.eventBus) {
+      on(PdfFindControllerEvents.UPDATE_FIND_MATCHES_COUNT) {
+        sendSearchResult(it.matchesCount.current as Int, it.matchesCount.total as Int)
+      }
+      on(PdfFindControllerEvents.UPDATE_FIND_CONTROL_STATE) {
+        sendSearchResult(it.matchesCount.current as Int, it.matchesCount.total as Int)
+      }
+    }
+    pipe.subscribe<IdeMessages.Search> {
+      console.log("Executing search query: $it")
+      viewer.find(it.query, it.direction)
+    }
+    pipe.subscribe<IdeMessages.ReleaseSearchHighlighting> {
+      console.log("Releasing search highlighting")
+      viewer.releaseSearchHighlighting()
+    }
   }
 
   private fun sendOutline() {

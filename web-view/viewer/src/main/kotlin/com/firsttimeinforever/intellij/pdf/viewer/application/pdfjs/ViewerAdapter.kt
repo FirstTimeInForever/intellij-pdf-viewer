@@ -1,10 +1,8 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs
 
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfViewerApplication
-import com.firsttimeinforever.intellij.pdf.viewer.model.PageSpreadState
-import com.firsttimeinforever.intellij.pdf.viewer.model.ScrollDirection
-import com.firsttimeinforever.intellij.pdf.viewer.model.ZoomMode
-import com.firsttimeinforever.intellij.pdf.viewer.model.ZoomState
+import com.firsttimeinforever.intellij.pdf.viewer.model.*
+import kotlin.js.json
 
 class ViewerAdapter(val viewerApp: PdfViewerApplication) {
   fun addEventListener(event: String, listener: (dynamic) -> Unit) {
@@ -83,5 +81,31 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
   fun setHorizontalScroll() {
     val toolbar = viewerApp.asDynamic().appConfig.secondaryToolbar
     toolbar.scrollHorizontalButton.click()
+  }
+
+  fun releaseSearchHighlighting() {
+    viewerApp.eventBus.dispatch("findbarclose", undefined)
+  }
+
+  fun find(query: SearchQuery, direction: SearchDirection) {
+    viewerApp.eventBus.dispatch("find", json(
+      "source" to viewerApp.asDynamic().findBar,
+      "type" to (if (query.again) "again" else undefined),
+      "query" to query.text,
+      "entireWord" to query.wholeWord,
+      "caseSensitive" to query.caseSensitive,
+      "findPrevious" to (direction == SearchDirection.BACKWARD),
+      "highlightAll" to true
+    ))
+    // this.eventBus.dispatch("find", {
+    //   source: this,
+    //   type,
+    //   query: this.findField.value,
+    //   phraseSearch: true,
+    //   caseSensitive: this.caseSensitive.checked,
+    //   entireWord: this.entireWord.checked,
+    //   highlightAll: this.highlightAll.checked,
+    //   findPrevious: findPrev,
+    // });
   }
 }

@@ -61,18 +61,19 @@
             icon="/icons/actions/spreadEven.svg"/>
 
     <!--Search actions-->
+    <action id="pdf.viewer.ShowFindPopupAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.search.PdfShowFindPopupAction"
+            use-shortcut-of="Find"
+            icon="AllIcons.Actions.Find">
+    </action>
     <action id="pdf.viewer.FindForwardAction"
-            icon="AllIcons.Actions.FindForward"
-            class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Forward">
-      <keyboard-shortcut keymap="$default" first-keystroke="control F"/>
-      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta F"/>
-    </action>
+            icon="AllIcons.Actions.NextOccurence"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.search.PdfSearchAction$Forward"
+            use-shortcut-of="FindNext"/>
     <action id="pdf.viewer.FindBackwardAction"
-            class="com.firsttimeinforever.intellij.pdf.viewer.actions.common.PdfSearchAction$Backward"
-            icon="AllIcons.Actions.FindBackward">
-      <keyboard-shortcut keymap="$default" first-keystroke="shift control F"/>
-      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta F"/>
-    </action>
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.search.PdfSearchAction$Backward"
+            icon="AllIcons.Actions.PreviousOccurence"
+            use-shortcut-of="FindPrevious"/>
 
     <!--Rotate actions-->
     <action id="pdf.viewer.RotateClockwiseAction"
@@ -131,13 +132,8 @@
       <separator/>
       <reference ref="pdf.viewer.ToggleDocumentPresentationAction"/>
       <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>
-    </group>
-
-    <group id="pdf.viewer.PdfEditorToolbarSearchActionGroup"
-           popup="true"
-           compact="true">
-      <reference ref="pdf.viewer.FindForwardAction"/>
-      <reference ref="pdf.viewer.FindBackwardAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ShowFindPopupAction"/>
     </group>
 
     <group id="pdf.viewer.RightToolbarActionGroup">
@@ -156,6 +152,8 @@
       <separator/>
       <reference ref="pdf.viewer.IncreaseScaleAction"/>
       <reference ref="pdf.viewer.DecreaseScaleAction"/>
+      <separator/>
+      <reference ref="pdf.viewer.ShowFindPopupAction"/>
       <separator/>
       <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
       <reference ref="pdf.viewer.SetPageSpreadOddAction"/>

@@ -6,7 +6,10 @@ import kotlinx.serialization.Serializable
 
 object IdeMessages {
   @Serializable
-  data class Search(val text: String, val direction: SearchDirection)
+  data class Search(val query: SearchQuery, val direction: SearchDirection)
+
+  @Serializable
+  class ReleaseSearchHighlighting
 
   @Serializable
   data class SidebarViewModeSetRequest(val mode: SidebarViewMode)

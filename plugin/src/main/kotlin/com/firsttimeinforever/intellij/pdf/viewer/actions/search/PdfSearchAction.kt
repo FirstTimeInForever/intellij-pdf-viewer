@@ -1,22 +1,21 @@
-package com.firsttimeinforever.intellij.pdf.viewer.actions.common
+package com.firsttimeinforever.intellij.pdf.viewer.actions.search
 
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
-import com.firsttimeinforever.intellij.pdf.viewer.actions.ViewModeAwareness
 import com.firsttimeinforever.intellij.pdf.viewer.model.SearchDirection
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-open class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction(ViewModeAwareness.NONE) {
+open class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
     val editor = findEditor(event) ?: return
     val controller = findController(event) ?: return
-    val searchText = editor.viewComponent.controlPanel.searchText
-    controller.find(searchText, direction)
+    val searchQuery = editor.viewComponent.searchPanel.searchQuery
+    controller.find(searchQuery, direction)
   }
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    val searchText = findEditor(event)?.viewComponent?.controlPanel?.searchText
-    event.presentation.isEnabled = searchText?.isNotEmpty() == true
+    val searchPanel = findEditor(event)?.viewComponent?.searchPanel
+    event.presentation.isEnabled = searchPanel?.searchText?.isNotEmpty() == true && searchPanel.isVisible
   }
 
   class Forward : PdfSearchAction(SearchDirection.FORWARD)

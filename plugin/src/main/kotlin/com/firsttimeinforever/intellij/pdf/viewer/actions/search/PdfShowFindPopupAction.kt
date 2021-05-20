@@ -1,0 +1,21 @@
+package com.firsttimeinforever.intellij.pdf.viewer.actions.search
+
+import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfDumbAwareAction
+import com.firsttimeinforever.intellij.pdf.viewer.actions.ViewModeAwareness
+import com.intellij.openapi.actionSystem.AnActionEvent
+
+class PdfShowFindPopupAction: PdfDumbAwareAction() {
+  override fun actionPerformed(event: AnActionEvent) {
+    val searchPanel = findEditor(event)?.viewComponent?.searchPanel ?: return
+    if (!searchPanel.isVisible) {
+      searchPanel.setEnabledState(true)
+    }
+  }
+
+  override fun update(event: AnActionEvent) {
+    super.update(event)
+    // TODO: Refactor
+    val searchPanel = findEditor(event)?.viewComponent?.searchPanel ?: return
+    event.presentation.isEnabled = !searchPanel.isVisible
+  }
+}

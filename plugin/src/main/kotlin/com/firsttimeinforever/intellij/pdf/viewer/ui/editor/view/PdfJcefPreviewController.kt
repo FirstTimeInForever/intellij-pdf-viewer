@@ -175,8 +175,12 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     updateViewTheme(collectThemeColors())
   }
 
-  fun find(text: String, direction: SearchDirection) {
-    pipe.send(IdeMessages.Search(text, direction))
+  fun find(query: SearchQuery, direction: SearchDirection) {
+    pipe.send(IdeMessages.Search(query, direction))
+  }
+
+  fun releaseSearchHighlighting() {
+    pipe.send(IdeMessages.ReleaseSearchHighlighting())
   }
 
   fun setSidebarViewMode(mode: SidebarViewMode) {
