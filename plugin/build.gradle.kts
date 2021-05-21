@@ -32,8 +32,9 @@ dependencies {
   implementation("org.apache.pdfbox:pdfbox:3.0.0-RC1")
   // implementation("org.apache.pdfbox:preflight:3.0.0-RC1")
   implementation("io.sentry:sentry:1.7.30") {
-    // IntelliJ already bundles it and will report a classloader problem if this isn't excluded
+    // Included in IJ
     exclude("org.slf4j")
+    exclude("com.fasterxml.jackson.core")
   }
   implementation(project(":mpi"))
   implementation(project(":model"))
