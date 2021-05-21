@@ -4,6 +4,7 @@ plugins {
 }
 
 val kotlinVersion: String by project
+val kotlinxSerializationJsonVersion: String by project
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
@@ -23,7 +24,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(kotlin("stdlib-common"))
-        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
       }
     }
   }
