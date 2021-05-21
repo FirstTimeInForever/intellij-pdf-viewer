@@ -10,10 +10,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessageReceivedHandler
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefJSQuery
 
 class JcefBrowserMessagePipe(private val browser: JBCefBrowser) : MessagePipe {
-  private val query = checkNotNull(JBCefJSQuery.create(browser))
+  private val query = checkNotNull(JBCefJSQuery.create(browser as JBCefBrowserBase))
   private val receiveSubscribers = hashMapOf<String, MutableList<MessageReceivedHandler>>()
 
   init {
