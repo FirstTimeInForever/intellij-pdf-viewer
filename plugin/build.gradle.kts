@@ -32,8 +32,6 @@ repositories {
 dependencies {
   // implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
   // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
-  implementation("org.apache.pdfbox:pdfbox:3.0.0-RC1")
-  // implementation("org.apache.pdfbox:preflight:3.0.0-RC1")
   implementation("io.sentry:sentry:1.7.30") {
     // Included in IJ
     exclude("org.slf4j")
