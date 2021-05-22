@@ -3,6 +3,8 @@ import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import java.nio.file.Paths
 
+fun fromProperties(key: String) = project.findProperty(key).toString()
+
 plugins {
   id("java")
   kotlin("jvm")
@@ -12,41 +14,48 @@ plugins {
   id("com.github.ben-manes.versions") version "0.36.0"
 }
 
+group = fromProperties("group")
+version = fromProperties("version")
+
 val kotlinVersion: String by project
 val kotlinxSerializationJsonVersion: String by project
-val pluginSinceVersion: String by project
-val pluginUntilVersion: String by project
+
+val webView: Configuration by configurations.creating
 val webViewSourceDirectory = file("$projectDir/src/main/web-view")
 
 repositories {
   mavenCentral()
   maven("https://www.jetbrains.com/intellij-repository/snapshots")
-  maven("http://maven.geotoolkit.org/")
+  // maven("http://maven.geotoolkit.org/")
 }
 
-val webView: Configuration by configurations.creating
-
 dependencies {
-  implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
+  // implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+  // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
   implementation("org.apache.pdfbox:pdfbox:3.0.0-RC1")
   // implementation("org.apache.pdfbox:preflight:3.0.0-RC1")
   implementation("io.sentry:sentry:1.7.30") {
     // Included in IJ
     exclude("org.slf4j")
-    exclude("com.fasterxml.jackson.core")
+    exclude("com.fasterxml.jackson.core", "jackson-core")
   }
-  implementation(project(":mpi"))
-  implementation(project(":model"))
+  // kotlinx.serialization also should be present in the platform
+  implementation(project(":mpi")) {
+    exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+  }
+  implementation(project(":model")) {
+    exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+  }
   webView(project(":web-view:bootstrap"))
 }
 
 intellij {
-  version = "2021.1.1"
-  setPlugins("nl.rubensten.texifyidea:0.7.5")
+  version = fromProperties("platformVersion")
   sameSinceUntilBuild = true
   updateSinceUntilBuild = false
-  pluginName = "intellij-pdf-viewer"
+  pluginName = fromProperties("pluginName")
+
+  setPlugins("nl.rubensten.texifyidea:0.7.5")
 }
 
 tasks {
@@ -66,14 +75,14 @@ tasks {
     unreleasedTerm = "Unreleased"
   }
   withType<PatchPluginXmlTask>() {
-    sinceBuild(pluginSinceVersion)
-    untilBuild(pluginUntilVersion)
+    sinceBuild(fromProperties("pluginSinceVersion"))
+    untilBuild(fromProperties("pluginUntilVersion"))
     changeNotes(closure {
       changelog.getLatest().withHeader(false).toHTML()
     })
   }
   runPluginVerifier {
-    ideVersions(project.properties["pluginVerifierIdeVersions"].toString())
+    ideVersions(fromProperties("pluginVerifierIdeVersions"))
   }
   // https://youtrack.jetbrains.com/issue/KTIJ-782
   buildSearchableOptions {
