@@ -8,4 +8,8 @@ class PdfShowDocumentInfoAction : PdfDumbAwareAction(ViewModeAwareness.IDE) {
   override fun actionPerformed(event: AnActionEvent) {
     findController(event)?.requestDocumentInfo()
   }
+
+  override fun update(event: AnActionEvent) {
+    event.presentation.isEnabledAndVisible = false
+  }
 }
