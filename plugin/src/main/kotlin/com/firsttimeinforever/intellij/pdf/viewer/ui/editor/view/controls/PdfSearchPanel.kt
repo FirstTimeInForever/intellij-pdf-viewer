@@ -61,8 +61,11 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
 
   init {
     layout = MigLayout("flowx, gap 8, ins 0, fillx, hidemode 3")
-    border = JBUI.Borders.customLine(JBUI.CurrentTheme.EditorTabs.borderColor(), 1, 0, 0, 0)
-    searchTextArea.border = JBUI.Borders.empty(2, 0, 2, 0)
+    border = JBUI.Borders.customLineTop(JBUI.CurrentTheme.EditorTabs.borderColor())
+    searchTextArea.border = JBUI.Borders.compound(
+      JBUI.Borders.customLineRight(JBUI.CurrentTheme.EditorTabs.borderColor()),
+      JBUI.Borders.empty(3, 1, 2, 1)
+    )
     searchTextArea.setExtraActions(caseSensitiveAction, wholeWordsAction, regexAction)
     add(searchTextArea)
     add(resultsLabel)
