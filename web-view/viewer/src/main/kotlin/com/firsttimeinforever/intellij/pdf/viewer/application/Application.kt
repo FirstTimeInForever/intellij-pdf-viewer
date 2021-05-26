@@ -29,8 +29,8 @@ class Application(private val viewer: ViewerAdapter) {
 
   private val synctexSearchController = SynctexSearchController(pipe, viewer)
 
-  @Suppress("MemberVisibilityCanBePrivate")
-  val documentInfo by lazy { collectDocumentInfo() }
+  // @Suppress("MemberVisibilityCanBePrivate")
+  // val documentInfo by lazy { collectDocumentInfo() }
 
   // FIXME: This is incorrect
   @Suppress("MemberVisibilityCanBePrivate")
@@ -55,10 +55,10 @@ class Application(private val viewer: ViewerAdapter) {
         notifyViewStateChanged(ViewStateChangeReason.PAGE_SPREAD_STATE)
       }
     }
-    pipe.subscribe<IdeMessages.DocumentInfoRequest> {
-      console.log("Sending document info: $documentInfo")
-      pipe.send(BrowserMessages.DocumentInfoResponse(documentInfo))
-    }
+    // pipe.subscribe<IdeMessages.DocumentInfoRequest> {
+    //   console.log("Sending document info: $documentInfo")
+    //   pipe.send(BrowserMessages.DocumentInfoResponse(documentInfo))
+    // }
     pipe.subscribe<IdeMessages.ChangeScaleStepped> {
       console.log("Executing change scale query: $it")
       when {
@@ -102,7 +102,7 @@ class Application(private val viewer: ViewerAdapter) {
         console.warn(it)
       }
     }
-    ensureDocumentPropertiesReady()
+    // ensureDocumentPropertiesReady()
     sendOutline()
     synctexSearchController.finishInitialization()
     setupSearch()
