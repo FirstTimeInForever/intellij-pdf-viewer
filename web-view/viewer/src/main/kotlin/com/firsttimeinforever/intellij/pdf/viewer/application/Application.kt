@@ -125,8 +125,11 @@ class Application(private val viewer: ViewerAdapter) {
       }
     }
     pipe.subscribe<IdeMessages.Search> {
-      console.log("Executing search query: $it")
-      viewer.find(it.query, it.direction)
+      val text = it.query.text
+      if (text.isNotEmpty() && text.isNotBlank()) {
+        console.log("Executing search query: $it")
+        viewer.find(it.query, it.direction)
+      }
     }
     pipe.subscribe<IdeMessages.ReleaseSearchHighlighting> {
       console.log("Releasing search highlighting")
