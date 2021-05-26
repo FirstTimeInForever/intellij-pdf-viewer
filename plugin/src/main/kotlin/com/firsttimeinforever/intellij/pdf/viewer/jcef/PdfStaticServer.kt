@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.jcef
 
 import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.util.Url
 import com.intellij.util.Urls
@@ -63,18 +64,24 @@ internal class PdfStaticServer : HttpRequestHandler() {
     val targetFile = Paths.get(path)
     validateExternalPath(targetFile)
     logger.debug("Sending external file: $targetFile")
-    FileResponses.sendFile(request, context.channel(), targetFile)
+    FileResponses.sendFile(request, context.channel(), Paths.get(targetFile.toString()))
+  }
+
+  private fun makeInternalPath(path: String): String {
+    val actualPath = when {
+      path.first() == '/' -> path.drop(1)
+      else -> path
+    }
+    return "/$baseDirectory/$actualPath"
   }
 
   private fun sendInternalFile(path: String, context: ChannelHandlerContext, request: FullHttpRequest) {
-    val targetFile = Paths.get("/", baseDirectory, path)
-    if (Registry.`is`("pdf.viewer.debug", false) &&
-      targetFile.toString().endsWith(".js.map")
-    ) {
+    val targetFile = makeInternalPath(path)
+    if (Registry.`is`("pdf.viewer.debug", false) && targetFile.endsWith(".js.map")) {
       logger.warn("Ignoring sourcemap $targetFile")
       return
     }
-    val contentType = FileResponses.getContentType(targetFile.toString())
+    val contentType = FileResponses.getContentType(targetFile)
     logger.debug("Sending internal file: $targetFile with contentType: $contentType")
     val resultBuffer = Unpooled.wrappedBuffer(PdfResourceLoader.loadFromRoot(targetFile))
     val response = response(contentType, resultBuffer)

@@ -72,7 +72,7 @@ tasks {
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
   }
-  withType<PatchPluginXmlTask>() {
+  withType<PatchPluginXmlTask> {
     sinceBuild(fromProperties("pluginSinceVersion"))
     untilBuild(fromProperties("pluginUntilVersion"))
     changeNotes(closure {

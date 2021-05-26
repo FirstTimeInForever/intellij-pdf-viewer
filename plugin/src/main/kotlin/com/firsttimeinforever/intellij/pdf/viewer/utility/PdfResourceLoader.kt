@@ -1,17 +1,17 @@
 package com.firsttimeinforever.intellij.pdf.viewer.utility
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
+import com.intellij.openapi.diagnostic.logger
 import java.io.FileNotFoundException
 import java.nio.charset.Charset
-import java.nio.file.Path
-import java.nio.file.Paths
 
 internal object PdfResourceLoader {
-  private val shouldFixPaths = System.getProperty("os.name").toLowerCase().contains("windows")
+  private val logger = logger<PdfResourceLoader>()
 
   // FIXME: Determine resource charset
-  inline fun <reified T> load(path: Path): ByteArray {
-    return T::class.java.getResourceAsStream(path.toString()).use {
+  inline fun <reified T> load(path: String): ByteArray {
+    logger.info("Loading internal resource: $path")
+    return T::class.java.getResourceAsStream(path).use {
       if (it == null) {
         throw FileNotFoundException("Could not load resource file: $path")
       }
@@ -19,15 +19,11 @@ internal object PdfResourceLoader {
     }
   }
 
-  fun loadFromRoot(path: Path): ByteArray {
+  fun loadFromRoot(path: String): ByteArray {
     return load<PdfViewerBundle>(path)
   }
 
-  inline fun <reified T> load(first: String, vararg rest: String): ByteArray {
-    return load<T>(Paths.get(first, *rest))
-  }
-
-  inline fun <reified T> loadString(first: String, vararg rest: String): String {
-    return load<T>(first, *rest).toString(Charset.defaultCharset())
+  inline fun <reified T> loadString(path: String): String {
+    return load<T>(path).toString(Charset.defaultCharset())
   }
 }
