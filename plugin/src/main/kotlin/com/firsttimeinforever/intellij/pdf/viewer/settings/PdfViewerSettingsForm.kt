@@ -44,7 +44,7 @@ class PdfViewerSettingsForm : JPanel() {
     "Invert Colors Intensity",
     settings.documentColorsInvertIntensity
   ).also {
-    it.isEnabled = Registry.`is`("pdf.viewer.enableExperimentalFeatures")
+    it.isEnabled = PdfViewerSettings.enableExperimentalFeatures
   }
 
   var enableDocumentAutoReload = settings.enableDocumentAutoReload
@@ -143,7 +143,7 @@ class PdfViewerSettingsForm : JPanel() {
           label(PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
         }
       }
-      if (Registry.`is`("pdf.viewer.enableExperimentalFeatures")) {
+      if (PdfViewerSettings.enableExperimentalFeatures) {
         titledRow("Experimental Features") {
           row {
             object : JPanel(GridBagLayout()) {

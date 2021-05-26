@@ -17,7 +17,7 @@ class PdfToggleInvertDocumentColorsAction : PdfToggleAction(ViewModeAwareness.BO
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    if (!Registry.`is`("pdf.viewer.enableExperimentalFeatures")) {
+    if (!PdfViewerSettings.enableExperimentalFeatures) {
       event.presentation.isEnabledAndVisible = false
     }
   }

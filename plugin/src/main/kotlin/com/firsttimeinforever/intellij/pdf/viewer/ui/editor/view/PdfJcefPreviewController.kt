@@ -27,7 +27,6 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
@@ -70,7 +69,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     Disposer.register(this, browser)
     Disposer.register(this, messageBusConnection)
 
-    if (Registry.`is`("pdf.viewer.debug", false)) {
+    if (PdfViewerSettings.isDebugMode) {
       browser.addConsoleMessageListener(createDefaultConsoleMessageListener(logger))
     }
 

@@ -20,7 +20,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var enableDocumentAutoReload = true
   var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
   var invertDocumentColors = false
-    get() = field && Registry.`is`("pdf.viewer.enableExperimentalFeatures")
+    get() = field && enableExperimentalFeatures
 
   var doNotOpenSidebarAutomatically = true
 
@@ -52,5 +52,11 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
       get() = defaultForegroundColor
 
     const val defaultDocumentColorsInvertIntensity = 85
+
+    val enableExperimentalFeatures: Boolean
+      get() = Registry.`is`("pdf.viewer.enableExperimentalFeatures")
+
+    val isDebugMode: Boolean
+      get() = Registry.`is`("pdf.viewer.debug", false)
   }
 }

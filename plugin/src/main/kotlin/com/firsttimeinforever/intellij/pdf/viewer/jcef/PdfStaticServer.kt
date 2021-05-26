@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.jcef
 
+import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.io.FileUtil
@@ -77,7 +78,7 @@ internal class PdfStaticServer : HttpRequestHandler() {
 
   private fun sendInternalFile(path: String, context: ChannelHandlerContext, request: FullHttpRequest) {
     val targetFile = makeInternalPath(path)
-    if (Registry.`is`("pdf.viewer.debug", false) && targetFile.endsWith(".js.map")) {
+    if (PdfViewerSettings.isDebugMode && targetFile.endsWith(".js.map")) {
       logger.warn("Ignoring sourcemap $targetFile")
       return
     }
