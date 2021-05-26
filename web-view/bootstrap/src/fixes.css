@@ -11,3 +11,17 @@
 #sidebarContainer, #sidebarContent, #viewerContainer {
   top: 0;
 }
+
+@media all and (max-width: 840px) {
+  #sidebarContent {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  html[dir="ltr"] #outerContainer.sidebarOpen #viewerContainer {
+    left: var(--sidebar-width) !important;
+  }
+
+  html[dir="rtl"] #outerContainer.sidebarOpen #viewerContainer {
+    left: var(--sidebar-width) !important;
+  }
+}
