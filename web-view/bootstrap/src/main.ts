@@ -30,15 +30,6 @@ function waitForIde(): Promise<void> {
   });
 }
 
-// function waitForDocumentLoad(): Promise<void> {
-//   // return new Promise(resolve => {
-//   //   document.addEventListener("documentload", () => {
-//   //     console.log("Document loaded");
-//   //     resolve();
-//   //   });
-//   // });
-// }
-
 function bootstrap(): Promise<any> {
   return Promise.all([waitForIde(), bootstrapViewer()]);
 }
