@@ -225,16 +225,17 @@ class Application(private val viewer: ViewerAdapter) {
   }
 
   fun run() {
-    collectViewProperties().then {
-      pipe.send(BrowserMessages.InitialViewProperties(it))
+    viewer.viewerApp.initializedPromise.then {
+      collectViewProperties().then {
+        pipe.send(BrowserMessages.InitialViewProperties(it))
+        notifyViewStateChanged(ViewStateChangeReason.INITIAL)
+      }
+      with(viewer) {
+        addEventListener(ViewerEvents.PAGE_CHANGING, ::pageChangeListener)
+        addEventListener(ViewerEvents.ZOOM_IN, ::zoomChangeListener)
+        addEventListener(ViewerEvents.ZOOM_OUT, ::zoomChangeListener)
+        addEventListener(ViewerEvents.ZOOM_RESET, ::zoomChangeListener)
+      }
     }
-    notifyViewStateChanged(ViewStateChangeReason.INITIAL)
-    with(viewer) {
-      addEventListener(ViewerEvents.PAGE_CHANGING, ::pageChangeListener)
-      addEventListener(ViewerEvents.ZOOM_IN, ::zoomChangeListener)
-      addEventListener(ViewerEvents.ZOOM_OUT, ::zoomChangeListener)
-      addEventListener(ViewerEvents.ZOOM_RESET, ::zoomChangeListener)
-    }
-    // viewer.viewerApp.initializedPromise.then { start() }
   }
 }
