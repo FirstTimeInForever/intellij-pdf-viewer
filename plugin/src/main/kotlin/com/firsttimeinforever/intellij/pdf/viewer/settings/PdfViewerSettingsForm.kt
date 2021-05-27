@@ -1,8 +1,11 @@
 package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.intellij.openapi.util.registry.Registry
+import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
+import com.intellij.openapi.observable.properties.GraphPropertyImpl.Companion.graphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.ui.ColorPanel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.layout.panel
 import com.intellij.ui.layout.selected
@@ -10,15 +13,13 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import javax.swing.JCheckBox
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 class PdfViewerSettingsForm : JPanel() {
-  private val settings = PdfViewerSettings.instance
+  private val settings
+    get() = PdfViewerSettings.instance
 
   private val enableDocumentAutoReloadCheckBox = JCheckBox(
     PdfViewerBundle.message("pdf.viewer.settings.reload.document"),
@@ -28,11 +29,11 @@ class PdfViewerSettingsForm : JPanel() {
   private val useCustomColorsCheckBox: JCheckBox = JCheckBox(
     PdfViewerBundle.message("pdf.viewer.settings.use.custom.colors"),
     settings.useCustomColors
-  ).also {
-    it.addItemListener { _ ->
-      backgroundColorPanel.isEnabled = it.isSelected
-      foregroundColorPanel.isEnabled = it.isSelected
-      iconColorPanel.isEnabled = it.isSelected
+  ).apply {
+    addItemListener {
+      backgroundColorPanel.isEnabled = isSelected
+      foregroundColorPanel.isEnabled = isSelected
+      iconColorPanel.isEnabled = isSelected
     }
   }
 
@@ -47,8 +48,7 @@ class PdfViewerSettingsForm : JPanel() {
     it.isEnabled = PdfViewerSettings.enableExperimentalFeatures
   }
 
-  var enableDocumentAutoReload = settings.enableDocumentAutoReload
-    private set
+  val enableDocumentAutoReload = PropertyGraph().graphProperty { settings.enableDocumentAutoReload }
 
   val useCustomColors
     get() = useCustomColorsCheckBox.isSelected
@@ -65,11 +65,7 @@ class PdfViewerSettingsForm : JPanel() {
   var documentColorsInvertIntensity = settings.documentColorsInvertIntensity
     private set
 
-  var doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
-    private set
-
-  var defaultSidebarViewMode = settings.defaultSidebarViewMode
-    private set
+  val defaultSidebarViewMode = PropertyGraph().graphProperty { settings.defaultSidebarViewMode }
 
   fun loadSettings() {
     enableDocumentAutoReloadCheckBox.isSelected = settings.enableDocumentAutoReload
@@ -83,8 +79,7 @@ class PdfViewerSettingsForm : JPanel() {
       iconColorPanel.isEnabled = isSelected
     }
     documentColorsInvertIntensityField.text = settings.documentColorsInvertIntensity.toString()
-    doNotOpenSidebarAutomatically = settings.doNotOpenSidebarAutomatically
-    defaultSidebarViewMode = settings.defaultSidebarViewMode
+    defaultSidebarViewMode.set(settings.defaultSidebarViewMode)
   }
 
   init {
@@ -92,15 +87,21 @@ class PdfViewerSettingsForm : JPanel() {
     add(panel {
       titledRow(PdfViewerBundle.message("pdf.viewer.settings.general")) {
         row {
-          checkBox(PdfViewerBundle.message("pdf.viewer.settings.reload.document"), ::enableDocumentAutoReload)
+          checkBox(PdfViewerBundle.message("pdf.viewer.settings.reload.document"), enableDocumentAutoReload)
         }
         row {
-          checkBox("Do not open sidebar automatically", ::doNotOpenSidebarAutomatically)
+          label("Default sidebar view mode")
+          val renderer = SimpleListCellRenderer.create<SidebarViewMode> { label, value, _ ->
+            label.text = when (value) {
+              SidebarViewMode.NONE -> "Closed"
+              SidebarViewMode.THUMBNAILS -> "Thumbnails"
+              // SidebarViewMode.OUTLINE -> "Outline (document structure)"
+              SidebarViewMode.ATTACHMENTS -> "Attachments"
+              else -> "Outline (document structure)"
+            }
+          }
+          comboBox(DefaultComboBoxModel(SidebarViewMode.values()), defaultSidebarViewMode, renderer)
         }
-        // row {
-        //   label("Default sidebar view mode")
-        //   comboBox(DefaultComboBoxModel(SidebarViewMode.values()), ::defaultSidebarViewMode)
-        // }
       }
       titledRow(PdfViewerBundle.message("pdf.viewer.settings.viewer.colors")) {
         row {

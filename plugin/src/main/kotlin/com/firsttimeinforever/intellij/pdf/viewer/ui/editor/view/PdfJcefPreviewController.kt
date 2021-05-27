@@ -47,6 +47,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   private val isReloading = AtomicBoolean(false)
   private var viewLoaded = false
+  private var firstLoad = true
 
   /**
    * Current view state of the preview.
@@ -80,6 +81,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
       updateViewTheme(collectThemeColors())
       pipe.send(IdeMessages.SynctexAvailability(virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
       viewLoaded = true
+      firstLoad = false
     }
     pipe.subscribe<BrowserMessages.DocumentOutline> {
       outline = it.outlineNode
@@ -125,9 +127,12 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     viewLoaded = false
     try {
       val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path, withReloadSalt = true)
+      if (firstLoad) {
+        viewState = viewState.copy(sidebarViewMode = PdfViewerSettings.instance.defaultSidebarViewMode)
+      }
       val url = when {
         tryToPreserveState -> buildUrlWithState(base, viewState)
-        else -> base
+        else -> "$base#${createPageModeParameter(PdfViewerSettings.instance.defaultSidebarViewMode)}"
       }
       browser.invokeAndWaitForLoadEnd {
         logger.debug("Loading url $url")
@@ -248,6 +253,19 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
 
+    private fun getPagemodeValue(value: SidebarViewMode): String {
+      return when (value) {
+        SidebarViewMode.NONE -> "none"
+        SidebarViewMode.THUMBNAILS -> "thumbs"
+        SidebarViewMode.OUTLINE -> "bookmarks"
+        SidebarViewMode.ATTACHMENTS -> "attachments"
+      }
+    }
+
+    private fun createPageModeParameter(value: SidebarViewMode): String {
+      return "pagemode=${getPagemodeValue(value)}"
+    }
+
     private fun buildUrlWithState(base: String, state: ViewState): String {
       val positionBase = with(state) {
         val zoom = when (zoom.mode) {
@@ -257,12 +275,13 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
           ZoomMode.PAGE_HEIGHT -> "page-height"
           ZoomMode.AUTO -> "auto"
         }
-        "$base#page=$page&zoom=$zoom"
+        "$base#page=$page&zoom=$zoom&${createPageModeParameter(state.sidebarViewMode)}"
       }
-      return when {
-        PdfViewerSettings.instance.doNotOpenSidebarAutomatically -> "$positionBase&pagemode=none"
-        else -> positionBase
-      }
+      return positionBase
+      // return when {
+      //   PdfViewerSettings.instance.doNotOpenSidebarAutomatically -> "$positionBase&pagemode=none"
+      //   else -> positionBase
+      // }
     }
   }
 }

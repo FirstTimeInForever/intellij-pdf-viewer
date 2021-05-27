@@ -10,14 +10,13 @@ class PdfViewerConfigurable : Configurable {
 
   override fun isModified(): Boolean {
     return settingsForm?.run {
-      settings.enableDocumentAutoReload != enableDocumentAutoReload ||
+      settings.enableDocumentAutoReload != enableDocumentAutoReload.get() ||
         settings.useCustomColors != useCustomColors ||
-        settings.customBackgroundColor != customBackgroundColor?.rgb ?: settings.customBackgroundColor ||
-        settings.customForegroundColor != customForegroundColor?.rgb ?: settings.customForegroundColor ||
-        settings.customIconColor != customIconColor?.rgb ?: settings.customIconColor ||
+        settings.customBackgroundColor != (customBackgroundColor?.rgb ?: settings.customBackgroundColor) ||
+        settings.customForegroundColor != (customForegroundColor?.rgb ?: settings.customForegroundColor) ||
+        settings.customIconColor != (customIconColor?.rgb ?: settings.customIconColor) ||
         settings.documentColorsInvertIntensity != documentColorsInvertIntensity ||
-        settings.doNotOpenSidebarAutomatically != doNotOpenSidebarAutomatically ||
-        settings.defaultSidebarViewMode != defaultSidebarViewMode
+        settings.defaultSidebarViewMode != defaultSidebarViewMode.get()
     } ?: false
   }
 
@@ -26,14 +25,13 @@ class PdfViewerConfigurable : Configurable {
   override fun apply() {
     val wasModified = isModified
     settings.run {
-      enableDocumentAutoReload = settingsForm?.enableDocumentAutoReload ?: enableDocumentAutoReload
+      enableDocumentAutoReload = settingsForm?.enableDocumentAutoReload?.get() ?: enableDocumentAutoReload
       useCustomColors = settingsForm?.useCustomColors ?: useCustomColors
       customBackgroundColor = settingsForm?.customBackgroundColor?.rgb ?: customBackgroundColor
       customForegroundColor = settingsForm?.customForegroundColor?.rgb ?: customForegroundColor
       customIconColor = settingsForm?.customIconColor?.rgb ?: customIconColor
       documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity ?: documentColorsInvertIntensity
-      doNotOpenSidebarAutomatically = settingsForm?.doNotOpenSidebarAutomatically ?: doNotOpenSidebarAutomatically
-      defaultSidebarViewMode = settingsForm?.defaultSidebarViewMode ?: defaultSidebarViewMode
+      defaultSidebarViewMode = settingsForm?.defaultSidebarViewMode?.get() ?: defaultSidebarViewMode
     }
     if (wasModified) {
       settings.notifyListeners()
