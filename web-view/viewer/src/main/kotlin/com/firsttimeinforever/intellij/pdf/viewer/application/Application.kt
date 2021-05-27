@@ -9,14 +9,20 @@ import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Intern
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Object
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfFindControllerEvents
 import com.firsttimeinforever.intellij.pdf.viewer.application.tex.SynctexSearchController
+import com.firsttimeinforever.intellij.pdf.viewer.application.utility.CommonBrowserUtilities.addEventListener
 import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.Document
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventListener
+import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.MouseEvent
 import kotlin.js.Promise
 import kotlin.js.json
 
@@ -224,8 +230,44 @@ class Application(private val viewer: ViewerAdapter) {
     pipe.send(BrowserMessages.ViewStateChanged(collectViewState(), reason))
   }
 
+  private fun rebindStandardEvents() {
+    viewer.viewerApp.asDynamic().unbindWindowEvents()
+    val boundEvents = viewer.viewerApp.asDynamic()._boundEvents
+    boundEvents.windowResize = {
+      viewer.viewerApp.eventBus.dispatch("resize", json("source" to window))
+    }
+    boundEvents.windowHashChange = {
+      viewer.viewerApp.eventBus.dispatch("hashchange", json(
+        "source" to window,
+        "hash" to document.location?.hash?.substring(1)
+      ))
+    }
+    boundEvents.windowBeforePrint = {
+      viewer.viewerApp.eventBus.dispatch("beforeprint", json("source" to window))
+    }
+    boundEvents.windowAfterPrint = {
+      viewer.viewerApp.eventBus.dispatch("afterprint", json("source" to window))
+    }
+    window.addEventListener("resize", boundEvents.windowResize.unsafeCast<EventListener>())
+    window.addEventListener("hashchange", boundEvents.windowHashChange.unsafeCast<EventListener>())
+    window.addEventListener("beforeprint", boundEvents.windowBeforePrint.unsafeCast<EventListener>())
+    window.addEventListener("afterprint", boundEvents.windowAfterPrint.unsafeCast<EventListener>())
+    window.addEventListener("wheel", options = json("passive" to false)) { event: MouseEvent ->
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        event.preventDefault()
+      }
+    }
+    window.addEventListener("keydown") { event: KeyboardEvent ->
+      console.log(event)
+      if (event.altKey && event.ctrlKey && event.key.lowercase() == "p") {
+        viewer.viewerApp.requestPresentationMode()
+      }
+    }
+  }
+
   fun run() {
     viewer.viewerApp.initializedPromise.then {
+      rebindStandardEvents()
       collectViewProperties().then {
         pipe.send(BrowserMessages.InitialViewProperties(it))
         notifyViewStateChanged(ViewStateChangeReason.INITIAL)

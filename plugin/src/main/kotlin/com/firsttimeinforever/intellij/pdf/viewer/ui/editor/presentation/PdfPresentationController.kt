@@ -52,10 +52,10 @@ class PdfPresentationController(val viewController: PdfJcefPreviewController) {
     val browserComponent = viewController.browser.component
     val location = browserComponent.locationOnScreen
     // val xcenter = browserComponent.width / 2
-    // val ycenter = browserComponent.height / 2
+    val ycenter = browserComponent.height / 2
     viewController.browser.cefBrowser.setFocus(true)
     Robot().apply {
-      mouseMove(originalPosition.x, location.y + 2)
+      mouseMove(originalPosition.x, originalPosition.y + ycenter)
       mousePress(InputEvent.BUTTON1_DOWN_MASK)
       mouseRelease(InputEvent.BUTTON1_DOWN_MASK)
       mouseMove(originalPosition.x, originalPosition.y)

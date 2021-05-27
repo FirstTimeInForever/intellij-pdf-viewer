@@ -33,23 +33,31 @@
     <!--Goto page actions-->
     <action id="pdf.viewer.GotoNextPageAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoNextPageAction"
-            icon="AllIcons.Actions.Play_forward"/>
+            icon="AllIcons.Actions.Play_forward">
+<!--      <keyboard-shortcut keymap="$default" first-keystroke="RIGHT"/>-->
+    </action>
     <action id="pdf.viewer.GotoPreviousPageAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfGotoPreviousPageAction"
-            icon="AllIcons.Actions.Play_back"/>
+            icon="AllIcons.Actions.Play_back">
+<!--      <keyboard-shortcut keymap="$default" first-keystroke="LEFT"/>-->
+    </action>
 
     <!--Change scale actions-->
     <action id="pdf.viewer.IncreaseScaleAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfIncreaseScaleAction"
             icon="AllIcons.General.Add">
-      <keyboard-shortcut keymap="$default" first-keystroke="shift control EQUALS"/>
-      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="shift meta EQUALS"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="control EQUALS" remove="true"/>
+      <mouse-shortcut keymap="$default" keystroke="control button143" remove="true"/>
+      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta EQUALS"/>
+      <mouse-shortcut keymap="Mac OS X 10.5+" keystroke="meta button143"/>
     </action>
     <action id="pdf.viewer.DecreaseScaleAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfDecreaseScaleAction"
             icon="AllIcons.General.Remove">
-      <keyboard-shortcut keymap="$default" first-keystroke="control MINUS"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="control MINUS" remove="true"/>
+      <mouse-shortcut keymap="$default" keystroke="control button142" remove="true"/>
       <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
+      <mouse-shortcut keymap="Mac OS X 10.5+" keystroke="meta button142"/>
     </action>
 
     <!--Page spread actions-->
