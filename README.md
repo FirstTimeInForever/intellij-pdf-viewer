@@ -9,58 +9,79 @@
 ## Features
 
 - Document navigation
-- Presentation mode
-- Text search*
+- Integration with [TeXiFy IDEA](https://github.com/Hannah-Sten/TeXiFy-IDEA)
+- Auto-refresh on document change
+- Text search
 - Document scaling
 - Thumbnail view
-- Sections list**
+- Sections list
+- Structure view
+- Presentation mode
 - Document information
-- Auto-refresh on document change
 - Pages spread (even/odd)
 - Horizontal/vertical pages scroll directions
 
-\* Search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
+#### Features Notes
 
-** Document should define sections list. Otherwise, sections view won't be active.
+* Text search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
+* For the sections list or structure view to work documents should define sections list. Otherwise, sections view won't be active, and the structure view will be empty.
+
 
 ## Use cases
 
+- Writing latex documents
 - Split-view code and documentation
-- Previewing latex documents
 - Presentations with live-coding
 - ...
 
-## How it looks
-
-![Plugin screenshot](images/plugin-screenshot.png)
 
 ## Installation
 
-- Using IDE built-in plugin system:
+### Stable Versions
 
-  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "PDF Viewer"</kbd> >
-  <kbd>Install Plugin</kbd>
+* Using IDE built-in plugin system: `Preferences` > `Plugins` > `Marketplace` > `Search for "PDF Viewer"` > `Install Plugin`. (See [Install plugin from repository](https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_repo))
 
-- Manually:
+* Manually: download the [latest release](https://github.com/FirstTimeInForever/intellij-pdf-viewer/releases/latest) and install it manually using
+  `Preferences` > `Plugins` > `⚙️` > `Install plugin from disk...`. (See [Install plugin from disk](https://www.jetbrains.com/help/idea/managing-plugins.html#install_plugin_from_disk))
 
-  Download the [latest release](https://github.com/FirstTimeInForever/intellij-pdf-viewer/releases/latest) and install it manually using
-  <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+### Alpha Versions
 
-## Notes on JCEF support
+* Add `https://plugins.jetbrains.com/plugins/alpha/14494` to the list of plugin repositories in  `Settings` > `Plugins` > `⚙️` > `Manage Plugin Repositories` > `➕`. (See [Custom plugin repositories](https://www.jetbrains.com/help/idea/managing-plugins.html#repos))
 
-Starting from `2020.2 EAP` (more precisely `202.4357.23-EAP-SNAPSHOT`) all IDEs should have bundled JCEF with `ide.browser.jcef.enabled` registry flag set to `true`. So the plugin should just work. If it doesn't work, please check if markdown plugin works fine. Check it's preview providers and confirm that JCEF is present.
+* Or manually download latest alpha release from [here](https://plugins.jetbrains.com/plugin/14494-pdf-viewer/versions/alpha) and install it in the same way as stable version.
 
-### Builds before `2020.2 EAP`
 
-You can't run this plugin without modifying `PdfEditorPanelProvider` with builds before `2020.2 EAP`. If you really want to - you should change JCEF presence detection with code from early versions (look at `0.0.4` tag).
+## Screenshots
 
-Since CEF browser is still an experimental feature, there is a high chance that it is not shipped by default with your IDE. To be able to use CEF functionality you need to switch to version of JBR that supports it. See [this issue](https://youtrack.jetbrains.com/issue/IDEA-231833#focus=streamItem-27-3993099.0-0) for more details. You can learn how to switch IDE runtime [here](https://www.jetbrains.com/help/idea/switching-boot-jdk.html).
+![Plugin screenshot](images/plugin-screenshot.png)
+
 
 ## Development
 
 To build plugin use `buildPlugin` gradle task. This will produce ready to use `zip` archive with plugin contents.
 
 To run/debug IDE with this plugin `runIde` task should be used.
+
+### Architecture
+
+Plugin code is divided into several modules:
+
+* `plugin` - contains most of the IDE-side plugin code.
+* `model` - shared classes representing PDF Viewer data model.
+* `mpi` - common implementation of message passing interface which is needed to pass messages between IDE and browser.
+* `web-view`
+  * `bootstrap` - sets up `PDF.js` and runs bootstrap code for actual web-view application.
+  * `viewer` - contains actual web-view implementation.
+
+### Notes on JCEF support
+
+Starting from `2020.2 EAP` (more precisely `202.4357.23-EAP-SNAPSHOT`) all IDEs should have bundled JCEF with `ide.browser.jcef.enabled` registry flag set to `true`. So the plugin should just work. If it doesn't work, please check if [Markdown plugin](https://plugins.jetbrains.com/plugin/7793-markdown) works. Check its preview providers and confirm that JCEF is present.
+
+### Builds before `2020.2 EAP`
+
+You can't run this plugin without modifying `PdfEditorPanelProvider` with builds before `2020.2 EAP`. If you really want to - you should change JCEF presence detection with code from early versions (look at `0.0.4` tag).
+
+Since CEF browser is still an experimental feature, there is a high chance that it is not shipped by default with your IDE. To be able to use CEF functionality you need to switch to version of JBR that supports it. See [this issue](https://youtrack.jetbrains.com/issue/IDEA-231833#focus=streamItem-27-3993099.0-0) for more details. You can learn how to switch IDE runtime [here](https://www.jetbrains.com/help/idea/switching-boot-jdk.html).
 
 ### *Disclaimer*
 
