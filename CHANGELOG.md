@@ -1,15 +1,21 @@
 # Intellij PDF Viewer Plugin Changelog
 
 ## 0.12.0
+
+This release contains a lot of new features as well fixes for old bugs.
+
 - Split single plugin project into multiple subprojects
 - Web-view is now mostly rewritten in Kotlin
 - Cleaned up plugin code
 - Added structure view with support for navigation (only for documents with outline)
-- Added new search UI
-- Added view state persistence (do not lose zoom or page position on reloads)
-- Added actions for navigating through history (#23)
+- Added new search UI (should solve [#16](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/16))
+- Search actions now use standard shortcuts (you can remap them in settings)
+- Added view state persistence (do not lose zoom or page position on reloads) ([#14](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/14) and [#30](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/30))
+- Added actions for navigating through history ([#23](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/23))
 - Added viewer actions list
 - Added hard reload action
+- Added mouse wheel bindings for zoom in/out ([#15](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/15))
+- Added settings combobox for selecting default sidebar view state ([#28](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/28))
 
 ## 0.11.0
 - [Added Add SyncTeX support](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/24) by [
