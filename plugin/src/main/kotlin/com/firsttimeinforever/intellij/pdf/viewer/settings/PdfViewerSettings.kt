@@ -22,7 +22,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var invertDocumentColors = false
     get() = field && enableExperimentalFeatures
 
-  var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.NONE
+  var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.THUMBNAILS
 
   fun notifyListeners() {
     ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).settingsChanged(this)
