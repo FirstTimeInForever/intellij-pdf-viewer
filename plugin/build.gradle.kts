@@ -10,7 +10,7 @@ plugins {
   kotlin("jvm")
   kotlin("plugin.serialization")
   id("org.jetbrains.intellij") version "0.7.3"
-  id("org.jetbrains.changelog") version "0.6.2"
+  id("org.jetbrains.changelog") version "1.1.2"
   id("com.github.ben-manes.versions") version "0.36.0"
 }
 
@@ -76,7 +76,7 @@ tasks {
     sinceBuild(fromProperties("pluginSinceVersion"))
     untilBuild(fromProperties("pluginUntilVersion"))
     changeNotes(closure {
-      changelog.getLatest().withHeader(false).toHTML()
+      changelog.getLatest().withHeader(true).toHTML()
     })
   }
   runPluginVerifier {

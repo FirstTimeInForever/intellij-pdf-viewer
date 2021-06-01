@@ -2,8 +2,6 @@
 
 ## 0.12.0
 
-This release contains a lot of new features as well fixes for old bugs.
-
 - Split single plugin project into multiple subprojects
 - Web-view is now mostly rewritten in Kotlin
 - Cleaned up plugin code
