@@ -63,7 +63,7 @@ In case you encountered any bugs, feel free to create an [issue](https://github.
 ## Screenshots
 
 ![Plugin screenshot](images/plugin-screenshot.png)
-
+![Search](images/search.png)
 
 ## Development
 
