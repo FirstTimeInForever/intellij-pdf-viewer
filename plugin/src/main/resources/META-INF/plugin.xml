@@ -5,30 +5,6 @@
     FirstTimeInForever
   </vendor>
 
-  <description><![CDATA[
-    This plugin allows you to view PDF files directly in IDE.
-    <br>
-    Main Features:
-    <ul>
-        <li>Document navigation</li>
-        <li>Presentation mode</li>
-        <li>Text search*</li>
-        <li>Document scaling</li>
-        <li>Thumbnail view</li>
-        <li>Sections list**</li>
-        <li>Document information</li>
-        <li>Auto-refresh on document change</li>
-        <li>Pages spread (even/odd)</li>
-        <li>Horizontal/vertical pages scroll directions</li>
-    </ul>
-    <italic>* Search will work only in text-based documents. For example, it won't work in all-images documents (books scans).</italic>
-    <br>
-    <italic>** Document should define sections list. Otherwise, sections view won't be active.</italic>
-    <div>
-    <img width="400" src="https://raw.githubusercontent.com/FirstTimeInForever/intellij-pdf-viewer/development/images/plugin-screenshot.png">
-    </div>
-    ]]></description>
-
   <depends>com.intellij.modules.platform</depends>
   <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
 
@@ -47,8 +23,6 @@
     <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable"/>
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
-<!--    <structureViewBuilder id="pdf.viewer.StructureView"-->
-<!--                          implementationClass="com.firsttimeinforever.intellij.pdf.viewer.structureView.PdfStructureViewBuilder"/>-->
   </extensions>
 
   <applicationListeners>

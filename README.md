@@ -4,12 +4,14 @@
 [![License](https://img.shields.io/github/license/FirstTimeInForever/intellij-pdf-viewer)](https://github.com/FirstTimeInForever/intellij-pdf-viewer/blob/master/LICENSE)
 [![Latest release](https://img.shields.io/github/v/tag/firsttimeinforever/intellij-pdf-viewer?include_prereleases)](https://github.com/FirstTimeInForever/intellij-pdf-viewer/releases)
 
+<!-- Plugin description -->
+
 [IntelliJ PDF Viewer](https://plugins.jetbrains.com/plugin/14494-pdf-viewer) plugin adds support for viewing PDF files in IntelliJ-based IDEs. This plugin uses recently integrated (`2020.2`) CEF (Chromium Embedded Framework) browser to render PDF documents with [PDF.js](https://mozilla.github.io/pdf.js/) library.
 
 ## Features
 
 - Document navigation
-- Integration with [TeXiFy IDEA](https://github.com/Hannah-Sten/TeXiFy-IDEA)
+- Integration with [TeXiFy IDEA](https://plugins.jetbrains.com/plugin/9473-texify-idea)
 - Auto-refresh on document change
 - Text search
 - Document scaling
@@ -21,7 +23,7 @@
 - Pages spread (even/odd)
 - Horizontal/vertical pages scroll directions
 
-#### Features Notes
+### Features Notes
 
 * Text search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
 * For the sections list or structure view to work documents should define sections list. Otherwise, sections view won't be active, and the structure view will be empty.
@@ -34,6 +36,13 @@
 - Presentations with live-coding
 - ...
 
+## Providing Feedback
+
+If you want to support PDF Viewer development, just [give a star on GitHub](https://github.com/FirstTimeInForever/intellij-pdf-viewer) or write a review on the [marketplace page](https://plugins.jetbrains.com/plugin/14494-pdf-viewer).
+
+In case you encountered any bugs, feel free to create an [issue](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues).
+
+<!-- Plugin description end -->
 
 ## Installation
 

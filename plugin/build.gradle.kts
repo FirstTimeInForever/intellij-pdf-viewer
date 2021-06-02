@@ -1,4 +1,7 @@
+
+import com.jetbrains.plugin.structure.base.utils.readText
 import org.jetbrains.changelog.closure
+import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import java.nio.file.Paths
@@ -66,7 +69,7 @@ tasks {
   }
   changelog {
     version = "${rootProject.version}"
-    path = "${projectDir}/../CHANGELOG.md"
+    path = Paths.get(projectDir.path, "..", "CHANGELOG.md").toString()
     header = closure { project.version }
     itemPrefix = "-"
     keepUnreleasedSection = true
@@ -78,6 +81,7 @@ tasks {
     changeNotes(closure {
       changelog.getLatest().withHeader(true).toHTML()
     })
+    setPluginDescription(extractPluginDescription())
   }
   runPluginVerifier {
     ideVersions(fromProperties("pluginVerifierIdeVersions"))
@@ -86,6 +90,20 @@ tasks {
   buildSearchableOptions {
     enabled = false
   }
+}
+
+@Throws(GradleException::class)
+fun extractPluginDescription(): String {
+  // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
+  val lines = Paths.get(projectDir.path, "..", "README.md").readText().lines()
+  val start = "<!-- Plugin description -->"
+  val end = "<!-- Plugin description end -->"
+  if (!lines.containsAll(listOf(start, end))) {
+    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+  }
+  val descriptionLines = lines.subList(lines.indexOf(start) + 1, lines.indexOf(end))
+  val descriptionText = descriptionLines.joinToString("\n")
+  return markdownToHTML(descriptionText)
 }
 
 val copyWebViewBuildResults by tasks.registering(Copy::class) {
