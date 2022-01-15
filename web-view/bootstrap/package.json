@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "pdfjs-dist": "^2.6.347",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "webl10n": "^1.0.0"
   },
   "devDependencies": {
