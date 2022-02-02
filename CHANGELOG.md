@@ -1,7 +1,12 @@
 # Intellij PDF Viewer Plugin Changelog
 
-## 0.12.0
+## 0.13.0
+- Use off-screen rendering for the browser view by default (can be changed via registry value)
+- Fix action toolbars creation exceptions
+- Bump IJ platform version
+- Bump TeXiFy dependency version
 
+## 0.12.0
 - Split single plugin project into multiple subprojects
 - Web-view is now mostly rewritten in Kotlin
 - Cleaned up plugin code
