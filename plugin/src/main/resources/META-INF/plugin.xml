@@ -16,9 +16,12 @@
               implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
     <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
     <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
+
     <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
     <registryKey defaultValue="10000" key="pdf.viewer.jcefLatchTimeout" description="Sets maximum wait time for the web-view to load"/>
     <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>
+    <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
+
     <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
     <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable"/>
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>

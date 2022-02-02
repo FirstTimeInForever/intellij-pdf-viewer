@@ -1,5 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view
 
+import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefBrowserMessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addConsoleMessageListener
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.createDefaultConsoleMessageListener
@@ -7,13 +9,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.invokeAndWaitFo
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.model.ViewThemeUtils.create
-import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
-import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
-import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexPreciseLocation
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
+import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexPreciseLocation
 import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexFileAvailable
 import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexUtils.isSynctexInstalled
 import com.firsttimeinforever.intellij.pdf.viewer.tex.TexFileInfo
@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
@@ -40,7 +41,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   DumbAware
 {
   // TODO: Migrate to OSR when it's ready
-  val browser = JCEFHtmlPanel("about:blank")
+  val browser = JCEFHtmlPanel(useOsr, null, "about:blank")
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController(this)
   private val messageBusConnection = project.messageBus.connect(this)
@@ -252,6 +253,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
+
+    private val useOsr
+      get() = Registry.`is`("pdf.viewer.use.jcef.osr.view")
 
     private fun getPagemodeValue(value: SidebarViewMode): String {
       return when (value) {
