@@ -70,7 +70,11 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
     add(searchTextArea)
     add(resultsLabel)
 
-    val actionToolbar = PdfActionUtils.createActionToolbar(DefaultActionGroup(findForwardAction, findBackwardAction))
+    val actionToolbar = PdfActionUtils.createActionToolbar(
+      DefaultActionGroup(findForwardAction, findBackwardAction),
+      ActionPlaces.EDITOR_TOOLBAR,
+      this
+    )
     add(actionToolbar.component, "pushx")
 
     searchTextArea.textArea.document.addDocumentListener(object : DocumentListenerAdapter() {
