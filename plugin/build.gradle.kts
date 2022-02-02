@@ -56,7 +56,7 @@ intellij {
   updateSinceUntilBuild = false
   pluginName = fromProperties("pluginName")
 
-  setPlugins("nl.rubensten.texifyidea:0.7.5")
+  setPlugins("nl.rubensten.texifyidea:0.7.14")
 }
 
 tasks {
