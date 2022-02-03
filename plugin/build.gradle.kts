@@ -1,9 +1,8 @@
-
-import com.jetbrains.plugin.structure.base.utils.readText
 import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.RunIdeTask
+import java.nio.file.Files
 import java.nio.file.Paths
 
 fun fromProperties(key: String) = project.findProperty(key).toString()
@@ -12,9 +11,9 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "0.7.3"
+  id("org.jetbrains.intellij") version "1.3.1"
   id("org.jetbrains.changelog") version "1.1.2"
-  id("com.github.ben-manes.versions") version "0.36.0"
+  id("com.github.ben-manes.versions") version "0.41.0"
 }
 
 group = fromProperties("group")
@@ -51,12 +50,11 @@ dependencies {
 }
 
 intellij {
-  version = fromProperties("platformVersion")
-  sameSinceUntilBuild = true
-  updateSinceUntilBuild = false
-  pluginName = fromProperties("pluginName")
-
-  setPlugins("nl.rubensten.texifyidea:0.7.14")
+  version.set(fromProperties("platformVersion"))
+  sameSinceUntilBuild.set(true)
+  updateSinceUntilBuild.set(false)
+  pluginName.set(fromProperties("pluginName"))
+  plugins.set(listOf("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}"))
 }
 
 tasks {
@@ -76,26 +74,24 @@ tasks {
     unreleasedTerm = "Unreleased"
   }
   withType<PatchPluginXmlTask> {
-    sinceBuild(fromProperties("pluginSinceVersion"))
-    untilBuild(fromProperties("pluginUntilVersion"))
-    changeNotes(closure {
-      changelog.getLatest().withHeader(true).toHTML()
-    })
-    setPluginDescription(extractPluginDescription())
+    sinceBuild.set(fromProperties("pluginSinceVersion"))
+    untilBuild.set(fromProperties("pluginUntilVersion"))
+    changeNotes.set(changelog.getLatest().withHeader(true).toHTML())
+    pluginDescription.set(extractPluginDescription())
   }
   runPluginVerifier {
-    ideVersions(fromProperties("pluginVerifierIdeVersions"))
+    ideVersions.set(listOf(fromProperties("pluginVerifierIdeVersions")))
   }
-  // https://youtrack.jetbrains.com/issue/KTIJ-782
-  buildSearchableOptions {
-    enabled = false
-  }
+//  // https://youtrack.jetbrains.com/issue/KTIJ-782
+//  buildSearchableOptions {
+//    enabled = false
+//  }
 }
 
 @Throws(GradleException::class)
 fun extractPluginDescription(): String {
   // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-  val lines = Paths.get(projectDir.path, "..", "README.md").readText().lines()
+  val lines = Files.readAllLines(Paths.get(projectDir.path, "..", "README.md"))
   val start = "<!-- Plugin description -->"
   val end = "<!-- Plugin description end -->"
   if (!lines.containsAll(listOf(start, end))) {
