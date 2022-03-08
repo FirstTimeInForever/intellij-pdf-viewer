@@ -3,7 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions.debug
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfAction
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.util.registry.Registry
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal

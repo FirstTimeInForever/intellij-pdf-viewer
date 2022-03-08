@@ -16,7 +16,7 @@ import org.jetbrains.io.response
 import org.jetbrains.io.send
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.ExperimentalPathApi
+import java.util.*
 import kotlin.io.path.extension
 import kotlin.random.Random
 
@@ -52,16 +52,13 @@ internal class PdfStaticServer : HttpRequestHandler() {
     return path.startsWith("/get-file/")
   }
 
-  @OptIn(ExperimentalPathApi::class)
-  private fun validateExternalPath(path: Path) {
-    if (path.extension.toLowerCase() != "pdf") {
-      throw IllegalArgumentException("Only pdf files can be served from the outside of jar!")
-    }
+  private fun assertValidExternalPath(path: Path) {
+    check(path.extension.lowercase(Locale.getDefault()) == "pdf") { "Only pdf files can be served from the outside of jar!" }
   }
 
   private fun sendExternalFile(path: String, context: ChannelHandlerContext, request: FullHttpRequest) {
     val targetFile = Paths.get(path)
-    validateExternalPath(targetFile)
+    assertValidExternalPath(targetFile)
     logger.debug("Sending external file: $targetFile")
     FileResponses.sendFile(request, context.channel(), Paths.get(targetFile.toString()))
   }

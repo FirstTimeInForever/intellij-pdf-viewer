@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import nl.hannahsten.texifyidea.run.pdfviewer.ExternalPdfViewer
 import java.io.File
+import java.util.*
 
 /**
  * PDF viewer for TeXiFy IDEA.
@@ -27,7 +28,7 @@ class TexPdfViewer : ExternalPdfViewer {
 
   override val displayName: String = "Built-in PDF Viewer"
 
-  override val name: String = displayName.toUpperCase().replace(" ", "-")
+  override val name: String = displayName.uppercase(Locale.getDefault()).replace(" ", "-")
 
   /**
    * When this plugin is installed, the PDF viewer plugin is always available.
