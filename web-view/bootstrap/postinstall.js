@@ -1,8 +1,10 @@
 const {cp, exec, exit, test, mkdir, cat} = require("shelljs");
 const fs = require('fs');
 
+const pdfjsVersion = "2.5.207";
+
 if (!test("-e", "node_modules/pdf.js")) {
-  if (!exec("npm install --ignore-scripts --no-save mozilla/pdf.js#v2.5.207")) {
+  if (!exec(`npm install --ignore-scripts --no-save mozilla/pdf.js#v${pdfjsVersion}`)) {
     exit(1);
   }
 }
