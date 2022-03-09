@@ -80,7 +80,7 @@ tasks {
     pluginDescription.set(extractPluginDescription())
   }
   runPluginVerifier {
-    ideVersions.set(listOf(fromProperties("pluginVerifierIdeVersions")))
+    ideVersions.set(fromProperties("pluginVerifierIdeVersions").split(", "))
   }
 //  // https://youtrack.jetbrains.com/issue/KTIJ-782
 //  buildSearchableOptions {
