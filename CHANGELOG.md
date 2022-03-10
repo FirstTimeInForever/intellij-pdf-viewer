@@ -1,5 +1,9 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.14.0
+- Fix preview server auth token issue in Android Studio ([#47](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/47))
+- Update plugin dependencies
+
 ## 0.13.0
 - Use off-screen rendering for the browser view by default (can be changed via registry value)
 - Fix action toolbars creation exceptions
