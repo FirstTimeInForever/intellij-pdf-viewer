@@ -99,6 +99,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
             </div>
             <div id="findbarOptionsTwoContainer">
+                <input type="checkbox" id="findMatchDiacritics" class="toolbarField" tabindex="96">
                 <input type="checkbox" id="findEntireWord" class="toolbarField" tabindex="96">
                 <label for="findEntireWord" class="toolbarLabel" data-l10n-id="find_entire_word_label">Whole words</label>
                 <span id="findResultsCount" class="toolbarLabel hidden"></span>
@@ -160,6 +161,9 @@ See https://github.com/adobe-type-tools/cmap-resources
 
                 <div class="horizontalToolbarSeparator"></div>
 
+                <button id="scrollPage" class="secondaryToolbarButton scrollPage" title="Use Page Scrolling" tabindex="62" data-l10n-id="scroll_page" role="radio" aria-checked="false">
+                  <span data-l10n-id="scroll_page_label">Page Scrolling</span>
+                </button>
                 <button id="scrollVertical" class="secondaryToolbarButton scrollModeButtons scrollVertical toggled" title="Use Vertical Scrolling" tabindex="62" data-l10n-id="scroll_vertical">
                     <span data-l10n-id="scroll_vertical_label">Vertical Scrolling</span>
                 </button>
