@@ -13,27 +13,34 @@ plugins {
   kotlin("plugin.serialization")
   id("org.jetbrains.intellij") version "1.3.1"
   id("org.jetbrains.changelog") version "1.1.2"
-  id("com.github.ben-manes.versions") version "0.41.0"
 }
 
 group = fromProperties("group")
 version = fromProperties("version")
 
-val kotlinVersion: String by project
-val kotlinxSerializationJsonVersion: String by project
-
-val webView: Configuration by configurations.creating
-val webViewSourceDirectory = file("$projectDir/src/main/web-view")
-
 repositories {
   mavenCentral()
   maven("https://www.jetbrains.com/intellij-repository/snapshots")
-  // maven("http://maven.geotoolkit.org/")
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun DependencyHandler.project(path: String, configuration: Configuration): Dependency {
+  return project(mapOf(
+    "path" to path,
+    "configuration" to configuration.name
+  ))
+}
+
+val viewerApplicationBundle: Configuration by configurations.creating {
+  isCanBeConsumed = false
+  isCanBeResolved = true
+}
+val webViewSourceDirectory = file("$projectDir/src/main/web-view")
+
 dependencies {
-  // implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-  // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
+  implementation(libs.kotlinxCoroutinesCore)
+  implementation(libs.kotlinxSerialization)
+  implementation(libs.kotlinReflect)
   implementation("io.sentry:sentry:1.7.30") {
     // Included in IJ
     exclude("org.slf4j")
@@ -46,7 +53,7 @@ dependencies {
   implementation(project(":model")) {
     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
   }
-  webView(project(":web-view:bootstrap"))
+  viewerApplicationBundle(project(":web-view:viewer", viewerApplicationBundle))
 }
 
 intellij {
@@ -103,12 +110,12 @@ fun extractPluginDescription(): String {
 }
 
 val copyWebViewBuildResults by tasks.registering(Copy::class) {
-  from(webView)
+  from(viewerApplicationBundle)
   into(Paths.get(buildDir.toString(), "resources", "main", "web-view"))
 }
 
 tasks.getByName("processResources") {
-  // dependsOn(copyWebViewBuildResults)
+  dependsOn(copyWebViewBuildResults)
   inputs.dir(copyWebViewBuildResults.map { it.outputs.files.singleFile })
 }
 
