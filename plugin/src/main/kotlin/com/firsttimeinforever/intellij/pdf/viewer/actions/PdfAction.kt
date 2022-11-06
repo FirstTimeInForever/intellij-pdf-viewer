@@ -24,7 +24,7 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
 
   protected fun adjustPresentationVisibility(event: AnActionEvent) {
     val controller = findController(event) ?: return
-    val idePresentation = UISettings.instance.presentationMode
+    val idePresentation = UISettings.getInstance().presentationMode
     val documentPresentation = controller.presentationController.isPresentationModeActive
     event.presentation.isEnabledAndVisible = when (viewModeAwareness) {
       ViewModeAwareness.NONE -> !idePresentation && !documentPresentation
