@@ -67,7 +67,8 @@ class TexPdfViewer : ExternalPdfViewer {
           editor as PdfFileEditor
         } else {
           val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
-          editorWindow?.selectedEditor?.selectedWithProvider?.fileEditor as PdfFileEditor
+          (editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor)
+            ?: fileEditorManager.getSelectedEditor(file) as PdfFileEditor
         }
 
         val command = GeneralCommandLine(

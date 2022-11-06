@@ -50,6 +50,10 @@ dependencies {
 }
 
 intellij {
+  pluginsRepositories {
+    custom("http://127.0.0.1:8000")
+  }
+
   version.set(fromProperties("platformVersion"))
   sameSinceUntilBuild.set(true)
   updateSinceUntilBuild.set(false)
