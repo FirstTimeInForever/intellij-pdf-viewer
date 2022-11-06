@@ -66,9 +66,15 @@ class TexPdfViewer : ExternalPdfViewer {
           pdfEditor.navigate(false)
           editor as PdfFileEditor
         } else {
-          val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
-          (editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor)
-            ?: fileEditorManager.getSelectedEditor(file) as PdfFileEditor
+          // Only open in right split when there already is an open file, otherwise it is not possible to open a right split because there
+          // is nothing to split.
+          if (fileEditorManager.hasOpenFiles()) {
+            val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
+            editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
+          } else {
+            pdfEditor.navigate(false)
+            fileEditorManager.getSelectedEditor(file) as PdfFileEditor
+          }
         }
 
         val command = GeneralCommandLine(
@@ -84,7 +90,7 @@ class TexPdfViewer : ExternalPdfViewer {
           .associate { it.groups["id"]?.value to it.groups["value"]?.value }
           .filter { it.key != null && it.value != null }
 
-        jcefEditor.viewComponent.controller?.setForwardSearchData(
+        jcefEditor?.viewComponent?.controller?.setForwardSearchData(
           SynctexPreciseLocation(
             values["Page"]?.toInt() ?: 1,
             values["h"]?.toDouble() ?: 0.0,
