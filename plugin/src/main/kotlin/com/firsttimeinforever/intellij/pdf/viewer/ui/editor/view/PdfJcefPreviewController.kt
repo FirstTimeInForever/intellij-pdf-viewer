@@ -41,7 +41,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   DumbAware
 {
   // TODO: Migrate to OSR when it's ready
-  val browser = JCEFHtmlPanel(useOsr, null, "about:blank")
+  val browser = JCEFHtmlPanel(useOsr, null, "about:blank").apply {
+    setOpenLinksInExternalBrowser(true)
+  }
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController(this)
   private val messageBusConnection = project.messageBus.connect(this)
