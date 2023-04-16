@@ -257,10 +257,23 @@ class Application(private val viewer: ViewerAdapter) {
         event.preventDefault()
       }
     }
+
     window.addEventListener("keydown") { event: KeyboardEvent ->
       console.log(event)
       if (event.altKey && event.ctrlKey && event.key.lowercase() == "p") {
         viewer.viewerApp.requestPresentationMode()
+      }
+
+      if (event.key.lowercase() == "arrowright" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        if (viewer.currentPageNumber < viewer.pagesCount) {
+          viewer.currentPageNumber += 1
+        }
+      }
+
+      if (event.key.lowercase() == "arrowleft" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        if (viewer.currentPageNumber > 1) {
+          viewer.currentPageNumber -= 1
+        }
       }
     }
   }
