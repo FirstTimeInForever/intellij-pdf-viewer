@@ -23,6 +23,15 @@
 - Pages spread (even/odd)
 - Horizontal/vertical pages scroll directions
 
+## Shortcuts
+- **Move editor up or down:** up and down arrow keys.
+- **Move editor right or left:** right and left arrow keys.
+- **Move to the next page:** when the whole width of the page is in view, the right and left arrow keys will navigate to the next and previous page.
+- **Zoom in:** <kbd>Ctrl</kbd> + <kbd>+</kbd>, <kbd>Ctrl</kbd> + <kbd>=</kbd>.
+- **Zoom out:** <kbd>Ctrl</kbd> + <kbd>-</kbd>
+- **Reset zoom:** <kbd>Ctrl</kbd> + <kbd>0</kbd>
+- **Enter presentation mode:** <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>p</kbd>
+
 ### Features Notes
 
 * Text search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
