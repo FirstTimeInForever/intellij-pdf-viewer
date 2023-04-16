@@ -13,7 +13,7 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     get() = viewerApp.pdfViewer.pagesCount
 
   var currentPageNumber: Int
-    get() = viewerApp.pdfViewer._location.pageNumber
+    get() = viewerApp.pdfViewer.currentPageNumber
     set(value) {
       require(value in 1..pagesCount)
       viewerApp.pdfViewer.currentPageNumber = value
