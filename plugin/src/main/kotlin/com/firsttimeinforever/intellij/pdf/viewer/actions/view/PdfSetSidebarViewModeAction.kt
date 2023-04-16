@@ -20,7 +20,7 @@ sealed class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarView
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    event.presentation.isVisible = PdfAction.hasOpenedEditor(event)
+    event.presentation.isVisible = PdfAction.hasEditorInView(event)
     event.presentation.isEnabled = canBeEnabled(PdfAction.findController(event))
   }
 

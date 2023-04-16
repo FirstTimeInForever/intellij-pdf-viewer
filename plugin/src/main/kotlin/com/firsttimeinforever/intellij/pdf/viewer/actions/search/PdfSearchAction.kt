@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 sealed class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
-    val editor = findEditor(event) ?: return
+    val editor = findEditorInView(event) ?: return
     val controller = findController(event) ?: return
     val searchQuery = editor.viewComponent.searchPanel.searchQuery
     controller.find(searchQuery, direction)
@@ -14,7 +14,7 @@ sealed class PdfSearchAction(private val direction: SearchDirection) : PdfDumbAw
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    val searchPanel = findEditor(event)?.viewComponent?.searchPanel
+    val searchPanel = findEditorInView(event)?.viewComponent?.searchPanel
     event.presentation.isEnabled = searchPanel?.searchText?.isNotEmpty() == true && searchPanel.isVisible
   }
 
