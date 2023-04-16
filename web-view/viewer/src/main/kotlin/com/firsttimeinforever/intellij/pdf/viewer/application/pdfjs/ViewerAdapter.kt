@@ -58,6 +58,18 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     viewerApp.asDynamic().appConfig.secondaryToolbar.pageRotateCcwButton.click()
   }
 
+  fun goToNextPage() {
+    if (currentPageNumber < pagesCount) {
+      currentPageNumber += 1
+    }
+  }
+
+  fun goToPreviousPage() {
+    if (currentPageNumber > 1) {
+      currentPageNumber -= 1
+    }
+  }
+
   fun findNext(text: String) {
     val findBar = viewerApp.asDynamic().appConfig.findBar
     findBar.findField.value = text

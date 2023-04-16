@@ -11,5 +11,5 @@ external class PdfViewer {
   val pagesCount: Int
   var currentPageNumber: Int
   val currentScale: Int
-  val currentScaleValue: String
+  var currentScaleValue: String
 }
