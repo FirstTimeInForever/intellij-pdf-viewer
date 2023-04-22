@@ -45,7 +45,7 @@ class PdfViewerSettingsForm : JPanel() {
     "Invert Colors Intensity",
     settings.documentColorsInvertIntensity
   ).also {
-    it.isEnabled = PdfViewerSettings.enableExperimentalFeatures
+    it.isEnabled = true
   }
 
   val enableDocumentAutoReload = PropertyGraph().graphProperty { settings.enableDocumentAutoReload }
@@ -144,46 +144,44 @@ class PdfViewerSettingsForm : JPanel() {
           label(PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
         }
       }
-      if (PdfViewerSettings.enableExperimentalFeatures) {
-        titledRow("Experimental Features") {
-          row {
-            object : JPanel(GridBagLayout()) {
-              init {
-                GridBagConstraints().also {
-                  it.anchor = GridBagConstraints.LINE_START
-                  it.ipadx = 8
-                  add(JLabel("Colors invert intensity:"), it)
-                  val field = JBTextField(documentColorsInvertIntensity.toString(), 5)
-                  field.document.addDocumentListener(object : DocumentListener {
-                    override fun insertUpdate(e: DocumentEvent?) {
-                      documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
-                    }
+      titledRow("Experimental Features") {
+        row {
+          object : JPanel(GridBagLayout()) {
+            init {
+              GridBagConstraints().also {
+                it.anchor = GridBagConstraints.LINE_START
+                it.ipadx = 8
+                add(JLabel("Colors invert intensity:"), it)
+                val field = JBTextField(documentColorsInvertIntensity.toString(), 5)
+                field.document.addDocumentListener(object : DocumentListener {
+                  override fun insertUpdate(e: DocumentEvent?) {
+                    documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
+                  }
 
-                    override fun removeUpdate(e: DocumentEvent?) {
-                      documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
-                    }
+                  override fun removeUpdate(e: DocumentEvent?) {
+                    documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
+                  }
 
-                    override fun changedUpdate(e: DocumentEvent?) {
-                      documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
-                    }
-                  })
-                  add(field, it)
-                }
+                  override fun changedUpdate(e: DocumentEvent?) {
+                    documentColorsInvertIntensity = field.text.toIntOrNull() ?: 0
+                  }
+                })
+                add(field, it)
               }
-            }()
-          }
+            }
+          }()
         }
         // This is a preferred way for implementing this UI component.
         // Unfortunately, this is not working due to unstable UI DSL.
-        // titledRow("Experimental Features") {
-        //     row {
-        //         label("Please note, that this features are experimental and may not work as expected.")
-        //     }
-        //     row {
-        //         label("Colors invert intensity")
-        //         intTextField(::documentColorsInvertIntensity, 1, 0..100)
-        //     }
-        // }
+//         titledRow("Experimental Features") {
+//             row {
+//                 label("Please note, that this features are experimental and may not work as expected.")
+//             }
+//             row {
+//                 label("Colors invert intensity")
+//                 intTextField(::documentColorsInvertIntensity, 1, 0..100)
+//             }
+//         }
       }
     })
     loadSettings()

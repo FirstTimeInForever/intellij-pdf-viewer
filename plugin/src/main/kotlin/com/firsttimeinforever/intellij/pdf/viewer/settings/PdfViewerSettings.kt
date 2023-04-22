@@ -19,8 +19,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var customIconColor: Int = defaultIconColor.rgb
   var enableDocumentAutoReload = true
   var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
-  var invertDocumentColors = false
-    get() = field && enableExperimentalFeatures
+  var invertDocumentColors = true
 
   var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.THUMBNAILS
 

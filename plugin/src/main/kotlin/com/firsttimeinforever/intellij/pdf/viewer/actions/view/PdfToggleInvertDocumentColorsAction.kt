@@ -13,11 +13,4 @@ class PdfToggleInvertDocumentColorsAction : PdfToggleAction(ViewModeAwareness.BO
     PdfViewerSettings.instance.invertDocumentColors = state
     PdfViewerSettings.instance.notifyListeners()
   }
-
-  override fun update(event: AnActionEvent) {
-    super.update(event)
-    if (!PdfViewerSettings.enableExperimentalFeatures) {
-      event.presentation.isEnabledAndVisible = false
-    }
-  }
 }
