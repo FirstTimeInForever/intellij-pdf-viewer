@@ -8,6 +8,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfToggleIdePresentationModeAction: PdfDumbAwareAction(ViewModeAwareness.BOTH) {
   override fun actionPerformed(event: AnActionEvent) {
-    TogglePresentationModeAction.setPresentationMode(event.project, !UISettings.instance.presentationMode)
+    TogglePresentationModeAction.setPresentationMode(event.project, !UISettings.getInstance().presentationMode)
   }
 }
