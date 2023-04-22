@@ -19,7 +19,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.Document
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
@@ -175,7 +174,7 @@ class Application(private val viewer: ViewerAdapter) {
     val appConfig = viewer.viewerApp.asDynamic().appConfig
     // appConfig.appContainer.style.background = viewTheme.background
     val document = appConfig.appContainer.ownerDocument as Document
-    ThemeUtils.updateColors(document, viewTheme)
+    ThemeUtils.updateColors(viewTheme)
     // ThemeUtils.attachStylesheet(document, ThemeUtils.generateStylesheet(viewTheme))
   }
 
