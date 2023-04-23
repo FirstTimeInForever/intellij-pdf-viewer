@@ -32,6 +32,8 @@
   <applicationListeners>
     <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfStatusBarProjectManagerListener"
               topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
+              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
   </applicationListeners>
 
   <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
