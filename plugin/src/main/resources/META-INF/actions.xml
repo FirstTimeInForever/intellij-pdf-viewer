@@ -144,8 +144,6 @@
       <reference ref="pdf.viewer.IncreaseScaleAction"/>
       <reference ref="pdf.viewer.DecreaseScaleAction"/>
       <separator/>
-      <reference ref="pdf.viewer.ToggleInvertDocumentColorsAction"/>
-      <separator/>
       <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
       <reference ref="pdf.viewer.SetPageSpreadOddAction"/>
       <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>

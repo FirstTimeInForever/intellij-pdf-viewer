@@ -11,12 +11,14 @@ class PdfViewerConfigurable : Configurable {
   override fun isModified(): Boolean {
     return settingsForm?.run {
       settings.enableDocumentAutoReload != enableDocumentAutoReload.get() ||
-        settings.useCustomColors != useCustomColors ||
-        settings.customBackgroundColor != (customBackgroundColor?.rgb ?: settings.customBackgroundColor) ||
-        settings.customForegroundColor != (customForegroundColor?.rgb ?: settings.customForegroundColor) ||
-        settings.customIconColor != (customIconColor?.rgb ?: settings.customIconColor) ||
-        settings.documentColorsInvertIntensity != documentColorsInvertIntensity ||
-        settings.defaultSidebarViewMode != defaultSidebarViewMode.get()
+        settings.defaultSidebarViewMode != defaultSidebarViewMode.get() ||
+        settings.invertColorsWithTheme != invertDocumentColorsWithTheme.get() ||
+        settings.invertDocumentColors != invertDocumentColors.get() ||
+        settings.documentColorsInvertIntensity != documentColorsInvertIntensity.get() ||
+        settings.useCustomColors != useCustomColors.get() ||
+        settings.customForegroundColor != customForegroundColor.get() ||
+        settings.customBackgroundColor != customBackgroundColor.get() ||
+        settings.customIconColor != customIconColor.get()
     } ?: false
   }
 
@@ -26,12 +28,14 @@ class PdfViewerConfigurable : Configurable {
     val wasModified = isModified
     settings.run {
       enableDocumentAutoReload = settingsForm?.enableDocumentAutoReload?.get() ?: enableDocumentAutoReload
-      useCustomColors = settingsForm?.useCustomColors ?: useCustomColors
-      customBackgroundColor = settingsForm?.customBackgroundColor?.rgb ?: customBackgroundColor
-      customForegroundColor = settingsForm?.customForegroundColor?.rgb ?: customForegroundColor
-      customIconColor = settingsForm?.customIconColor?.rgb ?: customIconColor
-      documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity ?: documentColorsInvertIntensity
       defaultSidebarViewMode = settingsForm?.defaultSidebarViewMode?.get() ?: defaultSidebarViewMode
+      invertColorsWithTheme = settingsForm?.invertDocumentColorsWithTheme?.get() ?: invertColorsWithTheme
+      invertDocumentColors = settingsForm?.invertDocumentColors?.get() ?: invertDocumentColors
+      documentColorsInvertIntensity = settingsForm?.documentColorsInvertIntensity?.get() ?: documentColorsInvertIntensity
+      useCustomColors = settingsForm?.useCustomColors?.get() ?: useCustomColors
+      customBackgroundColor = settingsForm?.customBackgroundColor?.get() ?: customBackgroundColor
+      customForegroundColor = settingsForm?.customForegroundColor?.get() ?: customForegroundColor
+      customIconColor = settingsForm?.customIconColor?.get() ?: customIconColor
     }
     if (wasModified) {
       settings.notifyListeners()
@@ -39,7 +43,7 @@ class PdfViewerConfigurable : Configurable {
   }
 
   override fun reset() {
-    settingsForm?.loadSettings()
+    settingsForm?.reset()
   }
 
   override fun createComponent(): JComponent? {
