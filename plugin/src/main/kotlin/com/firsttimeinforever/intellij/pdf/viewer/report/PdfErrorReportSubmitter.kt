@@ -34,7 +34,7 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
     consumer: Consumer<in SubmittedReportInfo>
   ): Boolean {
     val context = DataManager.getInstance().getDataContext(parentComponent)
-    val event = createEvent(events ?: emptyArray())
+    val event = createEvent(events)
       .withMessage(additionalInfo ?: "No additional info were provided")
       .also { attachExtraInfo(it) }
     val project = CommonDataKeys.PROJECT.getData(context)
