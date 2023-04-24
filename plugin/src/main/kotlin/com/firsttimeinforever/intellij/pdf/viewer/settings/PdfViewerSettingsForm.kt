@@ -50,6 +50,7 @@ class PdfViewerSettingsForm : JPanel() {
       row {
         checkBox(PdfViewerBundle.message("pdf.viewer.settings.colors.document.with.theme"))
           .bindSelected(invertDocumentColorsWithTheme)
+          .comment(PdfViewerBundle.message("pdf.viewer.settings.colors.document.with.theme.comment"))
       }
       row {
         checkBox(PdfViewerBundle.message("pdf.viewer.settings.colors.document.invert"))
@@ -59,6 +60,7 @@ class PdfViewerSettingsForm : JPanel() {
       row(PdfViewerBundle.message("pdf.viewer.settings.colors.document.invert.intensity")) {
         intTextField(1..100, 1)
           .bindIntText(documentColorsInvertIntensity)
+        rowComment(PdfViewerBundle.message("pdf.viewer.settings.colors.document.invert.intensity.comment"))
       }
     }
   }
@@ -90,25 +92,27 @@ class PdfViewerSettingsForm : JPanel() {
       row {
         checkBox(PdfViewerBundle.message("pdf.viewer.settings.viewer.colors"))
           .bindSelected(useCustomColors)
+          .comment(PdfViewerBundle.message("pdf.viewer.settings.group.colors.viewer.comment"))
       }
-      row {
-        panel {
-          row(PdfViewerBundle.message("pdf.viewer.settings.foreground")) {
-            cell(foregroundColorPanel)
-          }
-          row(PdfViewerBundle.message("pdf.viewer.settings.background")) {
-            cell(backgroundColorPanel)
-          }
-          row(PdfViewerBundle.message("pdf.viewer.settings.icons")) {
-            cell(iconColorPanel)
-          }
-          row {
-            link(PdfViewerBundle.message("pdf.viewer.settings.set.current.theme")) {
-              resetViewerColorsToTheme()
+      indent {
+          panel {
+            row(PdfViewerBundle.message("pdf.viewer.settings.foreground")) {
+              cell(foregroundColorPanel)
             }
-          }
-        }
-      }.enabledIf(useCustomColors)
+            row(PdfViewerBundle.message("pdf.viewer.settings.background")) {
+              cell(backgroundColorPanel)
+            }
+            row(PdfViewerBundle.message("pdf.viewer.settings.icons")) {
+              cell(iconColorPanel)
+              rowComment(PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
+            }
+            row {
+              link(PdfViewerBundle.message("pdf.viewer.settings.set.current.theme")) {
+                resetViewerColorsToTheme()
+              }
+            }
+          }.enabledIf(useCustomColors)
+      }
     }
   }
 
