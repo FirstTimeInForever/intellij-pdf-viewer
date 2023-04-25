@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
+import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.not
 import com.intellij.ui.ColorPanel
@@ -16,8 +17,10 @@ class PdfViewerSettingsForm : JPanel() {
   private val settings
     get() = PdfViewerSettings.instance
 
-  val enableDocumentAutoReload = PropertyGraph().property(settings.enableDocumentAutoReload)
-  val defaultSidebarViewMode = PropertyGraph().property(settings.defaultSidebarViewMode)
+  private val properties = PropertyGraph()
+
+  val enableDocumentAutoReload = properties.property(settings.enableDocumentAutoReload)
+  val defaultSidebarViewMode = properties.property(settings.defaultSidebarViewMode)
 
   private val generalSettingsGroup = panel {
     group(PdfViewerBundle.message("pdf.viewer.settings.group.general")) {
@@ -41,9 +44,14 @@ class PdfViewerSettingsForm : JPanel() {
     }
   }
 
-  val invertDocumentColorsWithTheme = PropertyGraph().property(settings.invertColorsWithTheme)
-  val invertDocumentColors = PropertyGraph().property(settings.invertDocumentColors)
-  val documentColorsInvertIntensity = PropertyGraph().property(settings.documentColorsInvertIntensity)
+  val invertDocumentColorsWithTheme = properties.property(settings.invertColorsWithTheme).apply {
+    afterPropagation {
+      // Automatically toggle the invertDocumentColors checkbox so the pdf color switched to the current theme.
+      if (this.get()) invertDocumentColors.set(EditorColorsManager.getInstance().isDarkEditor)
+    }
+  }
+  val invertDocumentColors = properties.property(settings.invertDocumentColors)
+  val documentColorsInvertIntensity = properties.property(settings.documentColorsInvertIntensity)
 
   private val invertColorsGroup = panel {
     group(PdfViewerBundle.message("pdf.viewer.settings.group.colors.document")) {
@@ -65,10 +73,10 @@ class PdfViewerSettingsForm : JPanel() {
     }
   }
 
-  val useCustomColors = PropertyGraph().property(settings.useCustomColors)
-  val customBackgroundColor = PropertyGraph().property(settings.customBackgroundColor)
-  val customForegroundColor = PropertyGraph().property(settings.customForegroundColor)
-  val customIconColor = PropertyGraph().property(settings.customIconColor)
+  val useCustomColors = properties.property(settings.useCustomColors)
+  val customBackgroundColor = properties.property(settings.customBackgroundColor)
+  val customForegroundColor = properties.property(settings.customForegroundColor)
+  val customIconColor = properties.property(settings.customIconColor)
 
   private val backgroundColorPanel = ColorPanel().apply {
     selectedColor = Color(customBackgroundColor.get())
@@ -137,7 +145,7 @@ class PdfViewerSettingsForm : JPanel() {
     customIconColor.set(settings.customIconColor)
   }
 
-  fun resetViewerColorsToTheme() {
+  private fun resetViewerColorsToTheme() {
     PdfViewerSettings.run {
       backgroundColorPanel.selectedColor = defaultBackgroundColor
       customBackgroundColor.set(defaultBackgroundColor.rgb)
