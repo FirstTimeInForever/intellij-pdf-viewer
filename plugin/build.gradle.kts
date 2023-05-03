@@ -62,7 +62,7 @@ tasks {
     kotlinOptions {
       jvmTarget = JavaVersion.VERSION_17.toString()
       @Suppress("SuspiciousCollectionReassignment")
-      freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+      freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
     }
   }
   changelog {
@@ -115,6 +115,7 @@ tasks.getByName("processResources") {
 tasks.withType<RunIdeTask> {
   // Some warning asked for this to be set explicitly
   systemProperties["idea.log.path"] = file("build/idea-sandbox/system/log").absolutePath
+  jbrVariant.set("jcef")
   systemProperties["ide.browser.jcef.enabled"] = true
   systemProperties["pdf.viewer.debug"] = true
   jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
