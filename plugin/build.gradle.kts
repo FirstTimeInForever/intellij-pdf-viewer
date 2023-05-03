@@ -11,7 +11,7 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "1.3.1"
+  id("org.jetbrains.intellij") version "1.10.1"
   id("org.jetbrains.changelog") version "1.1.2"
   id("com.github.ben-manes.versions") version "0.41.0"
 }
@@ -60,7 +60,7 @@ intellij {
 tasks {
   compileKotlin {
     kotlinOptions {
-      jvmTarget = JavaVersion.VERSION_11.toString()
+      jvmTarget = JavaVersion.VERSION_17.toString()
       @Suppress("SuspiciousCollectionReassignment")
       freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
@@ -113,6 +113,8 @@ tasks.getByName("processResources") {
 }
 
 tasks.withType<RunIdeTask> {
+  // Some warning asked for this to be set explicitly
+  systemProperties["idea.log.path"] = file("build/idea-sandbox/system/log").absolutePath
   systemProperties["ide.browser.jcef.enabled"] = true
   systemProperties["pdf.viewer.debug"] = true
   jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")

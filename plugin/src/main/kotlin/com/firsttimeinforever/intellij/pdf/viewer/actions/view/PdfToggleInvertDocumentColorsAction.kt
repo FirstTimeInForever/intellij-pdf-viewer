@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 
 class PdfToggleInvertDocumentColorsAction : PdfToggleAction(ViewModeAwareness.BOTH), DumbAware {
+
   override fun isSelected(event: AnActionEvent) = PdfViewerSettings.instance.invertDocumentColors
 
   override fun setSelected(event: AnActionEvent, state: Boolean) {
@@ -16,8 +17,6 @@ class PdfToggleInvertDocumentColorsAction : PdfToggleAction(ViewModeAwareness.BO
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    if (!PdfViewerSettings.enableExperimentalFeatures) {
-      event.presentation.isEnabledAndVisible = false
-    }
+    event.presentation.isEnabledAndVisible = !PdfViewerSettings.instance.invertColorsWithTheme
   }
 }

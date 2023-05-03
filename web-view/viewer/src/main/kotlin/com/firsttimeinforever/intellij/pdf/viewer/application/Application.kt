@@ -19,7 +19,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.Document
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.MouseEvent
@@ -91,7 +90,7 @@ class Application(private val viewer: ViewerAdapter) {
     }
     pipe.subscribe<IdeMessages.UpdateThemeColors> {
       console.log("Received theme update request $it")
-      updateTheme(it.theme)
+      ThemeUtils.updateColors(it.theme)
     }
     pipe.subscribe<IdeMessages.NavigateTo> {
       viewer.viewerApp.pdfLinkService.navigateTo(it.destination)
@@ -169,14 +168,6 @@ class Application(private val viewer: ViewerAdapter) {
         navigationReference = node.dest
       )
     }
-  }
-
-  private fun updateTheme(viewTheme: ViewTheme) {
-    val appConfig = viewer.viewerApp.asDynamic().appConfig
-    // appConfig.appContainer.style.background = viewTheme.background
-    val document = appConfig.appContainer.ownerDocument as Document
-    ThemeUtils.updateColors(document, viewTheme)
-    // ThemeUtils.attachStylesheet(document, ThemeUtils.generateStylesheet(viewTheme))
   }
 
   // FIXME: Reimplement document info collection without open/close hack and

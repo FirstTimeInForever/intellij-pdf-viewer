@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
+
 plugins {
   kotlin("js")
   kotlin("plugin.serialization")
@@ -20,18 +22,24 @@ kotlin {
   js(IR) {
     browser {
       webpackTask {
-        cssSupport.enabled = true
+        cssSupport {
+          enabled.set(true)
+        }
         sourceMaps = true
       }
 
       runTask {
-        cssSupport.enabled = true
+        cssSupport {
+          enabled.set(true)
+        }
       }
 
       testTask {
         useKarma {
           useChromeHeadless()
-          webpackConfig.cssSupport.enabled = true
+          webpackConfig.cssSupport {
+            enabled.set(true)
+          }
         }
       }
     }

@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil.copyBean
+import java.awt.Color
 
 @State(name = "PdfViewerSettings", storages = [(Storage("pdf_viewer.xml"))])
 class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
@@ -20,7 +21,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var enableDocumentAutoReload = true
   var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
   var invertDocumentColors = false
-    get() = field && enableExperimentalFeatures
+  var invertColorsWithTheme = false
 
   var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.THUMBNAILS
 
