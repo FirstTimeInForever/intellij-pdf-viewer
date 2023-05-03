@@ -243,11 +243,11 @@ class Application(private val viewer: ViewerAdapter) {
     window.addEventListener("hashchange", boundEvents.windowHashChange.unsafeCast<EventListener>())
     window.addEventListener("beforeprint", boundEvents.windowBeforePrint.unsafeCast<EventListener>())
     window.addEventListener("afterprint", boundEvents.windowAfterPrint.unsafeCast<EventListener>())
-    window.addEventListener("wheel", options = json("passive" to false)) { event: MouseEvent ->
-      if (event.altKey || event.ctrlKey || event.metaKey) {
-        event.preventDefault()
-      }
-    }
+    // window.addEventListener("wheel", options = undefined) { event: MouseEvent ->
+    //   if (event.altKey || event.ctrlKey || event.metaKey) {
+    //     event.preventDefault()
+    //   }
+    // }
 
     window.addEventListener("keydown") { event: KeyboardEvent ->
       console.log(event)
