@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfShowFindPopupAction: PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
-    val searchPanel = findEditor(event)?.viewComponent?.searchPanel ?: return
+    val searchPanel = findEditorInView(event)?.viewComponent?.searchPanel ?: return
     if (!searchPanel.isVisible) {
       searchPanel.setEnabledState(true)
     }
@@ -14,7 +14,7 @@ class PdfShowFindPopupAction: PdfDumbAwareAction() {
   override fun update(event: AnActionEvent) {
     super.update(event)
     // TODO: Refactor
-    val searchPanel = findEditor(event)?.viewComponent?.searchPanel ?: return
+    val searchPanel = findEditorInView(event)?.viewComponent?.searchPanel ?: return
     event.presentation.isEnabled = !searchPanel.isVisible
   }
 }
