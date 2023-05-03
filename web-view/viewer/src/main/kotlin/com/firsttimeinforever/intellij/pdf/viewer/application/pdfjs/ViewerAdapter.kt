@@ -13,7 +13,7 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     get() = viewerApp.pdfViewer.pagesCount
 
   var currentPageNumber: Int
-    get() = viewerApp.pdfViewer._location.pageNumber
+    get() = viewerApp.pdfViewer.currentPageNumber
     set(value) {
       require(value in 1..pagesCount)
       viewerApp.pdfViewer.currentPageNumber = value
@@ -56,6 +56,18 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
 
   fun rotateCounterClockwise() {
     viewerApp.asDynamic().appConfig.secondaryToolbar.pageRotateCcwButton.click()
+  }
+
+  fun goToNextPage() {
+    if (currentPageNumber < pagesCount) {
+      currentPageNumber += 1
+    }
+  }
+
+  fun goToPreviousPage() {
+    if (currentPageNumber > 1) {
+      currentPageNumber -= 1
+    }
   }
 
   fun findNext(text: String) {

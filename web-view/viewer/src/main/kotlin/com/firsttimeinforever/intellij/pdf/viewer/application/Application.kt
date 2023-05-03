@@ -50,8 +50,8 @@ class Application(private val viewer: ViewerAdapter) {
     pipe.subscribe<IdeMessages.GotoPage> {
       console.log(it)
       when (it.direction) {
-        PageGotoDirection.FORWARD -> viewer.currentPageNumber += 1
-        PageGotoDirection.BACKWARD -> viewer.currentPageNumber -= 1
+        PageGotoDirection.FORWARD -> viewer.goToNextPage()
+        PageGotoDirection.BACKWARD -> viewer.goToPreviousPage()
       }
     }
     pipe.subscribe<IdeMessages.PageSpreadStateSetRequest> {
@@ -257,10 +257,42 @@ class Application(private val viewer: ViewerAdapter) {
         event.preventDefault()
       }
     }
+
     window.addEventListener("keydown") { event: KeyboardEvent ->
       console.log(event)
       if (event.altKey && event.ctrlKey && event.key.lowercase() == "p") {
         viewer.viewerApp.requestPresentationMode()
+      }
+
+      // Go to the next page.
+      if (event.key.lowercase() == "arrowright" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        // Only move to the next page if the entire width of the page is in view.
+        if (viewer.zoomState.value < 100) {
+          viewer.goToNextPage()
+        }
+      }
+
+      // Go to the previous page.
+      if (event.key.lowercase() == "arrowleft" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        // Only move to the next page if the entire width of the page is in view.
+        if (viewer.zoomState.value < 100) {
+          viewer.goToPreviousPage()
+        }
+      }
+
+      // Zoom in.
+      if ((event.key.lowercase() == "=" || event.key.lowercase() == "+") && event.ctrlKey && !event.altKey && !event.shiftKey) {
+        viewer.increaseScale()
+      }
+
+      // Zoom out.
+      if (event.key.lowercase() == "-" && event.ctrlKey && !event.altKey && !event.shiftKey) {
+        viewer.decreaseScale()
+      }
+
+      // Reset zoom.
+      if (event.key.lowercase() == "0" && event.ctrlKey && !event.altKey && !event.shiftKey) {
+        viewer.viewerApp.pdfViewer.currentScaleValue = "auto"
       }
     }
   }
