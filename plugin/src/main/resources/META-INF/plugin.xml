@@ -25,12 +25,15 @@
     <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
     <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable"/>
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
-    <statusBarWidgetFactory implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+    <statusBarWidgetFactory id="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidget"
+                            implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
   </extensions>
 
   <applicationListeners>
     <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfStatusBarProjectManagerListener"
               topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
+              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
   </applicationListeners>
 
   <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>

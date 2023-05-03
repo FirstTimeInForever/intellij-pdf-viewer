@@ -11,10 +11,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
 
 abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = ViewModeAwareness.IDE) : AnAction() {
   override fun update(event: AnActionEvent) {
-    val editor = findAnyEditor(event)
+    val editor = findEditorInView(event)
     with(event.presentation) {
       isVisible = editor != null
       isEnabled = findController(editor) != null
@@ -38,22 +39,29 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
   }
 
   companion object {
-    fun findEditor(event: AnActionEvent): PdfFileEditor? {
-      return event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
+
+    /**
+     * Find the editor that belongs to the given [event].
+     *
+     * If the editor that currently has focus is a [PdfFileEditor], return that one. If not, look for any other PdfFileEditors that are open
+     * (split view) and select the first we find there. If there is no [PdfFileEditor] selected, this returns null. Note that in that case it
+     * is possible that there is a PDF open somewhere, but it is not in view.
+     */
+    fun findEditorInView(event: AnActionEvent): PdfFileEditor? {
+      val focusedEditor = event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
+
+      return focusedEditor ?: run {
+        val project = event.project ?: return null
+        FileEditorManager.getInstance(project).selectedEditors.firstOrNull {it is PdfFileEditor} as? PdfFileEditor
+      }
     }
 
-    fun findAnyEditor(event: AnActionEvent): PdfFileEditor? {
-      val project = event.project ?: return null
-      val editorManager = FileEditorManager.getInstance(project)
-      return editorManager.allEditors.firstOrNull { it is PdfFileEditor } as? PdfFileEditor
-    }
-
-    fun hasOpenedEditor(event: AnActionEvent): Boolean {
-      return findAnyEditor(event) != null
+    fun hasEditorInView(event: AnActionEvent): Boolean {
+      return findEditorInView(event) != null
     }
 
     fun findController(event: AnActionEvent): PdfJcefPreviewController? {
-      return findAnyEditor(event)?.viewComponent?.controller
+      return findEditorInView(event)?.viewComponent?.controller
     }
 
     fun findController(editor: PdfFileEditor?): PdfJcefPreviewController? {

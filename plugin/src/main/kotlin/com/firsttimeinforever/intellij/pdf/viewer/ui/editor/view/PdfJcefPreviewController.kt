@@ -41,7 +41,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   DumbAware
 {
   // TODO: Migrate to OSR when it's ready
-  val browser = JCEFHtmlPanel(useOsr, null, "about:blank")
+  val browser = JCEFHtmlPanel(useOsr, null, "about:blank").apply {
+    setOpenLinksInExternalBrowser(true)
+  }
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController(this)
   private val messageBusConnection = project.messageBus.connect(this)
@@ -147,10 +149,12 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   }
 
   fun reload(tryToPreserveState: Boolean = false) {
-    if (viewLoaded && isReloading.compareAndSet(false, true)) {
-      when (tryToPreserveState) {
+    if (isReloading.compareAndSet(false, true)) {
+      // Reloading while preserving the state only makes sense if the pdf was loaded and we wanted to preserve state.
+      // Reloading without state should always be available, e.g., a corrupt pdf that was still open could have been fixed and can now be reloaded.
+      when (viewLoaded && tryToPreserveState) {
         true -> pipe.send(IdeMessages.BeforeReload())
-        else -> doActualReload(tryToPreserveState)
+        else -> doActualReload(false)
       }
     }
   }

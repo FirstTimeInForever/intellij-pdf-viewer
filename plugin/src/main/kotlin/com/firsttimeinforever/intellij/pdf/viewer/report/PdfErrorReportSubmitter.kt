@@ -28,13 +28,13 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
   override fun getReportActionText(): String = PdfViewerBundle.message("pdf.viewer.error.report.action.text")
 
   override fun submit(
-    events: Array<out IdeaLoggingEvent>?,
+    events: Array<out IdeaLoggingEvent>,
     additionalInfo: String?,
     parentComponent: Component,
     consumer: Consumer<in SubmittedReportInfo>
   ): Boolean {
     val context = DataManager.getInstance().getDataContext(parentComponent)
-    val event = createEvent(events ?: emptyArray())
+    val event = createEvent(events)
       .withMessage(additionalInfo ?: "No additional info were provided")
       .also { attachExtraInfo(it) }
     val project = CommonDataKeys.PROJECT.getData(context)

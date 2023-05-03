@@ -11,7 +11,7 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "1.9.0"
+  id("org.jetbrains.intellij") version "1.10.1"
   id("org.jetbrains.changelog") version "1.1.2"
   id("com.github.ben-manes.versions") version "0.41.0"
 }
@@ -113,6 +113,8 @@ tasks.getByName("processResources") {
 }
 
 tasks.withType<RunIdeTask> {
+  // Some warning asked for this to be set explicitly
+  systemProperties["idea.log.path"] = file("build/idea-sandbox/system/log").absolutePath
   jbrVariant.set("jcef")
   systemProperties["ide.browser.jcef.enabled"] = true
   systemProperties["pdf.viewer.debug"] = true

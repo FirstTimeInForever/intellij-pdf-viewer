@@ -8,7 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 
 object PdfEditorUtils {
   fun findPdfEditor(project: Project, file: VirtualFile): PdfFileEditor? {
-    val editorManager = FileEditorManagerEx.getInstance(project) ?: return null
+    val editorManager = FileEditorManagerEx.getInstanceEx(project)
     val selectedEditor = editorManager.getSelectedEditor(file) as? PdfFileEditor
     if (selectedEditor != null) {
       return selectedEditor

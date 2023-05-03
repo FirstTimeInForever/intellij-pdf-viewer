@@ -7,7 +7,7 @@ class PdfSidebarViewModeActionGroup : DefaultActionGroup() {
   override fun isPopup(): Boolean = true
 
   override fun update(event: AnActionEvent) {
-    event.presentation.isVisible = PdfAction.hasOpenedEditor(event)
+    event.presentation.isVisible = PdfAction.hasEditorInView(event)
     event.presentation.isEnabled = PdfAction.findController(event) != null
   }
 }
