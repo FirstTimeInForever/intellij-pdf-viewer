@@ -240,7 +240,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   fun setForwardSearchData(data: SynctexPreciseLocation) {
     currentForwardSearchData = data
-    pipe.send(IdeMessages.SynctexForwardSearch(data))
+    if (viewLoaded) {
+      pipe.send(IdeMessages.SynctexForwardSearch(data))
+    }
   }
 
   fun canNavigate(): Boolean = outline != null
