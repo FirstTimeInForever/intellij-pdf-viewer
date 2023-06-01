@@ -1,7 +1,7 @@
 # Intellij PDF Viewer Plugin Changelog
 
 ## 0.15.0
-- Improvements related to scrolling performance ([#51](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/51))
+- Fx scrolling performance on Mac ([#51](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/51))
 - Improve forward search after loading document ([#75](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/75))
 - Fix reloading of a corrupt pdf file ([#37](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/37))
 - Fix exception on forward search from TeXiFy ([#57](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/57))
