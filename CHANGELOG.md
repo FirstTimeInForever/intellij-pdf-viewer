@@ -1,5 +1,15 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.15.0
+- Improvements related to scrolling performance ([#51](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/51))
+- Improve forward search after loading document ([#75](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/75))
+- Fix reloading of a corrupt pdf file ([#37](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/37))
+- Fix exception on forward search from TeXiFy ([#57](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/57))
+- Fix the color inversion ([#10](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/10))
+- Open links in external browser ([#38](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/38))
+- Fix problems with the page count and add some shortcuts for next/previous page and zoom ([#67](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/67), [#68](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/68))
+- Improve the experience of having multiple PDFs open ([#55](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/55), [#56](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/56), [#59](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/59), [#64](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/64))
+
 ## 0.14.0
 - Fix preview server auth token issue in Android Studio ([#47](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/47))
 - Update plugin dependencies
