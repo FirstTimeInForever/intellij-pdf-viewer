@@ -295,6 +295,7 @@ class Application(private val viewer: ViewerAdapter) {
         pipe.send(BrowserMessages.InitialViewProperties(it))
         notifyViewStateChanged(ViewStateChangeReason.INITIAL)
       }
+      pipe.send(BrowserMessages.AskForwardSearchData())
       with(viewer) {
         addEventListener(ViewerEvents.PAGE_CHANGING, ::pageChangeListener)
         addEventListener(ViewerEvents.ZOOM_IN, ::zoomChangeListener)
