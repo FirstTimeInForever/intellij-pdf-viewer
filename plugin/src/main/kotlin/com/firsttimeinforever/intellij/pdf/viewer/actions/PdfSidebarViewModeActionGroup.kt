@@ -4,7 +4,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 
 class PdfSidebarViewModeActionGroup : DefaultActionGroup() {
-  override fun isPopup(): Boolean = true
+  init {
+    templatePresentation.isPopupGroup = true
+  }
 
   override fun update(event: AnActionEvent) {
     event.presentation.isVisible = PdfAction.hasEditorInView(event)
