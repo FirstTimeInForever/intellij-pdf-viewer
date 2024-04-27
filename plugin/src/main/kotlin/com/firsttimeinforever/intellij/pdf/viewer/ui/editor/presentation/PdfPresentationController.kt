@@ -50,7 +50,7 @@ class PdfPresentationController(val viewController: PdfJcefPreviewController) {
     val originalPosition = MouseInfo.getPointerInfo().location
     val originalFocusOwner = FocusManager.getCurrentManager().focusOwner
     val browserComponent = viewController.browser.component
-    val location = browserComponent.locationOnScreen
+    // val location = browserComponent.locationOnScreen
     // val xcenter = browserComponent.width / 2
     val ycenter = browserComponent.height / 2
     viewController.browser.cefBrowser.setFocus(true)

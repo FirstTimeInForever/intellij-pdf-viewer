@@ -42,7 +42,7 @@ internal class SendReportBackgroundTask(
             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
             NotificationType.ERROR
           ).notify(project)
-          thisLogger().error(exception)
+          thisLogger().error(exception.toString())
           consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED))
         }
       }

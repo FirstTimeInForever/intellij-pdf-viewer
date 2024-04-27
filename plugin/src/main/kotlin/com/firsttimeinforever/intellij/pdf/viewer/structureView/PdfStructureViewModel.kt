@@ -32,7 +32,7 @@ class PdfStructureViewModel(
     val wrapper = StructureViewFactoryEx.getInstanceEx(project).structureViewWrapper
     if (wrapper is StructureViewWrapperImpl) {
       ApplicationManager.getApplication().invokeLater {
-        wrapper.rebuild()
+        wrapper.rebuildNow("Refresh structure view")
       }
     }
   }
