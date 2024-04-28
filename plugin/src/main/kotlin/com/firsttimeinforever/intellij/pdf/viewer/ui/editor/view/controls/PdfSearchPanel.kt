@@ -197,7 +197,7 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
       templatePresentation.selectedIcon = selectedIcon
     }
 
-    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.EDT
 
     override fun isSelected(event: AnActionEvent): Boolean {
       return holdState

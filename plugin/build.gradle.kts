@@ -104,7 +104,7 @@ fun extractPluginDescription(): String {
 
 val copyWebViewBuildResults by tasks.registering(Copy::class) {
   from(webView)
-  into(Paths.get(project.layout.buildDirectory.toString(), "resources", "main", "web-view"))
+  into(project.layout.buildDirectory.dir("resources/main/web-view"))
 }
 
 tasks.getByName("processResources") {
