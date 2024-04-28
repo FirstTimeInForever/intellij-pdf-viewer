@@ -1,4 +1,4 @@
-import org.jetbrains.changelog.closure
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.tasks.PatchPluginXmlTask
 import org.jetbrains.intellij.tasks.RunIdeTask
@@ -11,9 +11,9 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "1.10.1"
-  id("org.jetbrains.changelog") version "1.1.2"
-  id("com.github.ben-manes.versions") version "0.41.0"
+  id("org.jetbrains.intellij") version "1.17.3"
+  id("org.jetbrains.changelog") version "2.2.0"
+  id("com.github.ben-manes.versions") version "0.51.0"
 }
 
 group = fromProperties("group")
@@ -68,7 +68,7 @@ tasks {
   changelog {
     version = "${rootProject.version}"
     path = Paths.get(projectDir.path, "..", "CHANGELOG.md").toString()
-    header = closure { project.version }
+    header = project.version.toString()
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
@@ -76,7 +76,7 @@ tasks {
   withType<PatchPluginXmlTask> {
     sinceBuild.set(fromProperties("pluginSinceVersion"))
     untilBuild.set(fromProperties("pluginUntilVersion"))
-    changeNotes.set(changelog.getLatest().withHeader(true).toHTML())
+    changeNotes.set(changelog.renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML))
     pluginDescription.set(extractPluginDescription())
   }
   runPluginVerifier {
@@ -104,7 +104,7 @@ fun extractPluginDescription(): String {
 
 val copyWebViewBuildResults by tasks.registering(Copy::class) {
   from(webView)
-  into(Paths.get(buildDir.toString(), "resources", "main", "web-view"))
+  into(Paths.get(project.layout.buildDirectory.toString(), "resources", "main", "web-view"))
 }
 
 tasks.getByName("processResources") {

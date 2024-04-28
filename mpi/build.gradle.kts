@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
   kotlin("multiplatform")
   kotlin("plugin.serialization")
