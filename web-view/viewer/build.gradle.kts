@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-
 plugins {
   kotlin("multiplatform")
   kotlin("plugin.serialization")

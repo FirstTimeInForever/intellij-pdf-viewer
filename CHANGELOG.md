@@ -1,6 +1,6 @@
 # Intellij PDF Viewer Plugin Changelog
 ## 0.16.0
-- Support 2024.1 ([#90](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/90))
+- Support 2024.1 ([#90](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/90), [#98](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/98))
 
 ## 0.15.0
 - Fix scrolling performance on Mac ([#51](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/51))
