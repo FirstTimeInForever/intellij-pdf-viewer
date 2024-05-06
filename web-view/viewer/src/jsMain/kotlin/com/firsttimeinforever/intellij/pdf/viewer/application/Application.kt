@@ -18,10 +18,8 @@ import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
-import org.w3c.dom.Document
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
-import org.w3c.dom.events.MouseEvent
 import kotlin.js.Promise
 import kotlin.js.json
 

@@ -1,7 +1,5 @@
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-
 plugins {
-  kotlin("js")
+  kotlin("multiplatform")
   kotlin("plugin.serialization")
 }
 
@@ -9,13 +7,6 @@ val kotlinxSerializationJsonVersion: String by project
 
 repositories {
   mavenCentral()
-}
-
-dependencies {
-  implementation(kotlin("stdlib-js"))
-  implementation(project(":mpi"))
-  implementation(project(":model"))
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
 }
 
 kotlin {
@@ -45,10 +36,20 @@ kotlin {
     }
     binaries.executable()
   }
+  sourceSets {
+    val jsMain by getting {
+      dependencies {
+        implementation(kotlin("stdlib-js"))
+        implementation(project(":mpi"))
+        implementation(project(":model"))
+        implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
+      }
+    }
+  }
 }
 
 artifacts {
-  val distributionTask = tasks.findByName("browserDistribution")!!
+  val distributionTask = tasks.findByName("jsBrowserDistribution")!!
   // TODO: Find a better way to select viewer.js file
   val targetFile = File(distributionTask.outputs.files.singleFile, "viewer.js")
   add(configurations.viewerApplicationBundle.name, targetFile) {

@@ -20,7 +20,7 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     }
 
   var pageSpreadState: PageSpreadState
-    get() = PageSpreadState.values()[viewerApp.pdfViewer.spreadMode]
+    get() = PageSpreadState.entries[viewerApp.pdfViewer.spreadMode]
     set(value) {
       viewerApp.pdfViewer.spreadMode = value.ordinal
     }
@@ -83,7 +83,7 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
   }
 
   val currentScrollDirection: ScrollDirection
-    get() = ScrollDirection.values()[viewerApp.pdfViewer.scrollMode]
+    get() = ScrollDirection.entries[viewerApp.pdfViewer.scrollMode]
 
   fun setVerticalScroll() {
     val toolbar = viewerApp.asDynamic().appConfig.secondaryToolbar

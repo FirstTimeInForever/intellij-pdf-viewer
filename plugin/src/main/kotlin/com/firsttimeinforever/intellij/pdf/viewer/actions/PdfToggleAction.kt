@@ -1,5 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
@@ -8,6 +9,8 @@ import com.intellij.openapi.actionSystem.ToggleAction
  */
 abstract class PdfToggleAction(viewModeAwareness: ViewModeAwareness = ViewModeAwareness.IDE_ONLY) : ToggleAction() {
   protected open val base: PdfAction = StubAction(viewModeAwareness)
+
+  override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun update(event: AnActionEvent) {
     super.update(event)

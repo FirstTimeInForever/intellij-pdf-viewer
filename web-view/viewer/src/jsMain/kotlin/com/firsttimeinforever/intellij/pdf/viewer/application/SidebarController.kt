@@ -33,6 +33,6 @@ class SidebarController(private val viewer: ViewerAdapter) {
       // console.log(viewer.viewerApp.pdfSidebar)
       val viewValue = viewer.viewerApp.pdfSidebar.visibleView as Int
       console.log("Got viewMode value: $viewValue")
-      return SidebarViewMode.values()[viewValue]
+      return SidebarViewMode.entries[viewValue]
     }
 }
