@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pdfjs-dist": "2.6.347",
+    "pdfjs-dist": "4.2.67",
     "shelljs": "^0.8.5",
     "webl10n": "^1.0.0"
   },
