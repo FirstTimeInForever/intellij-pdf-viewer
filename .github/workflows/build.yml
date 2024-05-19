@@ -75,7 +75,7 @@ jobs:
   # If accepted and published, release workflow would be triggered
   release-draft:
     name: Create Release Draft
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     steps:
