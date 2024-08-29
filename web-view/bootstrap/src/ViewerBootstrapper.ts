@@ -11,6 +11,7 @@ export class ViewerBootstrapper {
       get: () => PDFViewerApplication
     });
     AppOptions.set("workerSrc", "pdf.worker.js");
+    AppOptions.set("cMapUrl", "cmaps/");
     Object.defineProperty(window, "PDFViewerApplicationOptions", {
       get: () => AppOptions
     });
