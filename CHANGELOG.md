@@ -1,4 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
+
+## 0.16.1
+- Support pdfs without an embedded font, by [Liu Dongmiao](https://github.com/liudongmiao).
+
 ## 0.16.0
 - Support 2024.1 ([#90](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/90), [#98](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/98))
 
