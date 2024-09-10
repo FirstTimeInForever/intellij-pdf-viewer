@@ -5,6 +5,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.Url
 import com.intellij.util.Urls
+import com.intellij.util.io.URLUtil
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.http.FullHttpRequest
@@ -86,9 +87,12 @@ internal class PdfStaticServer : HttpRequestHandler() {
 
   fun getPreviewUrl(filePath: String, withReloadSalt: Boolean = false): String {
     val salt = if (withReloadSalt) Random.nextInt() else 0
-    val url = parseEncodedPath("$serverUrl/index.html?__reloadSalt=$salt&file=get-file/$filePath")
+    val url = parseEncodedPath("$serverUrl/index.html")
     val server = BuiltInServerManager.getInstance()
-    return server.addAuthToken(url).toExternalForm()
+    return server.addAuthToken(url)
+      // `file` would be read via `urlDecoder.path()`, which calls `decodeComponent`
+      .addParameters(mapOf("__reloadSalt" to "$salt", "file" to URLUtil.encodeURIComponent("get-file/$filePath")))
+      .toExternalForm()
   }
 
   private fun parseEncodedPath(target: String): Url {
