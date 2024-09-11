@@ -129,7 +129,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   private fun doActualReload(tryToPreserveState: Boolean = false) {
     viewLoaded = false
     try {
-      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile.path, withReloadSalt = true)
+      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile, withReloadSalt = true)
       if (firstLoad) {
         viewState = viewState.copy(sidebarViewMode = PdfViewerSettings.instance.defaultSidebarViewMode)
       }
@@ -255,7 +255,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.NavigateHistory(direction))
   }
 
-  override fun dispose() = Unit
+  override fun dispose() {
+    logger.debug("dispose $virtualFile")
+    PdfStaticServer.instance.disposePreviewUrl(virtualFile)
+  }
 
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
