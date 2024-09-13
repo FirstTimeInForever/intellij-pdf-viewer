@@ -24,7 +24,7 @@ module.exports = {
       patterns: [
         {from: "./node_modules/pdfjs-dist/cmaps", to: "./cmaps"},
         {from: "./node_modules/pdf.js/web/images", to: "./images"},
-        {from: "./patched-assets/locale", to: "./locale"},
+        {from: "./node_modules/pdf.js/l10n/en-US/viewer.properties", to: "./locale/en-US/"},
         {from: "./node_modules/pdfjs-dist/build/pdf.worker.js", to: "./"},
         {from: "./node_modules/pdfjs-dist/web/pdf_viewer.css", to: "./"},
         {from: "./assets", to: "./assets"},
