@@ -220,27 +220,6 @@ class Application(private val viewer: ViewerAdapter) {
   }
 
   private fun rebindStandardEvents() {
-    viewer.viewerApp.asDynamic().unbindWindowEvents()
-    val boundEvents = viewer.viewerApp.asDynamic()._boundEvents
-    boundEvents.windowResize = {
-      viewer.viewerApp.eventBus.dispatch("resize", json("source" to window))
-    }
-    boundEvents.windowHashChange = {
-      viewer.viewerApp.eventBus.dispatch("hashchange", json(
-        "source" to window,
-        "hash" to document.location?.hash?.substring(1)
-      ))
-    }
-    boundEvents.windowBeforePrint = {
-      viewer.viewerApp.eventBus.dispatch("beforeprint", json("source" to window))
-    }
-    boundEvents.windowAfterPrint = {
-      viewer.viewerApp.eventBus.dispatch("afterprint", json("source" to window))
-    }
-    window.addEventListener("resize", boundEvents.windowResize.unsafeCast<EventListener>())
-    window.addEventListener("hashchange", boundEvents.windowHashChange.unsafeCast<EventListener>())
-    window.addEventListener("beforeprint", boundEvents.windowBeforePrint.unsafeCast<EventListener>())
-    window.addEventListener("afterprint", boundEvents.windowAfterPrint.unsafeCast<EventListener>())
     // window.addEventListener("wheel", options = undefined) { event: MouseEvent ->
     //   if (event.altKey || event.ctrlKey || event.metaKey) {
     //     event.preventDefault()
