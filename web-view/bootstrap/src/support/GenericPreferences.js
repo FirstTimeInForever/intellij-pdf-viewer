@@ -1,4 +1,4 @@
-import {BasePreferences} from "pdfjs-dist/lib/web/preferences";
+import {BasePreferences} from "pdf.js/web/preferences";
 
 export class GenericPreferences extends BasePreferences {
   async _writeToStorage(prefObj) {

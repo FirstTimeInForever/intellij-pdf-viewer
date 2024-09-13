@@ -1,8 +1,8 @@
-const {AppOptions} = require("pdfjs-dist/lib/web/app_options");
-const {PDFViewerApplication} = require("pdfjs-dist/lib/web/app");
+const {AppOptions} = require("pdf.js/web/app_options");
+const {PDFViewerApplication} = require("pdf.js/web/app");
 import {GenericExternalServices} from "./support/GenericExternalServices"
 import {getViewerConfiguration} from "./support/ViewerConfiguration";
-import "pdfjs-dist/lib/web/pdf_print_service";
+import "pdf.js/web/pdf_print_service";
 
 export class ViewerBootstrapper {
   static defineViewer(): any {

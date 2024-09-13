@@ -1,5 +1,5 @@
-import {DefaultExternalServices} from "pdfjs-dist/lib/web/app";
-import {DownloadManager} from "pdfjs-dist/lib/web/download_manager";
+import {DefaultExternalServices} from "pdf.js/web/app";
+import {DownloadManager} from "pdf.js/web/download_manager";
 import {GenericLocalization} from "./GenericLocalization";
 import {GenericPreferences} from "./GenericPreferences";
 
