@@ -103,10 +103,10 @@ module.exports = {
         {from: "./node_modules/pdf.js/l10n/en-US/viewer.ftl", to: "./locale/en-US/"},
         {from: "./node_modules/pdfjs-dist/build/pdf.worker.mjs", to: "./"},
         {from: "./node_modules/pdfjs-dist/web/pdf_viewer.css", to: "./"},
+        {from: "./node_modules/pdf.js/web/viewer.css", to: "./"},
         {from: "./assets", to: "./assets"},
         {from: "./index.html", to: "./"},
         {from: "./locale.json", to: "./locale/"},
-        {from: "./src/viewer.css", to: "./"},
         {from: "./src/fixes.css", to: "./"},
         {from: "./src/sidebar-triangles.css", to: "./"}
       ]
