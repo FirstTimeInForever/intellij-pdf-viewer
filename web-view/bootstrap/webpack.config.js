@@ -50,7 +50,7 @@ module.exports = {
             || code === "MOZCENTRAL || CHROME"
             || code === "GECKOVIEW") {
             return false;
-          } else if (code === "TESTING") {
+          } else if (code === "TESTING" || code === "!PRODUCTION || TESTING") {
             return false;
           } else if (code === "COMPONENTS") {
             return false;
@@ -59,7 +59,7 @@ module.exports = {
         },
         eval: function (code) {
           if (code === "BUNDLE_VERSION") {
-            return "2.6.347";
+            return "2.16.105";
           } else if (code === "DEFAULT_PREFERENCES") {
             return window.PDFViewerApplicationOptions.getAll(0x80);
           }
