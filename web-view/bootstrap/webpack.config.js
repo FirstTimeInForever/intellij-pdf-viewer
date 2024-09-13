@@ -17,6 +17,19 @@ module.exports = {
     alias: {
       "pdfjs-lib": path.join(__dirname, "./node_modules/pdfjs-dist/build/pdf.js"),
       "pdfjs/core/worker.js": path.join(__dirname, "./node_modules/pdfjs-dist/build/pdf.worker.js"),
+      "web-alt_text_manager": path.join(__dirname, "./node_modules/pdf.js/web/alt_text_manager.js"),
+      "web-annotation_editor_params": path.join(__dirname, "./node_modules/pdf.js/web/annotation_editor_params.js"),
+      "web-pdf_attachment_viewer": path.join(__dirname, "./node_modules/pdf.js/web/pdf_attachment_viewer.js"),
+      "web-pdf_cursor_tools": path.join(__dirname, "./node_modules/pdf.js/web/pdf_cursor_tools.js"),
+      "web-pdf_document_properties": path.join(__dirname, "./node_modules/pdf.js/web/pdf_document_properties.js"),
+      "web-pdf_find_bar": path.join(__dirname, "./node_modules/pdf.js/web/pdf_find_bar.js"),
+      "web-pdf_layer_viewer": path.join(__dirname, "./node_modules/pdf.js/web/pdf_layer_viewer.js"),
+      "web-pdf_outline_viewer": path.join(__dirname, "./node_modules/pdf.js/web/pdf_outline_viewer.js"),
+      "web-pdf_presentation_mode": path.join(__dirname, "./node_modules/pdf.js/web/pdf_presentation_mode.js"),
+      "web-pdf_sidebar": path.join(__dirname, "./node_modules/pdf.js/web/pdf_sidebar.js"),
+      "web-pdf_thumbnail_viewer": path.join(__dirname, "./node_modules/pdf.js/web/pdf_thumbnail_viewer.js"),
+      "web-secondary_toolbar": path.join(__dirname, "./node_modules/pdf.js/web/secondary_toolbar.js"),
+      "web-toolbar": path.join(__dirname, "./node_modules/pdf.js/web/toolbar.js"),
     },
     extensions: ['.tsx', '.ts', '.js']
   },
@@ -59,7 +72,7 @@ module.exports = {
         },
         eval: function (code) {
           if (code === "BUNDLE_VERSION") {
-            return "2.16.105";
+            return "3.11.174";
           } else if (code === "DEFAULT_PREFERENCES") {
             return window.PDFViewerApplicationOptions.getAll(0x80);
           }
