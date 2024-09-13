@@ -1,12 +1,8 @@
-const {EventBus} = require("pdfjs-dist/web/pdf_viewer");
-
 export function getViewerConfiguration() {
   return {
     appContainer: document.body,
     mainContainer: document.getElementById("viewerContainer"),
     viewerContainer: document.getElementById("viewer"),
-    // @ts-ignore
-    eventBus: new EventBus({isInAutomation: false}),
     toolbar: {
       container: document.getElementById("toolbarViewer"),
       numPages: document.getElementById("numPages"),

@@ -22,7 +22,9 @@ export class ViewerBootstrapper {
     return new Promise(resolve => {
       AppOptions.set("defaultUrl", fileUrl);
       const config = getViewerConfiguration();
-      config.eventBus.on("documentloaded", () => resolve());
+      PDFViewerApplication.initializedPromise.then(function () {
+        PDFViewerApplication.eventBus.on("documentloaded", () => resolve());
+      });
       // PDFViewerApplication.initialize(config).then()
       PDFViewerApplication.run(config);
     });
