@@ -85,7 +85,7 @@ module.exports = {
           if (code === "BUNDLE_VERSION") {
             return "4.6.82";
           } else if (code === "DEFAULT_PREFERENCES") {
-            return window.PDFViewerDefaultPreferences??{};
+            return window.PDFViewerApplicationOptions.getAll(0x80, true);
           } else if (code === "DEFAULT_FTL") {
             return "";
           }

@@ -1,7 +1,7 @@
 // @ts-ignore
-import { AppOptions, OptionKind } from "pdf.js/web/app_options";
-Object.defineProperty(window, "PDFViewerDefaultPreferences", {
-  get: () => AppOptions.getAll(OptionKind.PREFERENCE, /* defaultOnly = */ true)
+import { AppOptions } from "pdf.js/web/app_options";
+Object.defineProperty(window, "PDFViewerApplicationOptions", {
+  get: () => AppOptions
 });
 const {PDFViewerApplication} = require("pdf.js/web/app");
 import {getViewerConfiguration} from "./support/ViewerConfiguration";
@@ -14,9 +14,6 @@ export class ViewerBootstrapper {
     });
     AppOptions.set("workerSrc", "pdf.worker.mjs");
     AppOptions.set("cMapUrl", "cmaps/");
-    Object.defineProperty(window, "PDFViewerApplicationOptions", {
-      get: () => AppOptions
-    });
     return PDFViewerApplication;
   }
 
