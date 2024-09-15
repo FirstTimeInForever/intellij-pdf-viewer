@@ -5,7 +5,7 @@ import {ApplicationFactory} from "./ApplicationFactory";
 async function bootstrapViewer() {
   const action = () => {
     const viewer = ViewerBootstrapper.defineViewer();
-    return ViewerBootstrapper.load("get-file=../some.pdf");
+    return ViewerBootstrapper.load();
   };
   if (document.readyState === "complete" || document.readyState === "interactive") {
     await action();
@@ -16,10 +16,6 @@ async function bootstrapViewer() {
   });
   await action();
 }
-
-document.addEventListener("textlayerrendered", () => {
-  console.log("asdasd");
-});
 
 function waitForIde(): Promise<void> {
   return new Promise(resolve => {

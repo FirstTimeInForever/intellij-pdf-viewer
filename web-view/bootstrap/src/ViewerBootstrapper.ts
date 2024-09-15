@@ -1,11 +1,18 @@
 // @ts-ignore
-import { AppOptions } from "pdf.js/web/app_options";
+import {LinkTarget} from "pdf.js/web/pdf_link_service.js";
+// @ts-ignore
+import {RenderingStates, ScrollMode, SpreadMode} from "pdf.js/web/ui_utils.js";
+const AppConstants = {LinkTarget, RenderingStates, ScrollMode, SpreadMode};
+Object.defineProperty(window, "PDFViewerApplicationConstants", {
+  get: () => AppConstants
+});
+// @ts-ignore
+import {AppOptions} from "pdf.js/web/app_options";
 Object.defineProperty(window, "PDFViewerApplicationOptions", {
   get: () => AppOptions
 });
 const {PDFViewerApplication} = require("pdf.js/web/app");
 import {getViewerConfiguration} from "./support/ViewerConfiguration";
-import "pdf.js/web/pdf_print_service";
 
 export class ViewerBootstrapper {
   static defineViewer(): any {
