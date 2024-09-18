@@ -4,6 +4,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.model.PdfOutlineNode
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.navigation.ItemPresentation
+import kotlinx.serialization.json.JsonPrimitive
 import javax.swing.Icon
 
 abstract class PdfStructureViewElement(val editor: PdfFileEditor, val node: PdfOutlineNode): StructureViewTreeElement, ItemPresentation {
@@ -14,7 +15,7 @@ abstract class PdfStructureViewElement(val editor: PdfFileEditor, val node: PdfO
   }
 
   override fun canNavigate(): Boolean {
-    return node.navigationReference.isNotEmpty() &&
+    return node.navigationReference != JsonPrimitive("") &&
       editor.viewComponent.controller?.canNavigate() == true
   }
 

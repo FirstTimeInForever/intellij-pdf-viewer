@@ -31,6 +31,7 @@ import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
+import kotlinx.serialization.json.JsonElement
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -247,7 +248,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   fun canNavigate(): Boolean = outline != null
 
-  fun navigate(destinationReference: String) {
+  fun navigate(destinationReference: JsonElement) {
     pipe.send(IdeMessages.NavigateTo(destinationReference))
   }
 

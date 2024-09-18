@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer
 import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexPreciseLocation
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 object IdeMessages {
   @Serializable
@@ -48,7 +49,7 @@ object IdeMessages {
   data class SynctexAvailability(val isAvailable: Boolean)
 
   @Serializable
-  data class NavigateTo(val destination: String)
+  data class NavigateTo(val destination: JsonElement)
 
   @Serializable
   class ExitPresentationMode

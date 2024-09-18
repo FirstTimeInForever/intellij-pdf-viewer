@@ -91,7 +91,7 @@ class Application(private val viewer: ViewerAdapter) {
       ThemeUtils.updateColors(it.theme)
     }
     pipe.subscribe<IdeMessages.NavigateTo> {
-      viewer.viewerApp.pdfLinkService.navigateTo(it.destination)
+      viewer.viewerApp.pdfLinkService.goToDestination(JSON.parse(it.destination.toString()))
     }
     pipe.subscribe<IdeMessages.NavigateHistory> {
       when (it.direction) {
