@@ -1,8 +1,7 @@
-import com.moowork.gradle.node.npm.NpmTask
-import java.nio.file.Paths
+import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
 
 plugins {
-  id("com.github.node-gradle.node") version "2.2.3"
+  id("de.undercouch.download") version "5.6.0"
 }
 
 repositories {
@@ -15,53 +14,45 @@ dependencies {
   default(project(":web-view:viewer", configurations.viewerApplicationBundle.name))
 }
 
-tasks {
-  node {
-    download = true
-    version = project.properties["nodeVersion"].toString()
-    nodeModulesDir = projectDir
+val pdfjsVersion = "4.6.82"
+
+val downloadZipFile by tasks.registering(Download::class) {
+  val destFile = layout.projectDirectory.asFile.resolve("dist/pdfjs-$pdfjsVersion-dist.zip")
+  src("https://github.com/mozilla/pdf.js/releases/download/v$pdfjsVersion/pdfjs-$pdfjsVersion-dist.zip")
+  dest(destFile)
+  onlyIf { !destFile.exists() || destFile.length() == 0L }
+}
+
+val downloadAndUnzipFile by tasks.registering(Copy::class) {
+  dependsOn(downloadZipFile)
+  from(zipTree(downloadZipFile.get().dest))
+  into(project.layout.buildDirectory)
+  doLast {
+    val viewerHtml = layout.buildDirectory.get().asFile.resolve("web/viewer.html")
+    val modifiedContent = viewerHtml.readText()
+      .replace("(<link rel=\"stylesheet\" href=\"viewer.css\">)".toRegex(), "$1<link rel=\"stylesheet\" href=\"../fixes.css\">")
+      .replace("(<script src=\"viewer.m?js\"[^<>]*></script>)".toRegex(), "$1<script src=\"../viewer.js\"></script>")
+    viewerHtml.writeText(modifiedContent)
   }
 }
 
-val copyApplicationBundle by tasks.registering(Copy::class) {
-  from(default)
-  into(File(projectDir, "application"))
-}
-
-val ensureNodeModulesInstalled by tasks.registering {
-  dependsOn("nodeSetup")
-  dependsOn("npmSetup")
-  inputs.file(File(projectDir, "package.json")).withPathSensitivity(PathSensitivity.RELATIVE)
-  inputs.file(File(projectDir, "package-lock.json")).withPathSensitivity(PathSensitivity.RELATIVE)
-  if (!file(Paths.get(projectDir.toString(), "node_modules")).exists()) {
-    dependsOn("npm_ci")
+val buildWebView by tasks.registering(Copy::class) {
+  dependsOn(downloadAndUnzipFile)
+  from("src") {
+    include("*.css")
   }
-}
-
-val collectOuterSources by tasks.registering {
-  val files = listOf(
-    "package.json",
-    "package-lock.json",
-    "postinstall.js",
-    "webpack.config.js",
-    "index.html"
-  )
-  for (file in files) {
-    inputs.file(File(projectDir, file)).withPathSensitivity(PathSensitivity.RELATIVE)
+  from("assets") {
+    into("assets")
   }
-  inputs.dir("src").withPathSensitivity(PathSensitivity.RELATIVE)
-  outputs.files(inputs.files)
+  into(project.layout.buildDirectory)
 }
 
-val buildWebView by tasks.registering(NpmTask::class) {
-  dependsOn(ensureNodeModulesInstalled)
-  inputs.files(
-    collectOuterSources.map { it.outputs },
-    copyApplicationBundle.map { it.outputs }
-  )
-  setArgs(listOf("run", "build"))
-  outputs.dir(File(projectDir, "build"))
-  // outputs.cacheIf { true }
+val deleteBuildTmp by tasks.registering(Delete::class) {
+  delete(layout.buildDirectory.get().asFile.resolve("tmp"))
+}
+
+tasks.named("buildWebView") {
+  finalizedBy("deleteBuildTmp")
 }
 
 artifacts {

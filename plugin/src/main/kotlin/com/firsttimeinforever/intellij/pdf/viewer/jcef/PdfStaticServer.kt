@@ -112,11 +112,11 @@ internal class PdfStaticServer : HttpRequestHandler() {
   fun getPreviewUrl(file: VirtualFile, withReloadSalt: Boolean = false): String {
     val salt = if (withReloadSalt) Random.nextInt() else 0
     vfsMap[file.url] = file
-    val url = parseEncodedPath("$serverUrl/index.html")
+    val url = parseEncodedPath("$serverUrl/web/viewer.html")
     val server = BuiltInServerManager.getInstance()
     return server.addAuthToken(url)
       // `file` would be read via `urlDecoder.path()`, which calls `decodeComponent`
-      .addParameters(mapOf("__reloadSalt" to "$salt", "file" to URLUtil.encodeURIComponent("get-file/${file.url}")))
+      .addParameters(mapOf("__reloadSalt" to "$salt", "file" to "/$uuid/get-file/${URLUtil.encodeURIComponent(file.url)}"))
       .toExternalForm()
   }
 
