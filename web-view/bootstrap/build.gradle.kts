@@ -44,8 +44,6 @@ val collectOuterSources by tasks.registering {
     "package-lock.json",
     "postinstall.js",
     "webpack.config.js",
-    "webpack.config.js",
-    "missing-props.properties",
     "index.html"
   )
   for (file in files) {

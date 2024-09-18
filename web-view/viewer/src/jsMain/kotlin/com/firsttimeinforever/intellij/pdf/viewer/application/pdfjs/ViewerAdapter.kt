@@ -43,11 +43,11 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
   // Basically direct implementations from the old code
 
   fun increaseScale() {
-    viewerApp.asDynamic().toolbar.items.zoomIn.click()
+    viewerApp.asDynamic().appConfig.toolbar.zoomIn.click()
   }
 
   fun decreaseScale() {
-    viewerApp.asDynamic().toolbar.items.zoomOut.click()
+    viewerApp.asDynamic().appConfig.toolbar.zoomOut.click()
   }
 
   fun rotateClockwise() {

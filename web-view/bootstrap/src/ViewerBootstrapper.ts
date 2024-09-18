@@ -1,20 +1,26 @@
-const {AppOptions} = require("pdfjs-dist/lib/web/app_options");
-const {PDFViewerApplication} = require("pdfjs-dist/lib/web/app");
-import {GenericExternalServices} from "./support/GenericExternalServices"
+// @ts-ignore
+import {LinkTarget} from "pdf.js/web/pdf_link_service.js";
+// @ts-ignore
+import {RenderingStates, ScrollMode, SpreadMode} from "pdf.js/web/ui_utils.js";
+const AppConstants = {LinkTarget, RenderingStates, ScrollMode, SpreadMode};
+Object.defineProperty(window, "PDFViewerApplicationConstants", {
+  get: () => AppConstants
+});
+// @ts-ignore
+import {AppOptions} from "pdf.js/web/app_options";
+Object.defineProperty(window, "PDFViewerApplicationOptions", {
+  get: () => AppOptions
+});
+const {PDFViewerApplication} = require("pdf.js/web/app");
 import {getViewerConfiguration} from "./support/ViewerConfiguration";
-import "pdfjs-dist/lib/web/pdf_print_service";
 
 export class ViewerBootstrapper {
   static defineViewer(): any {
-    PDFViewerApplication.externalServices = GenericExternalServices;
     Object.defineProperty(window, "PDFViewerApplication", {
       get: () => PDFViewerApplication
     });
-    AppOptions.set("workerSrc", "pdf.worker.js");
+    AppOptions.set("workerSrc", "pdf.worker.mjs");
     AppOptions.set("cMapUrl", "cmaps/");
-    Object.defineProperty(window, "PDFViewerApplicationOptions", {
-      get: () => AppOptions
-    });
     return PDFViewerApplication;
   }
 
@@ -22,7 +28,9 @@ export class ViewerBootstrapper {
     return new Promise(resolve => {
       AppOptions.set("defaultUrl", fileUrl);
       const config = getViewerConfiguration();
-      config.eventBus.on("documentloaded", () => resolve());
+      PDFViewerApplication.initializedPromise.then(function () {
+        PDFViewerApplication.eventBus.on("documentloaded", () => resolve());
+      });
       // PDFViewerApplication.initialize(config).then()
       PDFViewerApplication.run(config);
     });
