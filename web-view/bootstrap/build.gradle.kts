@@ -25,7 +25,11 @@ val downloadZipFile by tasks.registering(Download::class) {
 
 val downloadAndUnzipFile by tasks.registering(Copy::class) {
   dependsOn(downloadZipFile)
-  from(zipTree(downloadZipFile.get().dest))
+  from(zipTree(downloadZipFile.get().dest)) {
+    exclude("*/*.pdf")
+    exclude("*/*.js.map")
+    exclude("*/*.mjs.map")
+  }
   into(project.layout.buildDirectory)
   doLast {
     val viewerHtml = layout.buildDirectory.get().asFile.resolve("web/viewer.html")
@@ -33,6 +37,10 @@ val downloadAndUnzipFile by tasks.registering(Copy::class) {
       .replace("(<link rel=\"stylesheet\" href=\"viewer.css\">)".toRegex(), "$1<link rel=\"stylesheet\" href=\"../fixes.css\">")
       .replace("(<script src=\"viewer.m?js\"[^<>]*></script>)".toRegex(), "$1<script src=\"../viewer.js\"></script>")
     viewerHtml.writeText(modifiedContent)
+    val tmpdir = file(layout.buildDirectory.get().asFile.resolve("tmp"))
+    if (tmpdir.exists()) {
+        tmpdir.deleteRecursively()
+    }
   }
 }
 
@@ -45,14 +53,6 @@ val buildWebView by tasks.registering(Copy::class) {
     into("web/assets")
   }
   into(project.layout.buildDirectory)
-}
-
-val deleteBuildTmp by tasks.registering(Delete::class) {
-  delete(layout.buildDirectory.get().asFile.resolve("tmp"))
-}
-
-tasks.named("buildWebView") {
-  finalizedBy("deleteBuildTmp")
 }
 
 artifacts {
