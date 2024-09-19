@@ -5,6 +5,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.PdfVie
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
+import org.w3c.dom.COMPLETE
+import org.w3c.dom.CustomEvent
+import org.w3c.dom.DocumentReadyState
+import org.w3c.dom.INTERACTIVE
+import org.w3c.dom.events.Event
 import kotlin.js.Promise
 
 /**
@@ -22,16 +27,22 @@ object ApplicationFactory {
   }
 
   private fun waitForDocument(): Promise<Unit> {
-    return Promise { resolve, _ ->
-      document.addEventListener("webviewerloaded", {
-        window.asDynamic().PDFViewerApplication.initializedPromise.then {
-          window.asDynamic().PDFViewerApplication.eventBus.on("documentloaded") {
-            console.log("pdf document loaded")
-            resolve(Unit)
-          }
+    return Promise { resolve, reject ->
+      val listener = { event: Event? ->
+        val viewerApp = window.asDynamic().PDFViewerApplication
+        if (viewerApp == undefined) {
+          reject(Exception("no window.PDFViewerApplication, did pdf.js viewer load?"))
+        } else if (event == null || event.type == "webviewerloaded") {
+          console.log("PDF Viewer is ready")
+          viewerApp.initializedPromise.then { viewerApp.eventBus.on("documentloaded") { resolve(Unit) } }
         }
-        console.log("pdf web viewer loaded")
-      })
+      }
+      if (document.readyState == DocumentReadyState.INTERACTIVE || document.readyState == DocumentReadyState.COMPLETE) {
+        listener(null)
+      } else {
+        document.addEventListener("webviewerloaded", listener)
+        document.addEventListener("DOMContentLoaded", listener, true)
+      }
     }
   }
 
@@ -53,6 +64,8 @@ object ApplicationFactory {
       console.log("Starting application")
       val application = createApplication(window.asDynamic().PDFViewerApplication)
       startApplication(application)
+    }.catch { error ->
+      console.error("${error.message}")
     }
   }
 
