@@ -25,7 +25,7 @@ object ThemeUtils {
     val pdfViewerCss = css.cssRules.asList().filterIsInstance<CSSImportRule>().find { it.href == "pdf_viewer.css" }?.styleSheet
 
     // Remove the shadow of the borders independent of if the colors are inverted, so it is consistent when switching between inverted and regular colors.
-    removeBorderShadow(css, pdfViewerCss)
+    removeBorderShadow(css, pdfViewerCss ?: css)
 
     //language=CSS
     css.addOrReplaceRule(
