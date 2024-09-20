@@ -4,6 +4,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.utility.PdfResourceLoader
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.jcef.JBCefScrollbarsHelper
 import com.intellij.util.Url
 import com.intellij.util.Urls
 import com.intellij.util.io.URLUtil
@@ -98,13 +99,19 @@ internal class PdfStaticServer : HttpRequestHandler() {
 
   private fun sendInternalFile(path: String, context: ChannelHandlerContext, request: FullHttpRequest) {
     val targetFile = makeInternalPath(path)
-    if (PdfViewerSettings.isDebugMode && targetFile.endsWith(".js.map")) {
-      logger.warn("Ignoring sourcemap $targetFile")
+    val url = PdfStaticServer::class.java.getResource(targetFile)
+    if (url == null) {
+      logger.debug("Cannot find internal file $targetFile")
+      HttpResponseStatus.NOT_FOUND.send(context.channel(), request)
       return
     }
     val contentType = FileResponses.getContentType(targetFile)
     logger.debug("Sending internal file: $targetFile with contentType: $contentType")
-    val resultBuffer = Unpooled.wrappedBuffer(PdfResourceLoader.loadFromRoot(targetFile))
+    var bytes = PdfResourceLoader.loadFromRoot(targetFile)
+    if (targetFile == "/web-view/fixes.css") {
+      bytes += JBCefScrollbarsHelper.buildScrollbarsStyle().toByteArray(Charsets.UTF_8)
+    }
+    val resultBuffer = Unpooled.wrappedBuffer(bytes)
     val response = response(contentType, resultBuffer)
     response.send(context.channel(), request)
   }
