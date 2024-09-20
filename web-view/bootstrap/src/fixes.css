@@ -1,5 +1,3 @@
-@import url(sidebar-triangles.css);
-
 #findbar, #secondaryToolbar, #toolbarContainer, #toolbarSidebar {
   display: none;
 }

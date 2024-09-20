@@ -49,9 +49,6 @@ val buildWebView by tasks.registering(Copy::class) {
   from("src") {
     include("*.css")
   }
-  from("assets") {
-    into("web/assets")
-  }
   into(project.layout.buildDirectory)
 }
 
