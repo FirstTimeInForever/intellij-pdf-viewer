@@ -19,6 +19,7 @@ object ThemeUtils {
       setProperty(Internals.StyleVariables.iconsBackgroundColor, viewTheme.icons)
       setProperty(Internals.StyleVariables.treeItemColor, viewTheme.foreground)
       setProperty(Internals.StyleVariables.treeItemHoverColor, viewTheme.foreground)
+      setProperty(Internals.StyleVariables.treeItemSelectedColor, viewTheme.foreground)
     }
 
     val css = window.document.styleSheets[0] as CSSStyleSheet
