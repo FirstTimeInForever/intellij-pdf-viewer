@@ -20,6 +20,7 @@ val downloadZipFile by tasks.registering(Download::class) {
   val destFile = layout.projectDirectory.asFile.resolve("dist/pdfjs-$pdfjsVersion-dist.zip")
   src("https://github.com/mozilla/pdf.js/releases/download/v$pdfjsVersion/pdfjs-$pdfjsVersion-dist.zip")
   dest(destFile)
+  tempAndMove(true)
   onlyIf { !destFile.exists() || destFile.length() == 0L }
 }
 
