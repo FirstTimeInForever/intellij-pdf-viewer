@@ -15,7 +15,7 @@ object ThemeUtils {
     with(documentElement.style) {
       setProperty(Internals.StyleVariables.mainColor, viewTheme.foreground)
       setProperty(Internals.StyleVariables.bodyBackgroundColor, viewTheme.background)
-      setProperty(Internals.StyleVariables.sidebarBackgroundColor, viewTheme.background)
+      setProperty(Internals.StyleVariables.sidebarNarrowBackgroundColor, viewTheme.background)
       setProperty(Internals.StyleVariables.iconsBackgroundColor, viewTheme.icons)
       setProperty(Internals.StyleVariables.treeItemColor, viewTheme.foreground)
       setProperty(Internals.StyleVariables.treeItemHoverColor, viewTheme.foreground)

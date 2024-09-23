@@ -4,7 +4,7 @@ internal object Internals {
   object StyleVariables {
     const val mainColor = "--main-color"
     const val bodyBackgroundColor = "--body-bg-color"
-    const val sidebarBackgroundColor = "--sidebar-bg-color"
+    const val sidebarNarrowBackgroundColor = "--sidebar-narrow-bg-color"
     const val iconsBackgroundColor = "--toolbar-icon-bg-color"
     const val treeItemColor = "--treeitem-color"
     const val treeItemHoverColor = "--treeitem-hover-color"
