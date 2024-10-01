@@ -113,7 +113,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
       viewProperties = it.properties
       // TODO: Move to dedicated in-memory stylesheet and serve it as a resource
       updateViewTheme(collectThemeColors())
-      pipe.send(IdeMessages.SynctexAvailability(virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
+      pipe.send(IdeMessages.SynctexAvailability(virtualFile.parent != null && virtualFile.isSynctexFileAvailable() && isSynctexInstalled()))
       viewLoaded = true
       firstLoad = false
     }

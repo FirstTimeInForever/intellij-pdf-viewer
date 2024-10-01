@@ -64,6 +64,12 @@ tasks {
       freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
     }
   }
+  jar {
+    exclude("com/jetbrains/**")
+  }
+  instrumentedJar {
+    exclude("com/jetbrains/**")
+  }
   changelog {
     version = "${rootProject.version}"
     path = Paths.get(projectDir.path, "..", "CHANGELOG.md").toString()
@@ -103,6 +109,7 @@ fun extractPluginDescription(): String {
 
 val copyWebViewBuildResults by tasks.registering(Copy::class) {
   from(webView)
+  exclude("tmp/**")
   into(project.layout.buildDirectory.dir("resources/main/web-view"))
 }
 

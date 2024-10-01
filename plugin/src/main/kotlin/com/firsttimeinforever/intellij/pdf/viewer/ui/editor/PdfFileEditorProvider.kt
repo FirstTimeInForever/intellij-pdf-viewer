@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui.editor
 
 import com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileEditor.AsyncFileEditorProvider
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
@@ -12,7 +13,8 @@ class PdfFileEditorProvider : AsyncFileEditorProvider, DumbAware {
   override fun getEditorTypeId() = "PDF"
 
   override fun accept(project: Project, file: VirtualFile): Boolean {
-    return file.fileType == PdfFileType
+    logger.debug("check accept, file: $file")
+    return file.fileType == PdfFileType;
   }
 
   override fun createEditor(project: Project, file: VirtualFile): FileEditor {
@@ -25,5 +27,9 @@ class PdfFileEditorProvider : AsyncFileEditorProvider, DumbAware {
     return object: AsyncFileEditorProvider.Builder() {
       override fun build(): FileEditor = PdfFileEditor(project, file)
     }
+  }
+
+  companion object {
+    private val logger = logger<PdfFileEditorProvider>()
   }
 }

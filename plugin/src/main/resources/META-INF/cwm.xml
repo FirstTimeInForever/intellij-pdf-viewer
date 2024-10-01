@@ -1,0 +1,5 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <rdclient.fileEditorModelHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFrontendFileEditorModelHandler" order="first" />
+  </extensions>
+</idea-plugin>
