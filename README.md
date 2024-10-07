@@ -32,10 +32,12 @@
 - **Reset zoom:** <kbd>Ctrl</kbd> + <kbd>0</kbd>
 - **Enter presentation mode:** <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>p</kbd>
 
-### Features Notes
+### Feature Notes
 
 * Text search will work only in text-based documents. For example, it won't work in all-images documents (books scans).
 * For the sections list or structure view to work documents should define sections list. Otherwise, sections view won't be active, and the structure view will be empty.
+* Right-click on a pdf to open it in PDFium, the default Chrome PDF viewer. If you do not see a context menu, it may help to go to Help > Find Action, search for Registry, set `pdf.viewer.use.jcef.osr.view` to false, and restart. See [IJPL-59459](https://youtrack.jetbrains.com/issue/IJPL-59459/Context-menu-does-not-work-for-OSR-Cef-browser) for more details.
+* To view pdfs in a Code With Me session, you may need to install the PDF viewer plugin (0.17.0 or later) in the client as well. This feature is still expirimental, for more info see [CWM-1199](https://youtrack.jetbrains.com/issue/CWM-1199).
 
 
 ## Use cases
