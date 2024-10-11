@@ -1,5 +1,17 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.17.0
+This release contains many fixes and improvements, all of which were contributed by [Liu Dongmiao](https://github.com/liudongmiao)
+
+- Add (experimental) support for viewing pdfs in a Code With Me session
+- Add context menu to open the pdf in PDFium, the default Chrome PDF viewer
+- Improve scrollbar styling
+- Improve PDF.js installation in plugin build
+- Fix page number status bar widget
+- Update PDF.js to the latest version
+- Support viewing pdf files on a remote host
+- Support pdf file paths with special characters
+
 ## 0.16.1
 - Support pdfs without an embedded font, by [Liu Dongmiao](https://github.com/liudongmiao).
 
