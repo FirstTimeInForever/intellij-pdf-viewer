@@ -80,7 +80,6 @@ tasks {
   }
   withType<PatchPluginXmlTask> {
     sinceBuild.set(fromProperties("pluginSinceVersion"))
-    untilBuild.set(fromProperties("pluginUntilVersion"))
     changeNotes.set(changelog.renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML))
     pluginDescription.set(extractPluginDescription())
   }

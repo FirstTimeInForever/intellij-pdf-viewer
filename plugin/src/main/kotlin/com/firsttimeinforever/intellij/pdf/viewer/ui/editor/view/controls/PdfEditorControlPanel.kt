@@ -3,8 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.controls
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionUtils.createActionToolbar
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.toolbarLayout.RightActionsAdjusterStrategyWrapper
-import com.intellij.openapi.actionSystem.toolbarLayout.WrapLayoutStrategy
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.FlowLayout
@@ -34,7 +32,6 @@ class PdfEditorControlPanel: JPanel(GridLayout()), Disposable {
     rightPanel.layout = FlowLayout(FlowLayout.RIGHT, 0, 0)
 
     rightPanel.add(rightToolbar.component)
-    rightToolbar.layoutStrategy = RightActionsAdjusterStrategyWrapper(WrapLayoutStrategy(true))
     rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
     add(rightPanel, Component.RIGHT_ALIGNMENT)
   }
