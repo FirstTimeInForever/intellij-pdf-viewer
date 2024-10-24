@@ -1,9 +1,8 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.tasks.PatchPluginXmlTask
-import org.jetbrains.intellij.tasks.RunIdeTask
 import java.nio.file.Files
 import java.nio.file.Paths
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 fun fromProperties(key: String) = project.findProperty(key).toString()
 
@@ -11,9 +10,11 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij") version "1.17.3"
-  id("org.jetbrains.changelog") version "2.2.0"
+  id("org.jetbrains.intellij.platform") version "2.1.0"
+  id("org.jetbrains.changelog") version "2.2.1"
   id("com.github.ben-manes.versions") version "0.51.0"
+  // Plugin which can update Gradle dependencies, use the help/useLatestVersions task.
+  id("se.patrikerdes.use-latest-versions") version "0.2.18"
 }
 
 group = fromProperties("group")
@@ -27,13 +28,26 @@ val webViewSourceDirectory = file("$projectDir/src/main/web-view")
 
 repositories {
   mavenCentral()
-  maven("https://www.jetbrains.com/intellij-repository/snapshots")
   // maven("http://maven.geotoolkit.org/")
+
+  intellijPlatform {
+    defaultRepositories()
+    maven("https://www.jetbrains.com/intellij-repository/snapshots")
+  }
 }
 
 dependencies {
-  // implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-  // implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationJsonVersion")
+  intellijPlatform {
+    instrumentationTools()
+    zipSigner()
+    pluginVerifier()
+    testFramework(TestFrameworkType.Platform)
+
+    intellijIdeaCommunity(fromProperties("platformVersion"))
+
+    plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
+  }
+
   implementation("io.sentry:sentry:1.7.30") {
     // Included in IJ
     exclude("org.slf4j")
@@ -49,18 +63,10 @@ dependencies {
   webView(project(":web-view:bootstrap"))
 }
 
-intellij {
-  version.set(fromProperties("platformVersion"))
-  sameSinceUntilBuild.set(true)
-  updateSinceUntilBuild.set(false)
-  pluginName.set(fromProperties("pluginName"))
-  plugins.set(listOf("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}"))
-}
-
 tasks {
   compileKotlin {
     kotlinOptions {
-      jvmTarget = JavaVersion.VERSION_17.toString()
+      jvmTarget = JavaVersion.VERSION_21.toString()
       freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
     }
   }
@@ -78,18 +84,38 @@ tasks {
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
   }
-  withType<PatchPluginXmlTask> {
-    sinceBuild.set(fromProperties("pluginSinceVersion"))
-    changeNotes.set(changelog.renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML))
-    pluginDescription.set(extractPluginDescription())
-  }
-  runPluginVerifier {
-    ideVersions.set(fromProperties("pluginVerifierIdeVersions").split(", "))
-  }
+
 //  // https://youtrack.jetbrains.com/issue/KTIJ-782
 //  buildSearchableOptions {
 //    enabled = false
 //  }
+}
+
+intellijPlatform {
+  pluginConfiguration {
+    name = fromProperties("pluginName")
+    description = extractPluginDescription()
+    // Get the latest available change notes from the changelog file
+    changeNotes = (
+      provider {
+        with(changelog) {
+          renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML)
+        }
+      }
+      )
+  }
+
+  pluginVerification {
+    ides {
+      recommended()    }
+  }
+
+  publishing {
+    token.set(properties["intellijPublishToken"].toString())
+
+    // Specify channel based on version
+    channels.set(listOf(fromProperties("version").split('-').getOrElse(1) { "stable" }.split('.').first()))
+  }
 }
 
 @Throws(GradleException::class)
@@ -117,10 +143,9 @@ tasks.getByName("processResources") {
   inputs.dir(copyWebViewBuildResults.map { it.outputs.files.singleFile })
 }
 
-tasks.withType<RunIdeTask> {
+tasks.runIde {
   // Some warning asked for this to be set explicitly
   systemProperties["idea.log.path"] = file("build/idea-sandbox/system/log").absolutePath
-  jbrVariant.set("jcef")
   systemProperties["ide.browser.jcef.enabled"] = true
   systemProperties["pdf.viewer.debug"] = true
   jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
