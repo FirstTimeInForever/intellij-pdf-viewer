@@ -1,4 +1,4 @@
-<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" require-restart="false">
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" require-restart="true">
   <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
   <name>PDF Viewer</name>
   <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
