@@ -6,3 +6,4 @@ build
 !.idea/icon.png
 .intellijPlatform
 kotlin-js-store
+.kotlin
