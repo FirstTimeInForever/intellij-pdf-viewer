@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.Download
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
   id("de.undercouch.download") version "5.6.0"

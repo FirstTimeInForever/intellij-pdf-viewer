@@ -5,4 +5,4 @@ build
 /src/main/web-view/node_modules/
 !.idea/icon.png
 .intellijPlatform
-kotlin-js-store
+.kotlin

@@ -65,9 +65,8 @@ dependencies {
 
 tasks {
   compileKotlin {
-    kotlinOptions {
-      jvmTarget = JavaVersion.VERSION_21.toString()
-      freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
+    compilerOptions {
+      freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xjvm-default=all")
     }
   }
   jar {
