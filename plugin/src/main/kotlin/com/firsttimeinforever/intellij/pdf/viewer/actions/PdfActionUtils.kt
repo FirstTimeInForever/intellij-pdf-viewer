@@ -1,19 +1,20 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.intellij.ide.DataManager
+import com.intellij.ide.ui.customization.CustomActionsSchema
 import com.intellij.openapi.actionSystem.*
 import java.awt.Component
 import javax.swing.JComponent
 
 internal object PdfActionUtils {
-  fun createActionToolbar(groupId: String, place: String, targetComponent: JComponent, horizontal: Boolean = true): ActionToolbar {
-    val group = ActionManager.getInstance().getAction(groupId)
+  fun createActionToolbar(groupId: String, place: String, targetComponent: JComponent, horizontal: Boolean = true, customizable: Boolean = true): ActionToolbar {
+    val group = if (customizable) CustomActionsSchema.getInstance().getCorrectedAction(groupId) else ActionManager.getInstance().getAction(groupId)
     checkNotNull(group)
     check(group is ActionGroup)
     return createActionToolbar(group, place, targetComponent, horizontal)
   }
 
-  fun createActionToolbar(group: ActionGroup, place: String, targetComponent: JComponent, horizontal: Boolean = true): ActionToolbar {
+  fun createActionToolbar(group: ActionGroup, place: String, targetComponent: JComponent, horizontal: Boolean = true, customizable: Boolean = true): ActionToolbar {
     val toolbar = ActionManager.getInstance().createActionToolbar(place, group, horizontal)
     toolbar.targetComponent = targetComponent
     return toolbar
