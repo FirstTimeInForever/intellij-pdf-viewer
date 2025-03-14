@@ -10,9 +10,9 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij.platform") version "2.1.0"
+  id("org.jetbrains.intellij.platform") version "2.3.0"
   id("org.jetbrains.changelog") version "2.2.1"
-  id("com.github.ben-manes.versions") version "0.51.0"
+  id("com.github.ben-manes.versions") version "0.52.0"
   // Plugin which can update Gradle dependencies, use the help/useLatestVersions task.
   id("se.patrikerdes.use-latest-versions") version "0.2.18"
 }
@@ -38,7 +38,6 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    instrumentationTools()
     zipSigner()
     pluginVerifier()
     testFramework(TestFrameworkType.Platform)
@@ -48,7 +47,7 @@ dependencies {
     plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
   }
 
-  implementation("io.sentry:sentry:1.7.30") {
+  implementation("io.sentry:sentry:8.3.0") {
     // Included in IJ
     exclude("org.slf4j")
     exclude("com.fasterxml.jackson.core", "jackson-core")
