@@ -22,6 +22,7 @@
 - Document information
 - Pages spread (even/odd)
 - Horizontal/vertical pages scroll directions
+- Customizable toolbar
 
 ## Shortcuts
 - **Move editor up or down:** up and down arrow keys.

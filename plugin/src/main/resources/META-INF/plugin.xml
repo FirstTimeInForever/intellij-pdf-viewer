@@ -28,6 +28,8 @@
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+
+    <customizableActionGroupProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfCustomizableActionGroupProvider"/>
   </extensions>
 
   <applicationListeners>
