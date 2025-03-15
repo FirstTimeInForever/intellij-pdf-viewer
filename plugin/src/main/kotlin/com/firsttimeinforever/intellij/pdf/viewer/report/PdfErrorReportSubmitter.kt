@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.report
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.intellij.AbstractBundle
 import com.intellij.diagnostic.IdeaReportingEvent
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.IdeaPluginDescriptor
@@ -14,15 +13,11 @@ import com.intellij.openapi.diagnostic.IdeaLoggingEvent
 import com.intellij.openapi.diagnostic.SubmittedReportInfo
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.Consumer
-import io.sentry.DefaultSentryClientFactory
-import io.sentry.SentryClient
-import io.sentry.dsn.Dsn
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
-import io.sentry.event.interfaces.ExceptionInterface
-import io.sentry.event.interfaces.SentryException
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 import java.awt.Component
-import java.util.*
 
 internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
   override fun getReportActionText(): String = PdfViewerBundle.message("pdf.viewer.error.report.action.text")
@@ -33,54 +28,42 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
     parentComponent: Component,
     consumer: Consumer<in SubmittedReportInfo>
   ): Boolean {
+    Sentry.init { options ->
+      // JetBrains: AbstractBundle.message(ResourceBundle.getBundle("sentry"), "dsn")
+      options.dsn = "https://7b17f8f7fcbc6f452a36eae2a1227db1@o4508981186461696.ingest.de.sentry.io/4508981189869648" // PHPirates' Sentry project
+    }
+
     val context = DataManager.getInstance().getDataContext(parentComponent)
-    val event = createEvent(events)
-      .withMessage(additionalInfo ?: "No additional info were provided")
-      .also { attachExtraInfo(it) }
+    val sentryEvents = createEvents(events, additionalInfo)
     val project = CommonDataKeys.PROJECT.getData(context)
-    SendReportBackgroundTask(sentryClient, project, event, consumer).queue()
+    SendReportBackgroundTask(project, sentryEvents, consumer).queue()
     return true
   }
 
-  private fun createEvent(events: Array<out IdeaLoggingEvent>): EventBuilder {
-    val errors = events
+  private fun createEvents(events: Array<out IdeaLoggingEvent>, additionalInfo: String?): List<SentryEvent> {
+    return events
       .filterIsInstance<IdeaReportingEvent>()
-      .mapTo(ArrayDeque(events.size)) {
-        val throwable = it.data.throwable
-        SentryException(throwable, throwable.stackTrace)
-      }
-    return EventBuilder()
-      .withLevel(Event.Level.ERROR)
-      .withSentryInterface(ExceptionInterface(errors))
-  }
+      .map { ideaEvent ->
+        SentryEvent().apply {
+          this.message = Message().apply { this.message = additionalInfo ?: ideaEvent.originalThrowableText }
+          this.level = SentryLevel.ERROR
+          this.throwable = ideaEvent.throwable
 
-  private fun attachExtraInfo(event: EventBuilder) {
-    with(event) {
-      (pluginDescriptor as? IdeaPluginDescriptor)?.let { withRelease(it.version) }
-      withExtra("last_action", IdeaLogger.ourLastActionId)
-      withTag("OS Name", SystemInfo.OS_NAME)
-      withTag("Java Version", SystemInfo.JAVA_VERSION)
-      ApplicationNamesInfo.getInstance().let {
-        withTag("App Name", it.productName)
-        withTag("App Full Name", it.fullProductName)
+          (pluginDescriptor as? IdeaPluginDescriptor)?.let { release = it.version }
+          extras = mapOf("last_action" to IdeaLogger.ourLastActionId)
+          val applicationNamesInfo = ApplicationNamesInfo.getInstance()
+          val instanceEx = ApplicationInfoEx.getInstanceEx()
+          tags = mapOf(
+            "OS Name" to SystemInfo.OS_NAME,
+            "Java Version" to SystemInfo.JAVA_VERSION,
+            "App Name" to applicationNamesInfo.productName,
+            "App Full Name" to applicationNamesInfo.fullProductName,
+            "App Version name" to instanceEx.versionName,
+            "Is EAP" to instanceEx.isEAP.toString(),
+            "App Build" to instanceEx.build.asString(),
+            "App Version" to instanceEx.fullVersion,
+          )
+        }
       }
-      ApplicationInfoEx.getInstanceEx()?.let {
-        withTag("App Version name", it.versionName)
-        withTag("Is EAP", it.isEAP.toString())
-        withTag("App Build", it.build.asString())
-        withTag("App Version", it.fullVersion)
-      }
-    }
-  }
-
-  companion object {
-    private val sentryClient: SentryClient by lazy {
-      val factory = object : DefaultSentryClientFactory() {
-        override fun getInAppFrames(dsn: Dsn): Collection<String> =
-          listOf("com.firsttimeinforever.intellij.pdf.viewer")
-      }
-      val dsn = AbstractBundle.message(ResourceBundle.getBundle("sentry"), "dsn")
-      factory.createClient(dsn)
-    }
   }
 }
