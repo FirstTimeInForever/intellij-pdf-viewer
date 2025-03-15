@@ -10,21 +10,19 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.util.Consumer
-import io.sentry.SentryClient
-import io.sentry.connection.EventSendCallback
-import io.sentry.event.Event
-import io.sentry.event.EventBuilder
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.protocol.SentryId
 
 internal class SendReportBackgroundTask(
-  private val sentryClient: SentryClient,
   project: Project?,
-  private val event: EventBuilder,
+  private val events: List<SentryEvent>,
   private val consumer: Consumer<in SubmittedReportInfo>
 ) : Task.Backgroundable(project, PdfViewerBundle.message("pdf.viewer.error.report.sending")) {
   override fun run(indicator: ProgressIndicator) {
-    sentryClient.sendEvent(event)
-    sentryClient.addEventSendCallback(object : EventSendCallback {
-      override fun onSuccess(event: Event?) {
+    for (event in events) {
+      val id: SentryId = Sentry.captureEvent(event)
+      if (id != SentryId.EMPTY_ID) {
         ApplicationManager.getApplication().invokeLater {
           val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
           group.createNotification(
@@ -33,19 +31,17 @@ internal class SendReportBackgroundTask(
           ).notify(project)
           consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.NEW_ISSUE))
         }
-      }
-
-      override fun onFailure(event: Event?, exception: Exception?) {
+      } else {
         ApplicationManager.getApplication().invokeLater {
           val group = NotificationGroupManager.getInstance().getNotificationGroup("Error Report")
           group.createNotification(
             PdfViewerBundle.message("pdf.viewer.error.report.notifications.submit.failed"),
             NotificationType.ERROR
           ).notify(project)
-          thisLogger().error(exception.toString())
+          thisLogger().error(event.toString())
           consumer.consume(SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED))
         }
       }
-    })
+    }
   }
 }
