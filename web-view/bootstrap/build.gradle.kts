@@ -14,7 +14,7 @@ dependencies {
   default(project(":web-view:viewer", configurations.viewerApplicationBundle.name))
 }
 
-val pdfjsVersion = "4.6.82"
+val pdfjsVersion = project.findProperty("pdfjsVersion").toString()
 
 val downloadZipFile by tasks.registering(Download::class) {
   val destFile = layout.projectDirectory.asFile.resolve("dist/pdfjs-$pdfjsVersion-dist.zip")
