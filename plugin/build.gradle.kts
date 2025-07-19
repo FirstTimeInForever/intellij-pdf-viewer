@@ -104,6 +104,9 @@ intellijPlatform {
       )
   }
 
+  // Set name of archive https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1731#issuecomment-2372046338
+  projectName = "intellij-pdf-viewer"
+
   pluginVerification {
     ides {
       recommended()    }
