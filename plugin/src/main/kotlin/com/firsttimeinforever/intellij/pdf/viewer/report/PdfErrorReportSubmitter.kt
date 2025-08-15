@@ -1,7 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.report
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
-import com.intellij.diagnostic.IdeaReportingEvent
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.idea.IdeaLogger
@@ -42,10 +41,9 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
 
   private fun createEvents(events: Array<out IdeaLoggingEvent>, additionalInfo: String?): List<SentryEvent> {
     return events
-      .filterIsInstance<IdeaReportingEvent>()
       .map { ideaEvent ->
         SentryEvent().apply {
-          this.message = Message().apply { this.message = additionalInfo ?: ideaEvent.originalThrowableText }
+          this.message = Message().apply { this.message = additionalInfo ?: ideaEvent.throwableText }
           this.level = SentryLevel.ERROR
           this.throwable = ideaEvent.throwable
 

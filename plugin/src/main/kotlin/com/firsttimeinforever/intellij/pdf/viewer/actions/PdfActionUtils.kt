@@ -3,6 +3,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions
 import com.intellij.ide.DataManager
 import com.intellij.ide.ui.customization.CustomActionsSchema
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import java.awt.Component
 import javax.swing.JComponent
 
@@ -22,14 +23,16 @@ internal object PdfActionUtils {
 
   fun performAction(action: AnAction, component: Component) {
     val context = DataManager.getInstance().getDataContext(component)
-    action.actionPerformed(
+    ActionUtil.performAction(
+      action,
       AnActionEvent(
-        null,
         context,
-        ActionPlaces.UNKNOWN,
         Presentation(),
-        ActionManager.getInstance(),
-        0
+        ActionPlaces.UNKNOWN,
+        ActionUiKind.TOOLBAR,
+        null,
+        0,
+        ActionManager.getInstance()
       )
     )
   }
