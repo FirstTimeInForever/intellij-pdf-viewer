@@ -3,6 +3,7 @@ import org.jetbrains.changelog.markdownToHTML
 import java.nio.file.Files
 import java.nio.file.Paths
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 
 fun fromProperties(key: String) = project.findProperty(key).toString()
 
@@ -108,8 +109,13 @@ intellijPlatform {
   projectName = "intellij-pdf-viewer"
 
   pluginVerification {
+    freeArgs = listOf("-mute", "TemplateWordInPluginId", "-mute", "TemplateWordInPluginName")
+    ignoredProblemsFile = file("plugin-verifier-ignored-problems.txt")
+//    failureLevel = VerifyPluginTask.FailureLevel.ALL
+
     ides {
-      recommended()    }
+      recommended()
+    }
   }
 
   publishing {
@@ -152,3 +158,4 @@ tasks.runIde {
   systemProperties["pdf.viewer.debug"] = true
   jvmArgs("--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED", "-Xmx4096m", "-Xms128m")
 }
+

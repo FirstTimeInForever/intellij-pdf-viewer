@@ -64,7 +64,7 @@ jobs:
         run: ./gradlew :plugin:buildPlugin
 
       - name: Verify Plugin
-        run: ./gradlew runPluginVerifier
+        run: ./gradlew verifyPlugin
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
