@@ -111,7 +111,7 @@ intellijPlatform {
   pluginVerification {
     freeArgs = listOf("-mute", "TemplateWordInPluginId", "-mute", "TemplateWordInPluginName")
     ignoredProblemsFile = file("plugin-verifier-ignored-problems.txt")
-//    failureLevel = VerifyPluginTask.FailureLevel.ALL
+    failureLevel = VerifyPluginTask.FailureLevel.ALL
 
     ides {
       recommended()
