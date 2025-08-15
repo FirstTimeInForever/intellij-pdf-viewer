@@ -17,7 +17,7 @@ abstract class PdfToggleAction(viewModeAwareness: ViewModeAwareness = ViewModeAw
     base.update(event)
   }
 
-  private inner class StubAction(viewModeAwareness: ViewModeAwareness) : PdfAction(viewModeAwareness) {
+  private class StubAction(viewModeAwareness: ViewModeAwareness) : PdfAction(viewModeAwareness) {
     override fun actionPerformed(event: AnActionEvent) {
       throw IllegalStateException("This method should not be called")
     }

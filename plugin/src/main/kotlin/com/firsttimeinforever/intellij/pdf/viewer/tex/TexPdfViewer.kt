@@ -35,7 +35,7 @@ class TexPdfViewer : ExternalPdfViewer {
    */
   override fun isAvailable(): Boolean = true
 
-  override fun forwardSearch(pdfPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean) {
+  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean) {
     if (!SynctexUtils.isSynctexInstalled()) {
       Notification(
         "LaTeX",
@@ -46,7 +46,7 @@ class TexPdfViewer : ExternalPdfViewer {
       return
     }
 
-    if (pdfPath != null) pdfFilePath = pdfPath
+    if (outputPath != null) pdfFilePath = outputPath
     if (pdfFilePath == null) {
       Notification(
         "LaTeX",
@@ -69,7 +69,8 @@ class TexPdfViewer : ExternalPdfViewer {
           // Only open in right split when there already is an open file, otherwise it is not possible to open a right split because there
           // is nothing to split.
           if (fileEditorManager.hasOpenFiles()) {
-            val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
+            // There does not seem to be a public alternative
+            @Suppress("UnstableApiUsage") val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
             editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
           } else {
             pdfEditor.navigate(false)
@@ -86,7 +87,7 @@ class TexPdfViewer : ExternalPdfViewer {
           file.path
         ).withWorkDirectory(File(file.parent.path))
         val output = getCommandStdoutIfSuccessful(command) ?: return@invokeLater
-        val values: Map<String?, String?> = NUMBER_REGEX.findAll(output)
+        val values: Map<String?, String?> = NUMBER_REGEX.toRegex().findAll(output)
           .associate { it.groups["id"]?.value to it.groups["value"]?.value }
           .filter { it.key != null && it.value != null }
 
@@ -108,6 +109,6 @@ class TexPdfViewer : ExternalPdfViewer {
   }
 
   companion object {
-    val NUMBER_REGEX = "(?<id>\\w+):(?<value>(\\d+)(.\\d+)?)".toRegex()
+    const val NUMBER_REGEX = "(?<id>\\w+):(?<value>(\\d+)(.\\d+)?)"
   }
 }

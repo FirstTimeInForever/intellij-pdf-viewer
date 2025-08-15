@@ -9,6 +9,7 @@ import com.intellij.find.SearchTextArea
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.DumbAwareToggleAction
 import com.intellij.openapi.wm.IdeFocusManager
@@ -56,8 +57,8 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
 
   private val findForwardAction = ActionManager.getInstance().getAction("pdf.viewer.FindForwardAction")!!
   private val findBackwardAction = ActionManager.getInstance().getAction("pdf.viewer.FindBackwardAction")!!
-  private val findForwardOnEnterAction = DumbAwareAction.create(findForwardAction::actionPerformed)
-  private val findBackwardOnShiftEnterAction = DumbAwareAction.create(findBackwardAction::actionPerformed)
+  private val findForwardOnEnterAction = DumbAwareAction.create { ActionUtil.performAction(findForwardAction, it) }
+  private val findBackwardOnShiftEnterAction = DumbAwareAction.create { ActionUtil.performAction(findBackwardAction, it) }
 
   init {
     layout = MigLayout("flowx, gap 8, ins 0, fillx, hidemode 3")

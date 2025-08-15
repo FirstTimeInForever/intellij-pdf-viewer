@@ -29,6 +29,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.JBColor
 import com.intellij.ui.jcef.JCEFHtmlPanel
 import com.intellij.util.ui.UIUtil
 import io.netty.handler.codec.http.QueryStringDecoder
@@ -39,7 +40,7 @@ import org.cef.callback.CefContextMenuParams
 import org.cef.callback.CefMenuModel
 import org.cef.handler.CefContextMenuHandlerAdapter
 import java.awt.Color
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean
 
 class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFile) :
@@ -90,7 +91,7 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
         if (!viewLoaded || cefBrowser == null) return null
         val urlDecoder = QueryStringDecoder(cefBrowser.url)
         val file = urlDecoder.parameters()?.get("file")?.get(0) ?: return null
-        return URL(URL(cefBrowser.url), file).toString()
+        return URI(cefBrowser.url).resolve(file).toString()
       }
 
       override fun onBeforeContextMenu(cefBrowser: CefBrowser?, frame: CefFrame?, params: CefContextMenuParams?, model: CefMenuModel?) {
@@ -203,9 +204,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     return when {
       PdfViewerSettings.instance.useCustomColors -> PdfViewerSettings.instance.run {
         ViewTheme.create(
-          Color(customBackgroundColor),
-          Color(customForegroundColor),
-          Color(customIconColor),
+          JBColor(customBackgroundColor, customBackgroundColor),
+          JBColor(customForegroundColor, customForegroundColor),
+          JBColor(customIconColor, customIconColor),
           colorInvertIntensity
         )
       }
