@@ -287,6 +287,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.NavigateHistory(direction))
   }
 
+  fun setInverseSearchShortcuts(shortcuts: Set<String>) {
+    pipe.send(IdeMessages.InverseSearchShortcuts(shortcuts))
+  }
+
   override fun dispose() {
     logger.debug("dispose $virtualFile")
     PdfStaticServer.instance.disposePreviewUrl(virtualFile)

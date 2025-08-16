@@ -1,9 +1,9 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.tex
 
-import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
-import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Math
 import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
+import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Math
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
@@ -23,6 +23,7 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
 
   private var isSynctexAvailable: Boolean = false
   private var forwardSearchData: SynctexPreciseLocation? = null
+  private var shortcuts: Set<String> = setOf("button=1 clickCount=1 modifiers=128", "button=1 clickCount=1 modifiers=256") // ctrl + click and meta + click
 
   private val viewerDocument: Document
     get() = viewer.viewerApp.asDynamic().appConfig.appContainer.ownerDocument as Document
@@ -31,10 +32,12 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
     viewerDocument.addEventListener("click", {
       resetCanvas()
     })
-    viewerDocument.addEventListener("click", {
-      check(it is MouseEvent)
-      actualListener(it)
-    })
+    for (type in listOf("click", "dblclick", "auxclick")) {
+      viewerDocument.addEventListener(type, {
+        check(it is MouseEvent)
+        inverseSearch(it, type)
+      })
+    }
     pipe.subscribe<IdeMessages.SynctexAvailability> {
       isSynctexAvailable = it.isAvailable
     }
@@ -45,6 +48,9 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
       forwardSearchData = it.location
       console.log("Forward search to page ${it.location.page}")
       executeForwardSearch()
+    }
+    pipe.subscribe<IdeMessages.InverseSearchShortcuts> {
+      shortcuts = it.shortcuts
     }
   }
 
@@ -62,11 +68,39 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
     return 72 / (viewer.viewerApp.pdfViewer.currentScale.toFloat() * 96)
   }
 
-  private fun actualListener(event: MouseEvent) {
-    // Ctrl + click (or Meta + click) -> Inverse search with SyncTeX
-    if (!((event.ctrlKey && !isMacos()) || (event.metaKey && isMacos()))) {
+  /**
+   * Execute inverse search if the event was a shortcut to do so
+   */
+  private fun inverseSearch(event: MouseEvent, type: String) {
+    // See java.awt.event.InputEvent
+    val keyMapping = mapOf(
+      event::shiftKey to 64,
+      event::ctrlKey to 128,
+      event::metaKey to 256, // ctrl for Mac
+      event::altKey to 512,
+    )
+
+    // Parse the value of com.intellij.openapi.actionSystem.Shortcut#toString()
+    val anyShortcutMatchesEvent = shortcuts.map { shortcutString ->
+      shortcutString.split(" ")
+        .map { it.split("=") }
+        .filter { it.size == 2 }
+        .associate { Pair(it.first(), it.last()) }
+    }.any { shortcut ->
+      val modifier = shortcut["modifiers"]?.toInt() ?: return@any false
+      // See java.awt.event.InputEvent#isShiftDown() for keys
+      keyMapping.all { it.key.get() == ((it.value and modifier) != 0) }
+        // The buttons seem to be off by one
+        // IntelliJ does not appear to support button combinations, so we don't need to check event.buttons
+        && shortcut["button"] == (event.button + 1).toString()
+        // Double click is a separate event type in Javascript
+        && ((shortcut["clickCount"] == "2" && type == "dblclick") || (shortcut["clickCount"] == "1" && type != "dblclick"))
+    }
+
+    if (!anyShortcutMatchesEvent) {
       return
     }
+
     if (!isSynctexAvailable) {
       return
     }

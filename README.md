@@ -32,6 +32,7 @@
 - **Zoom out:** <kbd>Ctrl</kbd> + <kbd>-</kbd>
 - **Reset zoom:** <kbd>Ctrl</kbd> + <kbd>0</kbd>
 - **Enter presentation mode:** <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>p</kbd>
+- **Inverse search (LaTeX):** <kbd>Ctrl</kbd> + <kbd>Left click</kbd> (can be customized in Settings | Keymap to other mouse shortcuts)
 
 ### Feature Notes
 
