@@ -49,6 +49,9 @@ object IdeMessages {
   data class SynctexAvailability(val isAvailable: Boolean)
 
   @Serializable
+  data class InverseSearchShortcuts(val shortcuts: Set<String>)
+
+  @Serializable
   data class NavigateTo(val destination: JsonElement)
 
   @Serializable

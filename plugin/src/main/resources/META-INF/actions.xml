@@ -109,6 +109,16 @@
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfNavigateByHistoryAction$Forward"
             icon="AllIcons.Actions.Forward"/>
 
+    <!-- Inverse search -->
+    <action id="pdf.viewer.PdfInverseSearchAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfInverseSearchAction"
+            text="PDF Inverse Search"
+            description="Sets inverse search shortcut to navigate from the PDF to LaTeX source">
+      <mouse-shortcut keymap="$default" keystroke="control button1"/>
+      <mouse-shortcut keymap="Mac OS X 10.5+" keystroke="meta button1"/>
+      <mouse-shortcut keymap="Mac OS X" keystroke="meta button1"/>
+    </action>
+
     <!--Actions list action-->
     <action id="pdf.viewer.ActionList"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionList"/>
