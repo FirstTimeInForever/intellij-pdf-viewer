@@ -1,5 +1,13 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.17.1
+This release adds support for customizing the inverse search shortcut and the toolbar.
+
+- In the keymap, you can now change the inverse search shortcut (to navigate from pdf to LaTeX) to any other mouse shortcut
+- Add support for customizing the toolbar (right-click on the toolbar to open the menu)
+- Update dependencies and replace deprecated code
+- Update Sentry implementation for easy reporting of exceptions
+
 ## 0.17.0
 This release contains many fixes and improvements, all of which were contributed by [Liu Dongmiao](https://github.com/liudongmiao)
 
