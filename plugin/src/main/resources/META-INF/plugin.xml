@@ -16,6 +16,7 @@
               fieldName="INSTANCE"
               implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
     <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
+    <diff.DiffTool implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.diff.PdfTwoSideDiffTool"/>
     <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
 
     <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
