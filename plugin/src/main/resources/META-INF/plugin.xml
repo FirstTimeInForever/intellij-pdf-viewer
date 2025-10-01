@@ -12,7 +12,6 @@
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="PDF"
               extensions="pdf"
-              language="PDF"
               fieldName="INSTANCE"
               implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
     <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
