@@ -51,9 +51,14 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
      * is possible that there is a PDF open somewhere, but it is not in view.
      */
     fun findEditorInView(event: AnActionEvent): PdfFileEditor? {
-      val focusedEditor = event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
+      val focusedEditor = event.getData(PlatformDataKeys.FILE_EDITOR)
 
-      return focusedEditor ?: run {
+      if (focusedEditor?.javaClass?.simpleName == "BackendDiffRequestProcessorEditor") {
+        // This is a diff view, which we cannot control, so don't do anything
+        return null
+      }
+
+      return focusedEditor as? PdfFileEditor ?: run {
         val project = event.project ?: return null
         FileEditorManager.getInstance(project).selectedEditors.firstOrNull {it is PdfFileEditor} as? PdfFileEditor
       }
