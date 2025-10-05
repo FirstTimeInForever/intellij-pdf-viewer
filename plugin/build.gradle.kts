@@ -1,9 +1,8 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.nio.file.Files
 import java.nio.file.Paths
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 
 fun fromProperties(key: String) = project.findProperty(key).toString()
 
@@ -11,12 +10,12 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij.platform") version "2.6.0"
-  id("org.jetbrains.changelog") version "2.2.1"
-  id("com.github.ben-manes.versions") version "0.52.0"
+  id("org.jetbrains.intellij.platform") version "2.9.0"
+  id("org.jetbrains.changelog") version "2.4.0"
+  id("com.github.ben-manes.versions") version "0.53.0"
   // Plugin which can update Gradle dependencies, use the help/useLatestVersions task.
-  id("se.patrikerdes.use-latest-versions") version "0.2.18"
-  id("io.sentry.jvm.gradle") version "5.8.0"
+  id("se.patrikerdes.use-latest-versions") version "0.2.19"
+  id("io.sentry.jvm.gradle") version "6.0.0-alpha.4"
 }
 
 group = fromProperties("group")
@@ -44,12 +43,12 @@ dependencies {
     pluginVerifier()
     testFramework(TestFrameworkType.Platform)
 
-    intellijIdeaCommunity(fromProperties("platformVersion"))
+    intellijIdea(fromProperties("platformVersion"))
 
     plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
   }
 
-  implementation("io.sentry:sentry:8.17.0") {
+  implementation("io.sentry:sentry:8.23.0") {
     // Included in IJ
     exclude("org.slf4j")
     exclude("com.fasterxml.jackson.core", "jackson-core")
@@ -96,13 +95,11 @@ intellijPlatform {
     name = fromProperties("pluginName")
     description = extractPluginDescription()
     // Get the latest available change notes from the changelog file
-    changeNotes = (
-      provider {
-        with(changelog) {
-          renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML)
-        }
+    changeNotes = provider {
+      with(changelog) {
+        renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML)
       }
-      )
+    }
   }
 
   // Set name of archive https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1731#issuecomment-2372046338
