@@ -1,5 +1,9 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.17.2
+- Fix the diff viewer for pdfs, by @ytausch
+- Ensure the 'spread page' actions are always visible, by @slideclimb
+
 ## 0.17.1
 This release adds support for customizing the inverse search shortcut and the toolbar.
 
