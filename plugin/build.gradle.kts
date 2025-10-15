@@ -100,6 +100,10 @@ intellijPlatform {
         renderItem(changelog.getLatest().withHeader(true), Changelog.OutputType.HTML)
       }
     }
+    ideaVersion {
+      sinceBuild.set(fromProperties("pluginSinceVersion"))
+      untilBuild = provider { null }
+    }
   }
 
   // Set name of archive https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1731#issuecomment-2372046338
