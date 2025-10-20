@@ -1,5 +1,6 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -115,7 +116,8 @@ intellijPlatform {
 //    failureLevel = VerifyPluginTask.FailureLevel.ALL
 
     ides {
-      recommended()
+      // Don't check all recommended ides, we would run out of disk space on github actions
+      create(IntelliJPlatformType.IntellijIdea, fromProperties("platformVersion")) { }
     }
   }
 

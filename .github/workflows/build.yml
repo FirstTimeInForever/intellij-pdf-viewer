@@ -37,7 +37,6 @@ jobs:
     steps:
       - name: Fetch Sources
         uses: actions/checkout@v4
-
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:

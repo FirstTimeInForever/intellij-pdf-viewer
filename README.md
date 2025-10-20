@@ -23,6 +23,9 @@
 - Pages spread (even/odd)
 - Horizontal/vertical pages scroll directions
 - Customizable toolbar
+- Customizable dark mode
+
+All the settings can be found in Settings | Other settings | PDF Viewer.
 
 ## Shortcuts
 - **Move editor up or down:** up and down arrow keys.
