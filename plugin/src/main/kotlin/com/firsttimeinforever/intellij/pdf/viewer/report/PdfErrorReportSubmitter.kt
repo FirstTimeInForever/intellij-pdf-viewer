@@ -52,14 +52,14 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
           val applicationNamesInfo = ApplicationNamesInfo.getInstance()
           val instanceEx = ApplicationInfoEx.getInstanceEx()
           tags = mapOf(
-            "OS Name" to SystemInfo.OS_NAME,
-            "Java Version" to SystemInfo.JAVA_VERSION,
-            "App Name" to applicationNamesInfo.productName,
-            "App Full Name" to applicationNamesInfo.fullProductName,
-            "App Version name" to instanceEx.versionName,
-            "Is EAP" to instanceEx.isEAP.toString(),
-            "App Build" to instanceEx.build.asString(),
-            "App Version" to instanceEx.fullVersion,
+            "os_name" to SystemInfo.OS_NAME,
+            "java_version" to SystemInfo.JAVA_VERSION,
+            "app_name" to applicationNamesInfo.productName,
+            "app_full_name" to applicationNamesInfo.fullProductName,
+            "app_version_name" to instanceEx.versionName,
+            "is_eap" to instanceEx.isEAP.toString(),
+            "app_build" to instanceEx.build.asString(),
+            "app_version" to instanceEx.fullVersion,
           )
         }
       }
