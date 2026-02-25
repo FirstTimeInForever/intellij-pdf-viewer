@@ -262,6 +262,16 @@ class Application(private val viewer: ViewerAdapter) {
       if (event.key.lowercase() == "0" && event.ctrlKey && !event.altKey && !event.shiftKey) {
         viewer.viewerApp.pdfViewer.currentScaleValue = "auto"
       }
+
+      // Vim-style scroll down.
+      if (event.key == "j" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        viewer.scrollDown()
+      }
+
+      // Vim-style scroll up.
+      if (event.key == "k" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+        viewer.scrollUp()
+      }
     }
   }
 
