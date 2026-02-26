@@ -94,6 +94,14 @@
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfRotateCounterClockwiseAction"
             icon="/icons/actions/rotateLeft.svg"/>
 
+    <!-- Custom scroll actions -->
+    <action id="pdf.viewer.ScrollUpAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfScrollUpAction"
+            icon="AllIcons.Actions.MoveUp"/>
+    <action id="pdf.viewer.ScrollDownAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfScrollDownAction"
+            icon="AllIcons.Actions.MoveDown"/>
+
     <!-- Presentation mode actions-->
     <action id="pdf.viewer.ToggleDocumentPresentationAction"
             class="com.firsttimeinforever.intellij.pdf.viewer.actions.presentation.PdfToggleDocumentPresentationAction"/>
