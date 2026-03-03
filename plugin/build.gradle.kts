@@ -127,6 +127,9 @@ intellijPlatform {
     // Specify channel based on version
     channels.set(listOf(fromProperties("version").split('-').getOrElse(1) { "stable" }.split('.').first()))
   }
+
+  // Enable hot reload
+  buildSearchableOptions = false
 }
 
 @Throws(GradleException::class)

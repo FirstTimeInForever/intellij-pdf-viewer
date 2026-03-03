@@ -3,10 +3,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.controls
 import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfActionUtils.createActionToolbar
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionPlaces
-import java.awt.Component
-import java.awt.Dimension
 import java.awt.FlowLayout
 import java.awt.GridLayout
+import javax.swing.BoxLayout
 import javax.swing.JPanel
 
 class PdfEditorControlPanel: JPanel(GridLayout()), Disposable {
@@ -25,15 +24,16 @@ class PdfEditorControlPanel: JPanel(GridLayout()), Disposable {
   private val rightPanel = JPanel()
 
   init {
+    // BoxLayout resizes components to fit the container
+    layout = BoxLayout(this, BoxLayout.X_AXIS)
     leftToolbar.component.border = null
     rightToolbar.component.border = null
-    add(leftToolbar.component, Component.LEFT_ALIGNMENT)
+    add(leftToolbar.component)
 
+    // Use a panel to store the right toolbar, to align the actions to the right
     rightPanel.layout = FlowLayout(FlowLayout.RIGHT, 0, 0)
-
     rightPanel.add(rightToolbar.component)
-    rightPanel.preferredSize = Dimension(Int.MAX_VALUE, 24)
-    add(rightPanel, Component.RIGHT_ALIGNMENT)
+    add(rightPanel, RIGHT_ALIGNMENT)
   }
 
   override fun dispose() = Unit
