@@ -245,6 +245,14 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.GotoPage(direction))
   }
 
+  fun scrollDown(steps: Int) {
+    pipe.send(IdeMessages.ScrollDown(steps))
+  }
+
+  fun scrollUp(steps: Int) {
+    pipe.send(IdeMessages.ScrollUp(steps))
+  }
+
   fun setPageSpreadState(state: PageSpreadState) {
     pipe.send(IdeMessages.PageSpreadStateSetRequest(state))
   }

@@ -95,6 +95,16 @@ class ViewerAdapter(val viewerApp: PdfViewerApplication) {
     toolbar.scrollHorizontalButton.click()
   }
 
+  fun scrollDown(pixels: Int = 100) {
+    val container = viewerApp.pdfViewer.asDynamic().container
+    container.scrollTop = (container.scrollTop as Double) + pixels
+  }
+
+  fun scrollUp(pixels: Int = 100) {
+    val container = viewerApp.pdfViewer.asDynamic().container
+    container.scrollTop = (container.scrollTop as Double) - pixels
+  }
+
   fun releaseSearchHighlighting() {
     viewerApp.eventBus.dispatch("findbarclose", undefined)
   }

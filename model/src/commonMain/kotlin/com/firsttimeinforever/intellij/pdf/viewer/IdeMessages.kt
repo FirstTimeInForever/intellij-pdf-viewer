@@ -25,6 +25,12 @@ object IdeMessages {
   data class GotoPage(val direction: PageGotoDirection)
 
   @Serializable
+  data class ScrollUp(val pixels: Int)
+
+  @Serializable
+  data class ScrollDown(val pixels: Int)
+
+  @Serializable
   class DocumentInfoRequest
 
   @Serializable

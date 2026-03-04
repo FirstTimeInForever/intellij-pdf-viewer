@@ -21,6 +21,7 @@ class PdfViewerSettingsForm : JPanel() {
 
   val enableDocumentAutoReload = properties.property(settings.enableDocumentAutoReload)
   val defaultSidebarViewMode = properties.property(settings.defaultSidebarViewMode)
+  val scrollPixelsPerStep = properties.property(settings.scrollPixelsPerStep)
 
   private val generalSettingsGroup = panel {
     group(PdfViewerBundle.message("pdf.viewer.settings.group.general")) {
@@ -40,6 +41,11 @@ class PdfViewerSettingsForm : JPanel() {
         }
         comboBox(DefaultComboBoxModel(SidebarViewMode.entries.toTypedArray()), renderer)
           .bindItem(defaultSidebarViewMode)
+      }
+      row(PdfViewerBundle.message("pdf.viewer.settings.scroll.pixels.per.step")) {
+        rowComment("Number of pixels to scroll with the 'Scroll PDF Up/Down' actions")
+        intTextField()
+          .bindIntText(scrollPixelsPerStep)
       }
     }
   }
