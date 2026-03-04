@@ -18,7 +18,6 @@ import kotlinx.browser.window
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
-import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.Promise
 import kotlin.js.json
@@ -105,6 +104,10 @@ class Application(private val viewer: ViewerAdapter) {
         console.warn(it)
       }
     }
+    pipe.subscribe<IdeMessages.SetZoomMode> {
+      viewer.viewerApp.pdfViewer.currentScaleValue = it.zoomMode
+    }
+
     // ensureDocumentPropertiesReady()
     sendOutline()
     synctexSearchController.finishInitialization()
