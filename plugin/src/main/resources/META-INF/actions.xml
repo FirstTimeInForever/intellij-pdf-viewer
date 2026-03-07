@@ -59,6 +59,22 @@
       <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta MINUS"/>
       <mouse-shortcut keymap="Mac OS X 10.5+" keystroke="meta button142"/>
     </action>
+    <action id="pdf.viewer.FitToWidthAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfFitToWidthAction"
+            icon="AllIcons.Diff.ArrowLeftRight">
+    </action>
+    <action id="pdf.viewer.FitToHeightAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfFitToHeightAction"
+            icon="AllIcons.Actions.Expandall">
+    </action>
+    <action id="pdf.viewer.FitToPageAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfFitToPageAction"
+            icon="AllIcons.General.ExpandComponent">
+    </action>
+    <action id="pdf.viewer.ResetScaleAction"
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.view.PdfResetScaleAction"
+            icon="AllIcons.General.Reset">
+    </action>
 
     <!--Page spread actions-->
     <action id="pdf.viewer.SetPageSpreadNoneAction"
@@ -119,9 +135,7 @@
 
     <!-- Inverse search -->
     <action id="pdf.viewer.PdfInverseSearchAction"
-            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfInverseSearchAction"
-            text="PDF Inverse Search"
-            description="Sets inverse search shortcut to navigate from the PDF to LaTeX source">
+            class="com.firsttimeinforever.intellij.pdf.viewer.actions.navigation.PdfInverseSearchAction">
       <mouse-shortcut keymap="$default" keystroke="control button1"/>
       <mouse-shortcut keymap="Mac OS X 10.5+" keystroke="meta button1"/>
       <mouse-shortcut keymap="Mac OS X" keystroke="meta button1"/>
@@ -161,6 +175,11 @@
       <separator/>
       <reference ref="pdf.viewer.IncreaseScaleAction"/>
       <reference ref="pdf.viewer.DecreaseScaleAction"/>
+      <reference ref="pdf.viewer.FitToWidthAction"/>
+      <reference ref="pdf.viewer.FitToHeightAction"/>
+      <reference ref="pdf.viewer.FitToPageAction"/>
+      <reference ref="pdf.viewer.ResetScaleAction"/>
+
       <separator/>
       <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
       <reference ref="pdf.viewer.SetPageSpreadOddAction"/>
@@ -195,6 +214,10 @@
       <separator/>
       <reference ref="pdf.viewer.IncreaseScaleAction"/>
       <reference ref="pdf.viewer.DecreaseScaleAction"/>
+      <reference ref="pdf.viewer.FitToWidthAction"/>
+      <reference ref="pdf.viewer.FitToHeightAction"/>
+      <reference ref="pdf.viewer.FitToPageAction"/>
+      <reference ref="pdf.viewer.ResetScaleAction"/>
       <separator/>
       <reference ref="pdf.viewer.ShowFindPopupAction"/>
       <separator/>

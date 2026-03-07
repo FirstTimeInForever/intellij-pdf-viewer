@@ -65,4 +65,10 @@ object IdeMessages {
 
   @Serializable
   data class NavigateHistory(val direction: HistoryNavigationDirection)
+
+  /**
+   * See ZoomState
+   */
+  @Serializable
+  data class SetZoomMode(val zoomMode: String)
 }

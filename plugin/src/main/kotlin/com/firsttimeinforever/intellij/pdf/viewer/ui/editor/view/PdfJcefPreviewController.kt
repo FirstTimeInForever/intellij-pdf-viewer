@@ -265,6 +265,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.send(IdeMessages.ChangeScaleStepped(increase))
   }
 
+  fun setZoomMode(zoomMode: String) {
+    pipe.send(IdeMessages.SetZoomMode(zoomMode))
+  }
+
   fun rotate(clockwise: Boolean = true) {
     pipe.send(IdeMessages.RotatePages(clockwise))
   }

@@ -110,6 +110,10 @@ class Application(private val viewer: ViewerAdapter) {
         console.warn(it)
       }
     }
+    pipe.subscribe<IdeMessages.SetZoomMode> {
+      viewer.viewerApp.pdfViewer.currentScaleValue = it.zoomMode
+    }
+
     // ensureDocumentPropertiesReady()
     sendOutline()
     synctexSearchController.finishInitialization()
