@@ -42,10 +42,13 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
           .firstOrNull() as? TextEditor
 
         if (editor != null) {
-          val currentEditorDescriptor = OpenFileDescriptor(project, editor.file!!)
+          // Needs offset to make the navigation work
+          val currentEditorDescriptor = OpenFileDescriptor(project, editor.file!!, 0)
           currentEditorDescriptor.navigate(requestFocus)
         }
-        fileEditorManager.openEditor(openFileDescriptor, requestFocus)
+        // Note that Advanced Settings > "Open declation source called from a detached window in the main IDE window" determines
+        // the window where the file is opened, see FileEditorManagerImpl#getOrCreateCurrentWindow
+        fileEditorManager.openTextEditor(openFileDescriptor, requestFocus)
       }
     }
   }
