@@ -15,6 +15,9 @@ import com.intellij.util.Consumer
 import java.awt.Component
 import java.awt.event.MouseEvent
 
+/**
+ * Widget for the status bar to show current and total page numbers.
+ */
 internal class PdfDocumentPageStatusBarWidget(val project: Project) : StatusBarWidget {
   private lateinit var actualStatusBar: StatusBar
   private val busConnection = project.messageBus.connect(this)
