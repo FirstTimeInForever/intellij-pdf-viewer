@@ -19,9 +19,6 @@ object IdeMessages {
   data class PageSpreadStateSetRequest(val state: PageSpreadState)
 
   @Serializable
-  data class GotoExactPage(val page: Int)
-
-  @Serializable
   data class GotoPage(val direction: PageGotoDirection)
 
   @Serializable
