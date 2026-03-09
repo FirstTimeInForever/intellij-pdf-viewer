@@ -87,6 +87,10 @@ To build plugin use `buildPlugin` gradle task. This will produce ready to use `z
 
 To run/debug IDE with this plugin `runIde` task should be used.
 
+Reference pdf.js example: https://mozilla.github.io/pdf.js/web/viewer.html
+
+Web apis: https://developer.mozilla.org/en-US/docs/Web/API
+
 ### Architecture
 
 Plugin code is divided into several modules:

@@ -1,5 +1,13 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.17.3
+- Add scroll up/down actions, to enable custom keybindings
+- Add vim-style j/k scroll bindings, by @jaisaikr
+- Enable left toolbar to take up more than half of the space
+- Add actions for fit to width, height, page and reset zoom
+- Fix diff viewer showing the wrong pdf for git commits, by @juliabeliaeva
+- Add a comment to the readme to explain how to always open the pdf in the main window when inverse searching
+
 ## 0.17.2
 - Fix the diff viewer for pdfs, by @ytausch
 - Ensure the 'spread page' actions are always visible, by @slideclimb
