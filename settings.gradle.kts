@@ -15,3 +15,11 @@ pluginManagement {
     kotlin("multiplatform") version kotlinVersion
   }
 }
+
+// https://github.com/JetBrains/intellij-platform-gradle-plugin/issues/1750
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    maven("https://www.jetbrains.com/intellij-repository/releases")
+  }
+}
