@@ -8,6 +8,9 @@ import java.awt.GridLayout
 import javax.swing.BoxLayout
 import javax.swing.JPanel
 
+/**
+ * The default pdf.js toolbar is hidden using fixes.css
+ */
 class PdfEditorControlPanel: JPanel(GridLayout()), Disposable {
   private val leftToolbar = createActionToolbar(
     "pdf.viewer.LeftToolbarActionGroup",
