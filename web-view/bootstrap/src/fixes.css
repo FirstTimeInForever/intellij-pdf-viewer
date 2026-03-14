@@ -1,12 +1,15 @@
-#findbar, #secondaryToolbar, #toolbarContainer, #toolbarSidebar {
+/* Hide the default toolbar */
+#toolbarContainer {
+  /* We cannot use display: none as that would also hide the ViewsManager (sidebar) */
+  visibility: hidden;
+}
+
+/* We have our own menu to choose sidebar mode, so hide the selector button */
+#findbar, #secondaryToolbar, #viewsManagerSelectorButton {
   display: none;
 }
 
-#sidebarContainer {
-  border-top: none;
-}
-
-#sidebarContainer, #sidebarContent, #viewerContainer {
+#viewsManager, #viewerContainer {
   top: 0;
 }
 
