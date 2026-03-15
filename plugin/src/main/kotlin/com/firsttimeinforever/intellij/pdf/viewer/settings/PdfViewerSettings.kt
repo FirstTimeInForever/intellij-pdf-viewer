@@ -23,7 +23,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var invertColorsWithTheme = false
   var scrollPixelsPerStep = 100
 
-  var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.THUMBNAILS
+  var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.NONE
 
   fun notifyListeners() {
     ApplicationManager.getApplication().messageBus.syncPublisher(TOPIC).settingsChanged(this)

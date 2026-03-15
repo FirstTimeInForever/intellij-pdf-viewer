@@ -35,7 +35,7 @@ val downloadAndUnzipFile by tasks.registering(Copy::class) {
   doLast {
     val viewerHtml = layout.buildDirectory.get().asFile.resolve("web/viewer.html")
     val modifiedContent = viewerHtml.readText()
-      .replace("(<link rel=\"stylesheet\" href=\"viewer.css\">)".toRegex(), "$1<link rel=\"stylesheet\" href=\"../fixes.css\">")
+      .replace("(<link rel=\"stylesheet\" href=\"viewer.css\" />)".toRegex(), "$1<link rel=\"stylesheet\" href=\"../fixes.css\" />")
       .replace("(<script src=\"viewer.m?js\"[^<>]*></script>)".toRegex(), "$1<script src=\"../viewer.js\"></script>")
     viewerHtml.writeText(modifiedContent)
     val tmpdir = file(layout.buildDirectory.get().asFile.resolve("tmp"))

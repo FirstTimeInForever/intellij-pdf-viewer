@@ -53,7 +53,7 @@ internal class PdfStaticServer : HttpRequestHandler() {
   }
 
   private fun sendExternalFile(url: String, context: ChannelHandlerContext, request: FullHttpRequest) {
-    val file: VirtualFile? = vfsMap[url]
+    val file: VirtualFile? = vfsMap[URLUtil.decode(url)]
     val channel = context.channel()
     if (file == null) {
       logger.debug("Cannot find pdf file $url")

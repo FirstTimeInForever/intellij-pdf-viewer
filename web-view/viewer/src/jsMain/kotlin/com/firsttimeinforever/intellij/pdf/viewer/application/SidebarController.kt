@@ -22,17 +22,13 @@ class SidebarController(private val viewer: ViewerAdapter) {
 
   fun switchViewMode(viewMode: SidebarViewMode) {
     console.log("Setting viewMode to: $viewMode")
-    if (currentViewMode == SidebarViewMode.NONE) {
-      viewer.viewerApp.pdfSidebar.open()
-    }
-    viewer.viewerApp.pdfSidebar.switchView(viewMode.ordinal)
+    viewer.viewerApp.viewsManager.switchView(viewMode.ordinal, forceOpen = true)
   }
 
   val currentViewMode: SidebarViewMode
     get() {
-      // console.log(viewer.viewerApp.pdfSidebar)
-      val viewValue = viewer.viewerApp.pdfSidebar.visibleView as Int
-      console.log("Got viewMode value: $viewValue")
+      val viewValue = viewer.viewerApp.viewsManager.visibleView as Int
+      console.log("Got viewMode value: ${SidebarViewMode.entries[viewValue]}")
       return SidebarViewMode.entries[viewValue]
     }
 }
