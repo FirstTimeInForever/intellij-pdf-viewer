@@ -13,7 +13,6 @@ class PdfShowFindPopupAction: PdfDumbAwareAction() {
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    // TODO: Refactor
     val searchPanel = findEditorInView(event)?.viewComponent?.searchPanel ?: return
     event.presentation.isEnabled = !searchPanel.isVisible
   }
