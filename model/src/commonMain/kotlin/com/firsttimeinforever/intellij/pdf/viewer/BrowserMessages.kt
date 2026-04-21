@@ -31,4 +31,18 @@ object BrowserMessages {
 
   @Serializable
   data class SearchResponse(val result: SearchResult)
+
+  /**
+   * Structured diagnostic log batch forwarded from the web viewer (JS) to the
+   * host (JVM) side. Each element in [lines] is emitted on the JVM logger at
+   * [level] so it lands in `idea.log` through the IntelliJ
+   * [com.intellij.openapi.diagnostic.Logger] API - instead of relying on
+   * `console.log` plus [com.intellij.ui.jcef.JBCefBrowser] console-message
+   * forwarding (which is gated behind the `pdf.viewer.debug` Registry flag).
+   *
+   * Batching avoids per-event IPC so it never becomes the very main-thread
+   * backlog we are trying to measure. See Application.installWheelDiagnostics.
+   */
+  @Serializable
+  data class DiagnosticLog(val level: String, val lines: List<String>)
 }

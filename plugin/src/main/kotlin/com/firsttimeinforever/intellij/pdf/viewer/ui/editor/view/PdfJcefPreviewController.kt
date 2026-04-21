@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.JBColor
@@ -49,9 +50,11 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   Disposable,
   DumbAware
 {
-  // TODO: Migrate to OSR when it's ready
   val browser = JCEFHtmlPanel(useOsr, null, "about:blank").apply {
     setOpenLinksInExternalBrowser(true)
+  }.also {
+    logger.info("[pdf-diag] JCEFHtmlPanel created: useOsr=$useOsr isMac=${SystemInfo.isMac} " +
+      "component=${it.component.javaClass.simpleName}")
   }
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController(this)
@@ -141,6 +144,22 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.subscribe<BrowserMessages.BeforeReloadViewState> {
       viewStateChanged(it.state, ViewStateChangeReason.UNSPECIFIED)
       doActualReload(tryToPreserveState = true)
+    }
+    // Forward structured diagnostic log batches from the web viewer (JS) to
+    // the IntelliJ logger. This goes through the official JetBrains logging
+    // API (com.intellij.openapi.diagnostic.Logger) so the lines land in
+    // idea.log regardless of the `pdf.viewer.debug` Registry flag, and they
+    // travel through the same MessagePipe that already exists for view-state
+    // messages - no extra JCEF plumbing, no `console.log` forwarder.
+    pipe.subscribe<BrowserMessages.DiagnosticLog> { batch ->
+      for (line in batch.lines) {
+        when (batch.level) {
+          "WARN" -> logger.warn(line)
+          "ERROR" -> logger.error(line)
+          "DEBUG" -> logger.debug(line)
+          else -> logger.info(line)
+        }
+      }
     }
     doActualReload(tryToPreserveState = true)
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
@@ -311,8 +330,17 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
 
-    private val useOsr
-      get() = Registry.`is`("pdf.viewer.use.jcef.osr.view")
+    // JCEF OSR (Off-Screen Rendering) synthesizes input events from Swing,
+    // which drops macOS trackpad gesture forwarding (pinch-to-zoom never
+    // arrives in JS) and adds multi-frame rendering latency to every scroll.
+    // Non-OSR lets Chromium own a native window and receive OS events
+    // directly, matching the behavior of Electron-based PDF viewers.
+    // See IJPL-59459 and GH "Scrolling on mac has high delay".
+    private val useOsr: Boolean
+      get() = when {
+        SystemInfo.isMac -> false
+        else -> Registry.`is`("pdf.viewer.use.jcef.osr.view")
+      }
 
     private fun getPagemodeValue(value: SidebarViewMode): String {
       return when (value) {

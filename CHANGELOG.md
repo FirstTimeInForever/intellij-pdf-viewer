@@ -1,5 +1,12 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## Unreleased
+- Fix severe scrolling delay on macOS (GH #51 regression). Two root causes identified and fixed:
+  1. JCEF OSR (Off-Screen Rendering) synthesizes input events from Swing instead of letting Chromium receive native OS events. Fix: disable OSR on macOS (`useOsr=false`). See IJPL-59459.
+  2. Any `passive: false` wheel listener forces Chromium's compositor to round-trip every wheel event through the main thread before scrolling. Even with hdl=0ms in our handler, the JCEF IPC overhead (Swing→Chromium→renderer→JS→back) caused 500-2700ms scroll gaps. Fix: all wheel listeners are now `passive: true`; zoom (ctrl+wheel, pinch) is handled as a side-effect without `preventDefault()`.
+- Remove pdf.js's non-passive `onWheel` via `unbindWindowEvents()` and re-register only the essential passive listeners (resize, hashchange, beforeprint, afterprint).
+- Add diagnostic logging (`[pdf-diag]` prefix) for wheel, scroll, gesture, page-render, and long-task events, forwarded to `idea.log` via `BrowserMessages.DiagnosticLog`.
+
 ## 0.17.3
 - Add scroll up/down actions, to enable custom keybindings
 - Add vim-style j/k scroll bindings, by @jaisaikr
