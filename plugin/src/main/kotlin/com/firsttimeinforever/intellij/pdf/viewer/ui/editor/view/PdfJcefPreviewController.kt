@@ -52,9 +52,6 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 {
   val browser = JCEFHtmlPanel(useOsr, null, "about:blank").apply {
     setOpenLinksInExternalBrowser(true)
-  }.also {
-    logger.info("[pdf-diag] JCEFHtmlPanel created: useOsr=$useOsr isMac=${SystemInfo.isMac} " +
-      "component=${it.component.javaClass.simpleName}")
   }
   val pipe = JcefBrowserMessagePipe(browser)
   val presentationController = PdfPresentationController(this)
@@ -144,22 +141,6 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
     pipe.subscribe<BrowserMessages.BeforeReloadViewState> {
       viewStateChanged(it.state, ViewStateChangeReason.UNSPECIFIED)
       doActualReload(tryToPreserveState = true)
-    }
-    // Forward structured diagnostic log batches from the web viewer (JS) to
-    // the IntelliJ logger. This goes through the official JetBrains logging
-    // API (com.intellij.openapi.diagnostic.Logger) so the lines land in
-    // idea.log regardless of the `pdf.viewer.debug` Registry flag, and they
-    // travel through the same MessagePipe that already exists for view-state
-    // messages - no extra JCEF plumbing, no `console.log` forwarder.
-    pipe.subscribe<BrowserMessages.DiagnosticLog> { batch ->
-      for (line in batch.lines) {
-        when (batch.level) {
-          "WARN" -> logger.warn(line)
-          "ERROR" -> logger.error(line)
-          "DEBUG" -> logger.debug(line)
-          else -> logger.info(line)
-        }
-      }
     }
     doActualReload(tryToPreserveState = true)
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, this)
@@ -330,12 +311,10 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
 
-    // JCEF OSR (Off-Screen Rendering) synthesizes input events from Swing,
-    // which drops macOS trackpad gesture forwarding (pinch-to-zoom never
-    // arrives in JS) and adds multi-frame rendering latency to every scroll.
+    // JCEF OSR synthesizes input events from Swing, adding IPC latency to
+    // every scroll and dropping macOS trackpad gesture forwarding.
     // Non-OSR lets Chromium own a native window and receive OS events
-    // directly, matching the behavior of Electron-based PDF viewers.
-    // See IJPL-59459 and GH "Scrolling on mac has high delay".
+    // directly. See IJPL-59459 and GH #122.
     private val useOsr: Boolean
       get() = when {
         SystemInfo.isMac -> false
