@@ -34,11 +34,8 @@ class Application(private val viewer: ViewerAdapter) {
 
   private val synctexSearchController = SynctexSearchController(pipe, viewer)
 
-  // @Suppress("MemberVisibilityCanBePrivate")
   // val documentInfo by lazy { collectDocumentInfo() }
 
-  // FIXME: This is incorrect
-  @Suppress("MemberVisibilityCanBePrivate")
   val fileName by lazy { viewer.viewerApp.baseUrl.split('/').last() }
 
   init {

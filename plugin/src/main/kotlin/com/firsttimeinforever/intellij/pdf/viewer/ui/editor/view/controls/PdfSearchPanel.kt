@@ -172,7 +172,6 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
         wholeWordsAction.holdState,
         regexAction.holdState
       )
-      // FIXME: Refactor
       if (lastQuery?.copy(again = false) == current) {
         current = current.copy(again = true)
       }
