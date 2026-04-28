@@ -19,8 +19,11 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
 import org.w3c.dom.events.KeyboardEvent
+import org.w3c.dom.events.MouseEvent
 import kotlin.js.Promise
 import kotlin.js.json
+import kotlin.math.max
+import kotlin.math.min
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @ExperimentalSerializationApi
@@ -229,11 +232,41 @@ class Application(private val viewer: ViewerAdapter) {
   }
 
   private fun rebindStandardEvents() {
-    // window.addEventListener("wheel", options = undefined) { event: MouseEvent ->
-    //   if (event.altKey || event.ctrlKey || event.metaKey) {
-    //     event.preventDefault()
-    //   }
-    // }
+    // Fix for "Scrolling on mac has high delay" (GH #122, previously #51).
+    //
+    // pdf.js registers a `{ passive: false }` wheel listener (onWheel) for
+    // ctrl/cmd+wheel zoom. A non-passive listener forces the compositor to
+    // round-trip every wheel event through the main thread before scrolling.
+    // In JCEF the Swing→Chromium IPC makes this especially expensive,
+    // causing 500-2700ms scroll gaps on macOS trackpads.
+    //
+    // Fix: call unbindWindowEvents() to remove ALL pdf.js window listeners
+    // (backed by AbortController in pdf.js 5.x), then re-register only the
+    // ones we need — all passive. Our own wheel handler is also passive;
+    // zoom is handled as a side-effect without preventDefault().
+
+    val app = viewer.viewerApp.asDynamic()
+    val eventBus = viewer.viewerApp.eventBus
+
+    app.unbindWindowEvents()
+
+    window.addEventListener("resize", {
+      eventBus.dispatch("resize", json("source" to window))
+    })
+    window.addEventListener("hashchange", {
+      eventBus.dispatch("hashchange", json(
+        "source" to window,
+        "hash" to document.location?.hash?.substring(1)
+      ))
+    })
+    window.addEventListener("beforeprint", {
+      eventBus.dispatch("beforeprint", json("source" to window))
+    })
+    window.addEventListener("afterprint", {
+      eventBus.dispatch("afterprint", json("source" to window))
+    })
+
+    installWheelHandler()
 
     window.addEventListener("keydown") { event: KeyboardEvent ->
       console.log(event)
@@ -241,45 +274,59 @@ class Application(private val viewer: ViewerAdapter) {
         viewer.viewerApp.requestPresentationMode()
       }
 
-      // Go to the next page.
       if (event.key.lowercase() == "arrowright" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
-        // Only move to the next page if the entire width of the page is in view.
         if (viewer.zoomState.value < 100) {
           viewer.goToNextPage()
         }
       }
 
-      // Go to the previous page.
       if (event.key.lowercase() == "arrowleft" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
-        // Only move to the next page if the entire width of the page is in view.
         if (viewer.zoomState.value < 100) {
           viewer.goToPreviousPage()
         }
       }
 
-      // Zoom in.
       if ((event.key.lowercase() == "=" || event.key.lowercase() == "+") && event.ctrlKey && !event.altKey && !event.shiftKey) {
         viewer.increaseScale()
       }
 
-      // Zoom out.
       if (event.key.lowercase() == "-" && event.ctrlKey && !event.altKey && !event.shiftKey) {
         viewer.decreaseScale()
       }
 
-      // Reset zoom.
       if (event.key.lowercase() == "0" && event.ctrlKey && !event.altKey && !event.shiftKey) {
         viewer.viewerApp.pdfViewer.currentScaleValue = "auto"
       }
 
-      // Vim-style scroll down.
       if (event.key == "j" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
         viewer.scrollDown()
       }
 
-      // Vim-style scroll up.
       if (event.key == "k" && !event.altKey && !event.ctrlKey && !event.shiftKey) {
         viewer.scrollUp()
+      }
+    }
+  }
+
+  private fun installWheelHandler() {
+    // MUST be passive: true. A non-passive wheel listener blocks compositor-
+    // thread scrolling in Chromium, which in JCEF causes severe lag due to
+    // the Swing→Chromium IPC round-trip on every event. See GH #122.
+    window.addEventListener(
+      "wheel",
+      options = json("capture" to true, "passive" to true)
+    ) { event: MouseEvent ->
+      val isInPresentationMode = viewer.viewerApp.pdfViewer.asDynamic().isInPresentationMode == true
+      if (isInPresentationMode) return@addEventListener
+
+      val ctrl = event.ctrlKey
+      val meta = event.metaKey
+      val alt = event.altKey
+      if (ctrl || meta || alt) {
+        val dY = event.asDynamic().deltaY.unsafeCast<Double>()
+        val step = max(-3.0, min(3.0, dY))
+        if (step < 0.0) viewer.increaseScale()
+        else if (step > 0.0) viewer.decreaseScale()
       }
     }
   }

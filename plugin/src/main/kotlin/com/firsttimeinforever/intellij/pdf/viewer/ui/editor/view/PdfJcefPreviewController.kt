@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.JBColor
@@ -49,7 +50,6 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   Disposable,
   DumbAware
 {
-  // TODO: Migrate to OSR when it's ready
   val browser = JCEFHtmlPanel(useOsr, null, "about:blank").apply {
     setOpenLinksInExternalBrowser(true)
   }
@@ -311,8 +311,15 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   companion object {
     private val logger = logger<PdfJcefPreviewController>()
 
-    private val useOsr
-      get() = Registry.`is`("pdf.viewer.use.jcef.osr.view")
+    // JCEF OSR synthesizes input events from Swing, adding IPC latency to
+    // every scroll and dropping macOS trackpad gesture forwarding.
+    // Non-OSR lets Chromium own a native window and receive OS events
+    // directly. See IJPL-59459 and GH #122.
+    private val useOsr: Boolean
+      get() = when {
+        SystemInfo.isMac -> false
+        else -> Registry.`is`("pdf.viewer.use.jcef.osr.view")
+      }
 
     private fun getPagemodeValue(value: SidebarViewMode): String {
       return when (value) {
