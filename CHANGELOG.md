@@ -1,5 +1,9 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.18.0
+- Fix slow scrolling on Mac, by @znzryb
+- Update pdf.js to version 5, this includes a new sidebar and other UI changes
+
 ## 0.17.3
 - Add scroll up/down actions, to enable custom keybindings
 - Add vim-style j/k scroll bindings, by @jaisaikr
