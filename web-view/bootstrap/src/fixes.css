@@ -13,6 +13,44 @@
   top: 0;
 }
 
+/* Apply the CSS variable to sidebar background color */
+.sidebar {
+  background-color: var(--sidebar-bg-color) !important;
+}
+
+/* Apply text color to viewsManager labels to ensure visibility in dark mode */
+.viewsManagerLabel {
+  color: var(--text-color) !important;
+}
+
+/* Apply CSS variables to tree view items (bookmarks/outline) to make text readable on dark backgrounds */
+.treeView .treeItem > a {
+  color: var(--treeitem-color) !important;
+}
+
+.treeView .treeItem > a * {
+  color: inherit !important;
+}
+
+.treeView .treeItem > a:hover {
+  color: var(--treeitem-hover-color) !important;
+  background-color: var(--treeitem-bg-color) !important;
+}
+
+.treeView .treeItem.selected > a {
+  color: var(--treeitem-selected-color) !important;
+  background-color: var(--treeitem-selected-bg-color) !important;
+}
+
+/* Additional rules to handle deep nesting and all text nodes */
+.treeView a {
+  color: var(--treeitem-color) !important;
+}
+
+.treeView a:hover {
+  color: var(--treeitem-hover-color) !important;
+}
+
 @media all and (max-width: 840px) {
   html[dir="ltr"] #outerContainer.sidebarOpen #viewerContainer {
     left: var(--sidebar-width) !important;
