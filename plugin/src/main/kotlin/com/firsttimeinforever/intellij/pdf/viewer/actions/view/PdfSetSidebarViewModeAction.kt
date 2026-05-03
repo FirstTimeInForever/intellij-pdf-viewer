@@ -5,6 +5,8 @@ import com.firsttimeinforever.intellij.pdf.viewer.actions.PdfToggleAction
 import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.KeepPopupOnPerform
+import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.project.DumbAware
 
 sealed class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarViewMode) : PdfToggleAction(), DumbAware {
@@ -22,6 +24,14 @@ sealed class PdfSetSidebarViewModeAction(private val targetViewMode: SidebarView
     super.update(event)
     event.presentation.isVisible = PdfAction.hasEditorInView(event)
     event.presentation.isEnabled = canBeEnabled(PdfAction.findController(event))
+  }
+
+  // When the user selects the new view mode, hide the popup immediately
+  @Suppress("UnstableApiUsage")
+  override fun createTemplatePresentation(): Presentation {
+    val presentation = super.createTemplatePresentation()
+    presentation.keepPopupOnPerform = KeepPopupOnPerform.Never
+    return presentation
   }
 
   private fun canBeEnabled(controller: PdfJcefPreviewController?): Boolean {
