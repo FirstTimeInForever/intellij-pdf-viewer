@@ -1,5 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.18.1
+- Hide the sidebar switcher automatically after changing sidebar mode
+
 ## 0.18.0
 - Fix slow scrolling on Mac, by @znzryb
 - Update pdf.js to version 5, this includes a new sidebar and other UI changes
