@@ -22,6 +22,10 @@ import java.awt.Window
 import java.awt.event.HierarchyListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.InvalidPathException
+import java.nio.file.Paths
 import javax.swing.JComponent
 import javax.swing.SwingUtilities
 
@@ -31,7 +35,6 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
   private val messageBusConnection = project.messageBus.connect()
   private val fileChangedListener = FileChangedListener(PdfViewerSettings.instance.enableDocumentAutoReload)
   private var lastKnownFileTimestamp = virtualFile.timeStamp
-  private var lastKnownFileLength = virtualFile.length
   private val hierarchyListener = HierarchyListener {
     attachWindowFocusListener()
   }
@@ -64,6 +67,12 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, PdfViewerSettingsListener {
       fileChangedListener.isEnabled = it.enableDocumentAutoReload
     })
+    try {
+      val watcher = DiskFileWatcher(Paths.get(virtualFile.path)) { scheduleRefreshCheck() }
+      Disposer.register(this, watcher)
+    } catch (e: InvalidPathException) {
+      logger.debug("Disk watcher unavailable for ${virtualFile.path}", e)
+    }
   }
 
   override fun getName(): String = NAME
@@ -96,8 +105,21 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
   }
 
   private fun refreshAndReloadIfChanged() {
-    val refreshedFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(virtualFile.path) ?: return
-    if (refreshedFile.timeStamp == lastKnownFileTimestamp && refreshedFile.length == lastKnownFileLength) {
+    val filePath = try {
+      Paths.get(virtualFile.path)
+    } catch (e: InvalidPathException) {
+      logger.warn("Invalid file path for disk timestamp check: ${virtualFile.path}", e)
+      return
+    }
+
+    val diskTimestamp = try {
+      Files.getLastModifiedTime(filePath).toMillis()
+    } catch (e: IOException) {
+      logger.warn("Failed to read last modified timestamp for ${virtualFile.path}", e)
+      return
+    }
+
+    if (diskTimestamp == lastKnownFileTimestamp) {
       return
     }
 
@@ -106,9 +128,8 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
       return
     }
 
-    lastKnownFileTimestamp = refreshedFile.timeStamp
-    lastKnownFileLength = refreshedFile.length
-    logger.debug("Target file ${virtualFile.path} changed on disk. Reloading current view.")
+    lastKnownFileTimestamp = diskTimestamp
+    logger.warn("Target file ${virtualFile.path} changed on disk. Reloading current view.")
     ApplicationManager.getApplication().executeOnPooledThread {
       controller.reload(tryToPreserveState = true)
     }
