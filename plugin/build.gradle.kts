@@ -54,6 +54,9 @@ dependencies {
     exclude("org.slf4j")
     exclude("com.fasterxml.jackson.core", "jackson-core")
   }
+  // Provided at runtime by the IntelliJ Platform; compileOnly per
+  // https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
+  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
   // kotlinx.serialization also should be present in the platform
   implementation(project(":mpi")) {
     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")

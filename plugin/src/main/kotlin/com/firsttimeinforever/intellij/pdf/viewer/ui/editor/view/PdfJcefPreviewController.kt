@@ -29,6 +29,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.registry.Registry
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.JBColor
 import com.intellij.ui.jcef.JCEFHtmlPanel
@@ -159,9 +160,15 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   val component get() = browser.component
 
   private fun doActualReload(tryToPreserveState: Boolean = false) {
-    viewLoaded = false
     try {
-      val base = PdfStaticServer.instance.getPreviewUrl(virtualFile, withReloadSalt = true)
+      val refreshedFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(virtualFile.path)
+      if (refreshedFile == null) {
+        logger.warn("Could not refresh file before reload: ${virtualFile.path}")
+        return
+      }
+
+      viewLoaded = false
+      val base = PdfStaticServer.instance.getPreviewUrl(refreshedFile, withReloadSalt = true)
       if (firstLoad) {
         viewState = viewState.copy(sidebarViewMode = PdfViewerSettings.instance.defaultSidebarViewMode)
       }
