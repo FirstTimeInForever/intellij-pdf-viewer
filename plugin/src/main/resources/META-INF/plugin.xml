@@ -7,7 +7,6 @@
 
   <depends>com.intellij.modules.platform</depends>
   <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
-  <depends optional="true" config-file="cwm.xml">com.intellij.jetbrains.client</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="PDF"
