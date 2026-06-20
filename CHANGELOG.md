@@ -2,10 +2,6 @@
 
 ## Unreleased
 
-## 0.18.2-alpha.2
-
-- Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
-
 ## 0.18.2
 
 - Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
