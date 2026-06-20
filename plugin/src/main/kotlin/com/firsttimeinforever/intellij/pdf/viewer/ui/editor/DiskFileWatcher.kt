@@ -22,14 +22,19 @@ import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.nio.file.WatchService
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
+ * Intended for when the user uses an external program which updates the pdf, see e.g. #150.
+ * Since the VFS will not refresh without trigger, we cannot use the IntelliJ apis to implement a watcher.
+ * Therefore, we work around them manually.
+ *
  * Watches the parent directory of [filePath] via a JDK NIO [WatchService] and invokes [onChange]
  * shortly after the watched filename is created or modified on disk. A short debounce coalesces
  * bursts of events that non-atomic writers produce while a file is still being written.
  *
  * On macOS the JDK falls back to a polling implementation (~10s), so the existing focus-based
- * refresh in [PdfFileEditor] remains the faster path on that platform.
+ * refresh in [PdfFileEditor] may be preferred by users (but requires switching focus away from the IDe.).
  */
 class DiskFileWatcher(filePath: Path, private val onChange: () -> Unit) : Disposable {
   private val fileName: Path? = filePath.fileName
@@ -114,7 +119,7 @@ class DiskFileWatcher(filePath: Path, private val onChange: () -> Unit) : Dispos
     synchronized(debounceLock) {
       debounceJob?.cancel()
       debounceJob = scope.launch {
-        delay(DEBOUNCE_MS)
+        delay(DEBOUNCE_MS.milliseconds)
         onChange()
       }
     }

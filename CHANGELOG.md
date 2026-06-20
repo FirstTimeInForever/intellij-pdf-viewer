@@ -1,5 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## 0.18.2
+- Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
+
 ## 0.18.1
 - Hide the sidebar switcher automatically after changing sidebar mode
 

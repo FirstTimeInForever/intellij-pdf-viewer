@@ -13,7 +13,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
@@ -43,6 +42,8 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
       scheduleRefreshCheck()
     }
   }
+  private val fileWatcherLock = Any()
+  private var diskFileWatcher: DiskFileWatcher? = null
   private var attachedWindow: Window? = null
 
   init {
@@ -51,6 +52,7 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
     Disposer.register(this) {
       detachWindowFocusListener()
       viewComponent.removeHierarchyListener(hierarchyListener)
+      setFileWatcherEnabled(false)
     }
     viewComponent.addHierarchyListener(hierarchyListener)
     ApplicationManager.getApplication().invokeLater {
@@ -66,13 +68,9 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
     })
     messageBusConnection.subscribe(PdfViewerSettings.TOPIC, PdfViewerSettingsListener {
       fileChangedListener.isEnabled = it.enableDocumentAutoReload
+      setFileWatcherEnabled(it.enableFileWatcher)
     })
-    try {
-      val watcher = DiskFileWatcher(Paths.get(virtualFile.path)) { scheduleRefreshCheck() }
-      Disposer.register(this, watcher)
-    } catch (e: InvalidPathException) {
-      logger.debug("Disk watcher unavailable for ${virtualFile.path}", e)
-    }
+    setFileWatcherEnabled(PdfViewerSettings.instance.enableFileWatcher)
   }
 
   override fun getName(): String = NAME
@@ -86,6 +84,26 @@ class PdfFileEditor(project: Project, private val virtualFile: VirtualFile) : Fi
   private fun scheduleRefreshCheck() {
     ApplicationManager.getApplication().executeOnPooledThread {
       refreshAndReloadIfChanged()
+    }
+  }
+
+  private fun setFileWatcherEnabled(isEnabled: Boolean) {
+    synchronized(fileWatcherLock) {
+      if (!isEnabled) {
+        diskFileWatcher?.dispose()
+        diskFileWatcher = null
+        return
+      }
+      if (diskFileWatcher != null) {
+        return
+      }
+      val filePath = try {
+        Paths.get(virtualFile.path)
+      } catch (e: InvalidPathException) {
+        logger.debug("Disk watcher unavailable for ${virtualFile.path}", e)
+        return
+      }
+      diskFileWatcher = DiskFileWatcher(filePath) { scheduleRefreshCheck() }
     }
   }
 

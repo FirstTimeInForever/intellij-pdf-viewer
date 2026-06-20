@@ -24,6 +24,7 @@
 - Horizontal/vertical pages scroll directions
 - Customizable toolbar
 - Customizable dark mode
+- File watcher
 
 All the settings can be found in Settings | Other settings | PDF Viewer.
 
@@ -44,6 +45,7 @@ All the settings can be found in Settings | Other settings | PDF Viewer.
 * Right-click on a pdf to open it in PDFium, the default Chrome PDF viewer. If you do not see a context menu, it may help to go to Help > Find Action, search for Registry, set `pdf.viewer.use.jcef.osr.view` to false, and restart. See [IJPL-59459](https://youtrack.jetbrains.com/issue/IJPL-59459/Context-menu-does-not-work-for-OSR-Cef-browser) for more details.
 * To view pdfs in a Code With Me session, you may need to install the PDF viewer plugin (0.17.0 or later) in the client as well. This feature is still expirimental, for more info see [CWM-1199](https://youtrack.jetbrains.com/issue/CWM-1199).
 * When you have the pdf open in a separate window and you want inverse search to open the LaTeX file in the main window when it is not open yet, go to Settings > Advanced settings and enable "Open declaration source called from a detached window in the main IDE window"
+* You only need to enable the file watcher global setting if you are using some program to automatically update the pdf which is running in the terminal (or at least outside the IDE), since IntelliJ would not be triggered to look for file system changes. You do not need this setting when using TeXiFy.
 
 ## Use cases
 

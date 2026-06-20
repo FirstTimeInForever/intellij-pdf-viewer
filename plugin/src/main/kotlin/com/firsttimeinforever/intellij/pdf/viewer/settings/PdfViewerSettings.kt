@@ -18,6 +18,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
   var customForegroundColor: Int = defaultForegroundColor.rgb
   var customIconColor: Int = defaultIconColor.rgb
   var enableDocumentAutoReload = true
+  var enableFileWatcher = false
   var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
   var invertDocumentColors = false
   var invertColorsWithTheme = false
