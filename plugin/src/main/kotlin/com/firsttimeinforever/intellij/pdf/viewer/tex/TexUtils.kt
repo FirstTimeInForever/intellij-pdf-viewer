@@ -4,9 +4,6 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import nl.hannahsten.texifyidea.file.BibtexFileType
-import nl.hannahsten.texifyidea.file.ClassFileType
-import nl.hannahsten.texifyidea.file.LatexFileType
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental
@@ -15,8 +12,7 @@ object TexUtils {
     if (fileEditor !is TextEditor) {
       return null
     }
-    val fileType = fileEditor.file?.fileType
-    return fileEditor.takeIf { fileType is LatexFileType || fileType is ClassFileType || fileType is BibtexFileType }
+    return fileEditor.takeIf { fileEditor.file.extension in listOf("tex", "cls", "bib") }
   }
 
   fun findTexifyEditor(project: Project, fileEditor: FileEditor? = null): TextEditor? {
