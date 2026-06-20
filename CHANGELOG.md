@@ -1,16 +1,26 @@
 # Intellij PDF Viewer Plugin Changelog
 
+## Unreleased
+
+## 0.18.2-alpha.2
+
+- Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
+
 ## 0.18.2
+
 - Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
 
 ## 0.18.1
+
 - Hide the sidebar switcher automatically after changing sidebar mode
 
 ## 0.18.0
+
 - Fix slow scrolling on Mac, by @znzryb
 - Update pdf.js to version 5, this includes a new sidebar and other UI changes
 
 ## 0.17.3
+
 - Add scroll up/down actions, to enable custom keybindings
 - Add vim-style j/k scroll bindings, by @jaisaikr
 - Enable left toolbar to take up more than half of the space
@@ -19,10 +29,12 @@
 - Add a comment to the readme to explain how to always open the pdf in the main window when inverse searching
 
 ## 0.17.2
+
 - Fix the diff viewer for pdfs, by @ytausch
 - Ensure the 'spread page' actions are always visible, by @slideclimb
 
 ## 0.17.1
+
 This release adds support for customizing the inverse search shortcut and the toolbar.
 
 - In the keymap, you can now change the inverse search shortcut (to navigate from pdf to LaTeX) to any other mouse shortcut
@@ -31,6 +43,7 @@ This release adds support for customizing the inverse search shortcut and the to
 - Update Sentry implementation for easy reporting of exceptions
 
 ## 0.17.0
+
 This release contains many fixes and improvements, all of which were contributed by [Liu Dongmiao](https://github.com/liudongmiao)
 
 - Add (experimental) support for viewing pdfs in a Code With Me session
@@ -43,12 +56,15 @@ This release contains many fixes and improvements, all of which were contributed
 - Support pdf file paths with special characters
 
 ## 0.16.1
+
 - Support pdfs without an embedded font, by [Liu Dongmiao](https://github.com/liudongmiao).
 
 ## 0.16.0
+
 - Support 2024.1 ([#90](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/90), [#98](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/98))
 
 ## 0.15.0
+
 - Fix scrolling performance on Mac ([#51](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/51))
 - Improve forward search after loading document ([#75](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/75))
 - Fix reloading of a corrupt pdf file ([#37](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/37))
@@ -59,16 +75,19 @@ This release contains many fixes and improvements, all of which were contributed
 - Improve the experience of having multiple PDFs open ([#55](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/55), [#56](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/56), [#59](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/59), [#64](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/64))
 
 ## 0.14.0
+
 - Fix preview server auth token issue in Android Studio ([#47](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/47))
 - Update plugin dependencies
 
 ## 0.13.0
+
 - Use off-screen rendering for the browser view by default (can be changed via registry value)
 - Fix action toolbars creation exceptions
 - Bump IJ platform version
 - Bump TeXiFy dependency version
 
 ## 0.12.0
+
 - Split single plugin project into multiple subprojects
 - Web-view is now mostly rewritten in Kotlin
 - Cleaned up plugin code
@@ -83,34 +102,42 @@ This release contains many fixes and improvements, all of which were contributed
 - Added settings combobox for selecting default sidebar view state ([#28](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/28))
 
 ## 0.11.0
+
 - [Added Add SyncTeX support](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/24) by [
   Abby Berkers](https://github.com/slideclimb), [Thomas Schouten](https://github.com/PHPirates) and [@ZhengKeli](https://github.com/ZhengKeli)
 - [Fixed document auto-reload on file change](https://github.com/FirstTimeInForever/intellij-pdf-viewer/pull/22) by [@ZhengKeli](https://github.com/ZhengKeli)
 - Working on migrating `web-view` to KotlinJS ([notes](https://github.com/FirstTimeInForever/intellij-pdf-viewer/wiki/Moving-web-view-to-KotlinJS))
 
 ## 0.10.2
+
 - Initial support for 2021.1 versions
 
 ## 0.10.1
+
 - Fixed default keyboard shortcuts for Windows and Linux (related to #16)
 - Fixed preview panel was not available while project indexing (#17)
 
 ## 0.10.0
+
 - Updated deprecated platform code
 - Updated project dependencies
 - Dropped support for `2020.2` builds
 
 ## 0.9.1
+
 - [Fixed page scale reset on document reload](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/13) by [Adam Zambrzycki](https://github.com/Adikso)
 
 ## 0.9.0
+
 - [Added "Invert Document Colors" action](https://github.com/FirstTimeInForever/intellij-pdf-viewer/issues/10)
 - Updated project dependencies
 
 ## 0.8.1
+
 - Fixed listeners issues
 
 ## 0.8.0
+
 - Added plugin settings
 - Added error reporter
 - Added status bar widget for displaying current page number
@@ -119,14 +146,17 @@ This release contains many fixes and improvements, all of which were contributed
 - Fixed incorrect inheritance of IDE colors
 
 ## 0.7.0
+
 - Added changelog
 - Fix incorrect IDE theme colors inheritance
 
 ## 0.0.6+1
+
 - Fix marketplace review
 - Update web-view dependencies
 
 ## 0.0.6
+
 - Added error notification on failed document load
 - Added license
 - Refactor UI panels
@@ -134,17 +164,21 @@ This release contains many fixes and improvements, all of which were contributed
 - Spread pages actions are now toggleable
 
 ## 0.0.5
+
 - Added presentation mode
 - Added `Toggle Fullscreen` action
 - Now web-view colors are based on current IDE theme
 - Enable previous/next page actions based on current page number
 
 ## 0.0.4
+
 - Added `Show Document Info` action
 
 ## 0.0.3
+
 - Save last viewed page
 
 ## 0.0.2
+
 - Added plugin icon
 - Added `Reload Document` action
