@@ -2,6 +2,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -112,8 +113,23 @@ intellijPlatform {
 
   pluginVerification {
     freeArgs = listOf("-mute", "TemplateWordInPluginId", "-mute", "TemplateWordInPluginName")
-    ignoredProblemsFile = file("plugin-verifier-ignored-problems.txt")
-//    failureLevel = VerifyPluginTask.FailureLevel.ALL
+    // Doesn't seem to do anything
+//    ignoredProblemsFile = file("plugin-verifier-ignored-problems.txt")
+    // So we ignore the whole category of internal api usages:
+    failureLevel = listOf(
+      VerifyPluginTask.FailureLevel.COMPATIBILITY_WARNINGS,
+      VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS,
+      VerifyPluginTask.FailureLevel.DEPRECATED_API_USAGES,
+      VerifyPluginTask.FailureLevel.SCHEDULED_FOR_REMOVAL_API_USAGES,
+      VerifyPluginTask.FailureLevel.EXPERIMENTAL_API_USAGES,
+//      VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES,
+//      VerifyPluginTask.FailureLevel.OVERRIDE_ONLY_API_USAGES,
+      VerifyPluginTask.FailureLevel.NON_EXTENDABLE_API_USAGES,
+      VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS,
+//      VerifyPluginTask.FailureLevel.MISSING_DEPENDENCIES,
+      VerifyPluginTask.FailureLevel.INVALID_PLUGIN,
+      VerifyPluginTask.FailureLevel.NOT_DYNAMIC,
+    )
 
     ides {
       // Don't check all recommended ides, we would run out of disk space on github actions
