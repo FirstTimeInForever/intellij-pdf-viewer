@@ -11,6 +11,7 @@ class PdfViewerConfigurable : Configurable {
   override fun isModified(): Boolean {
     return settingsForm?.run {
       settings.enableDocumentAutoReload != enableDocumentAutoReload.get() ||
+        settings.enableFileWatcher != enableFileWatcher.get() ||
         settings.defaultSidebarViewMode != defaultSidebarViewMode.get() ||
         settings.scrollPixelsPerStep != scrollPixelsPerStep.get() ||
         settings.invertColorsWithTheme != invertDocumentColorsWithTheme.get() ||
@@ -29,6 +30,7 @@ class PdfViewerConfigurable : Configurable {
     val wasModified = isModified
     settings.run {
       enableDocumentAutoReload = settingsForm?.enableDocumentAutoReload?.get() ?: enableDocumentAutoReload
+      enableFileWatcher = settingsForm?.enableFileWatcher?.get() ?: enableFileWatcher
       defaultSidebarViewMode = settingsForm?.defaultSidebarViewMode?.get() ?: defaultSidebarViewMode
       scrollPixelsPerStep = settingsForm?.scrollPixelsPerStep?.get() ?: scrollPixelsPerStep
       invertColorsWithTheme = settingsForm?.invertDocumentColorsWithTheme?.get() ?: invertColorsWithTheme

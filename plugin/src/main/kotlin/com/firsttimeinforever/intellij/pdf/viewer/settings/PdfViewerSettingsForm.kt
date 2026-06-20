@@ -20,6 +20,7 @@ class PdfViewerSettingsForm : JPanel() {
   private val properties = PropertyGraph()
 
   val enableDocumentAutoReload = properties.property(settings.enableDocumentAutoReload)
+  val enableFileWatcher = properties.property(settings.enableFileWatcher)
   val defaultSidebarViewMode = properties.property(settings.defaultSidebarViewMode)
   val scrollPixelsPerStep = properties.property(settings.scrollPixelsPerStep)
 
@@ -28,6 +29,11 @@ class PdfViewerSettingsForm : JPanel() {
       row {
         checkBox(PdfViewerBundle.message("pdf.viewer.settings.reload.document"))
           .bindSelected(enableDocumentAutoReload)
+      }
+      row {
+        //noinspection UnresolvedPropertyKey
+        checkBox(PdfViewerBundle.message("pdf.viewer.settings.enable.file.watcher"))
+          .bindSelected(enableFileWatcher)
       }
       row(PdfViewerBundle.message("pdf.viewer.settings.sidebar.viewer.default")) {
         val renderer = SimpleListCellRenderer.create<SidebarViewMode> { label, value, _ ->
@@ -141,6 +147,7 @@ class PdfViewerSettingsForm : JPanel() {
 
   fun reset() {
     enableDocumentAutoReload.set(settings.enableDocumentAutoReload)
+    enableFileWatcher.set(settings.enableFileWatcher)
     defaultSidebarViewMode.set(settings.defaultSidebarViewMode)
     invertDocumentColorsWithTheme.set(settings.invertColorsWithTheme)
     invertDocumentColors.set(settings.invertDocumentColors)
