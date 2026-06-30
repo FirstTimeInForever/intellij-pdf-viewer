@@ -1,9 +1,11 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
+import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe.Companion.browserSendFunctionName
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe.Companion.ideSendFunctionName
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport
+import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessageReceivedHandler
 import kotlinx.browser.window
 import org.w3c.dom.get
@@ -18,6 +20,7 @@ class BrowserMessagePipe : MessagePipe {
       console.log()
       callSubscribers(type, data)
     }
+    send(BrowserMessages.BrowserReady())
   }
 
   private fun callSubscribers(type: String, data: String) {

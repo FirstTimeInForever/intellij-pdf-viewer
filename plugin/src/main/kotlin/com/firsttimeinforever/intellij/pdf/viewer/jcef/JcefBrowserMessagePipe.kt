@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.jcef
 
-import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadEndHandler
+import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addLoadHandler
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addUnitHandler
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.executeJavaScript
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe
@@ -12,25 +13,57 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.ui.jcef.JBCefBrowser
 import com.intellij.ui.jcef.JBCefBrowserBase
 import com.intellij.ui.jcef.JBCefJSQuery
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.handler.CefLoadHandlerAdapter
+import org.cef.network.CefRequest
 
 class JcefBrowserMessagePipe(private val browser: JBCefBrowser) : MessagePipe {
   private val query = checkNotNull(JBCefJSQuery.create(browser as JBCefBrowserBase))
   private val receiveSubscribers = hashMapOf<String, MutableList<MessageReceivedHandler>>()
+  private val pendingMessages = ArrayDeque<String>()
+  private val lock = Any()
+  @Volatile
+  private var isBrowserReady = false
 
   init {
     query.addUnitHandler(::receiveHandler)
-    browser.addLoadEndHandler {
-      // FIXME: Implement generic way of packing/unpacking messages into strings
-      val code = query.inject("raw")
-      browser.executeJavaScript("window['$ideSendFunctionName'] = raw => $code;")
-      browser.executeJavaScript("window.dispatchEvent(new Event('IdeReady'));")
-    }
+    browser.addLoadHandler(object : CefLoadHandlerAdapter() {
+      override fun onLoadStart(browser: CefBrowser, frame: CefFrame, transitionType: CefRequest.TransitionType) {
+        if (!frame.isMain) return
+        synchronized(lock) {
+          isBrowserReady = false
+        }
+      }
+
+      override fun onLoadEnd(browser: CefBrowser, frame: CefFrame, httpStatusCode: Int) {
+        if (!frame.isMain) return
+        val code = query.inject("raw")
+        this@JcefBrowserMessagePipe.browser.executeJavaScript("window['$ideSendFunctionName'] = raw => $code;")
+        this@JcefBrowserMessagePipe.browser.executeJavaScript("window.dispatchEvent(new Event('IdeReady'));")
+      }
+    })
   }
 
   private fun receiveHandler(raw: String) {
     logger.debug(raw)
     val (type, data) = MessagePipeSupport.MessagePacker.unpack(raw)
+    if (type == BrowserMessages.BrowserReady::class.simpleName) {
+      onBrowserReady()
+      return
+    }
     callSubscribers(type, data)
+  }
+
+  private fun onBrowserReady() {
+    val messagesToFlush = mutableListOf<String>()
+    synchronized(lock) {
+      isBrowserReady = true
+      while (pendingMessages.isNotEmpty()) {
+        messagesToFlush += pendingMessages.removeFirst()
+      }
+    }
+    messagesToFlush.forEach { browser.executeJavaScript(it) }
   }
 
   private fun callSubscribers(type: String, data: String) {
@@ -43,7 +76,14 @@ class JcefBrowserMessagePipe(private val browser: JBCefBrowser) : MessagePipe {
   override fun send(type: String, data: String) {
     val raw = MessagePipeSupport.MessagePacker.pack(type, data)
     logger.debug("Sending message: $raw")
-    browser.executeJavaScript("$browserSendFunctionName('$raw')")
+    val messageCall = "$browserSendFunctionName('$raw')"
+    synchronized(lock) {
+      if (!isBrowserReady) {
+        pendingMessages.addLast(messageCall)
+        return
+      }
+    }
+    browser.executeJavaScript(messageCall)
   }
 
   override fun subscribe(type: String, handler: MessageReceivedHandler) {
