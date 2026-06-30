@@ -5,7 +5,6 @@ import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefBrowserMessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.addConsoleMessageListener
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.createDefaultConsoleMessageListener
-import com.firsttimeinforever.intellij.pdf.viewer.jcef.JcefUtils.invokeAndWaitForLoadEnd
 import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.model.*
 import com.firsttimeinforever.intellij.pdf.viewer.model.ViewThemeUtils.create
@@ -176,10 +175,8 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
         tryToPreserveState -> buildUrlWithState(base, viewState)
         else -> "$base#${createPageModeParameter(PdfViewerSettings.instance.defaultSidebarViewMode)}"
       }
-      browser.invokeAndWaitForLoadEnd {
-        logger.debug("Loading url $url")
-        browser.loadURL(url)
-      }
+      logger.debug("Loading url $url")
+      browser.loadURL(url)
     } catch(exception: Throwable) {
       logger.error(exception)
     } finally {

@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 
 object BrowserMessages {
   @Serializable
+  class BrowserReady
+
+  @Serializable
   data class InitialViewProperties(val properties: ViewProperties)
 
   @Serializable
