@@ -23,6 +23,7 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
 
   private var isSynctexAvailable: Boolean = false
   private var forwardSearchData: SynctexPreciseLocation? = null
+  private var forwardSearchRequestId: Int = 0
   private var shortcuts: Set<String> = setOf("button=1 clickCount=1 modifiers=128", "button=1 clickCount=1 modifiers=256") // ctrl + click and meta + click
 
   private val viewerDocument: Document
@@ -46,8 +47,9 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
       // starting up the application, or when opening a document without forward searching to it.
       // if (it.location == undefined) return
       forwardSearchData = it.location
+      forwardSearchRequestId += 1
       console.log("Forward search to page ${it.location.page}")
-      executeForwardSearch()
+      executeForwardSearch(forwardSearchRequestId)
     }
     pipe.subscribe<IdeMessages.InverseSearchShortcuts> {
       shortcuts = it.shortcuts
@@ -58,7 +60,7 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
     if (forwardSearchData == null && isSynctexAvailable) {
       pipe.send(BrowserMessages.AskForwardSearchData())
     } else {
-      executeForwardSearch()
+      executeForwardSearch(forwardSearchRequestId)
     }
   }
 
@@ -174,30 +176,66 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
    * However, we first scroll to the page manually to make sure that the page has been loaded before we request the
    * canvas to draw on.
    */
-  private fun executeForwardSearch() {
-    resetCanvas()
+  private fun executeForwardSearch(requestId: Int, attempt: Int = 0) {
+    if (requestId != forwardSearchRequestId) {
+      return
+    }
     val searchData = forwardSearchData ?: return
     // Scroll to the page before requesting the canvas, to ensure that the page has been loaded.
     val pages = getPages(viewerDocument)
-    val page = pages[searchData.page - 1] as? HTMLElement
-    checkNotNull(page)
+    val page = pages.item(searchData.page - 1) as? HTMLElement
+    if (page == null) {
+      scheduleForwardSearchRetry(requestId, attempt, "Target page element is not ready yet")
+      return
+    }
     page.scrollIntoView()
-    val canvas = page.querySelector("canvas") as HTMLCanvasElement
+    val canvas = page.querySelector("canvas") as? HTMLCanvasElement
+    if (canvas == null) {
+      scheduleForwardSearchRetry(requestId, attempt, "Page canvas is not ready yet")
+      return
+    }
+    val parentElement = canvas.parentElement
+    if (parentElement == null) {
+      scheduleForwardSearchRetry(requestId, attempt, "Page canvas parent is not available")
+      return
+    }
+    resetCanvas()
     // Create a new canvas to draw on, on top of the already existing canvas.
     val drawingCanvas = createDrawingCanvas(viewerDocument, canvas.width, canvas.height)
-    canvas.parentElement!!.appendChild(drawingCanvas)
+    parentElement.appendChild(drawingCanvas)
     // Add this new canvas to the list of drawing canvases, so we can easily delete it later.
     drawingCanvases.add(drawingCanvas)
 
     val rectangle = createSelectionRectangle()
-    val context = drawingCanvas.getContext("2d") as CanvasRenderingContext2D
+    val context = drawingCanvas.getContext("2d") as? CanvasRenderingContext2D
+    if (context == null) {
+      scheduleForwardSearchRetry(requestId, attempt, "Cannot get 2d context for forward search canvas")
+      return
+    }
     with(context) {
       strokeStyle = "red"
       strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height)
     }
 
     // Create a dummy element so we can scroll to the rectangle we have just drawn.
-    scrollIntoViewByDummyElement(canvas.parentElement!!, rectangle.x,  rectangle.y)
+    scrollIntoViewByDummyElement(parentElement, rectangle.x,  rectangle.y)
+  }
+
+  private fun scheduleForwardSearchRetry(requestId: Int, attempt: Int, reason: String) {
+    if (requestId != forwardSearchRequestId) {
+      return
+    }
+    val nextAttempt = attempt + 1
+    if (nextAttempt > maxForwardSearchAttempts) {
+      console.warn(
+        "Forward search failed after $maxForwardSearchAttempts retries: $reason. data=$forwardSearchData"
+      )
+      return
+    }
+    if (nextAttempt % 5 == 0 || nextAttempt == maxForwardSearchAttempts) {
+      console.warn("Forward search retry $nextAttempt/$maxForwardSearchAttempts: $reason")
+    }
+    window.setTimeout({ executeForwardSearch(requestId, nextAttempt) }, forwardSearchRetryDelayMs)
   }
 
   private fun scrollIntoViewByDummyElement(targetElement: Element, left: Number, top: Number) {
@@ -217,6 +255,9 @@ class SynctexSearchController(private val pipe: MessagePipe, private val viewer:
   }
 
   companion object {
+    private const val maxForwardSearchAttempts = 20
+    private const val forwardSearchRetryDelayMs = 50
+
     private fun getPages(document: Document): NodeList {
       return document.querySelectorAll(".page")
     }

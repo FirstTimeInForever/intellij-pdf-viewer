@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add retries to forward search
+
 ## 0.18.2
 
 - Add a setting to enable a system file watcher, which automatically detects any external changes to the pdf
