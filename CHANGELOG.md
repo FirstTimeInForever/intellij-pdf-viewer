@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.18.3
+
 - Wait for browser to load before sending messages
 - Add retries to forward search
 
