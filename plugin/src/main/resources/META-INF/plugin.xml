@@ -6,6 +6,8 @@
   </vendor>
 
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.jcef</depends>
+  <depends>intellij.structureView.plugin</depends>
   <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
   <depends optional="true" config-file="cwm.xml">com.intellij.jetbrains.client</depends>
 
