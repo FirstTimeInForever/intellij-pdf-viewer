@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.18.4
+
+- Fix JCEF dependency to support 2026.2, by @janosVit
+
 ## 0.18.3
 
 - Wait for browser to load before sending messages
