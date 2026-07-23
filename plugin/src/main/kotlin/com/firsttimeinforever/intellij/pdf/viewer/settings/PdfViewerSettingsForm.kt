@@ -36,13 +36,21 @@ class PdfViewerSettingsForm : JPanel() {
           .bindSelected(enableFileWatcher)
       }
       row(PdfViewerBundle.message("pdf.viewer.settings.sidebar.viewer.default")) {
-        val renderer = SimpleListCellRenderer.create<SidebarViewMode> { label, value, _ ->
-          label.text = when (value) {
-            SidebarViewMode.NONE -> "Closed"
-            SidebarViewMode.THUMBNAILS -> "Thumbnails"
-            // SidebarViewMode.OUTLINE -> "Outline (document structure)"
-            SidebarViewMode.ATTACHMENTS -> "Attachments"
-            else -> "Outline (document structure)"
+        val renderer = object : SimpleListCellRenderer<SidebarViewMode>() {
+          override fun customize(
+            list: javax.swing.JList<out SidebarViewMode>,
+            value: SidebarViewMode?,
+            index: Int,
+            selected: Boolean,
+            hasFocus: Boolean
+          ) {
+            text = when (value) {
+              SidebarViewMode.NONE -> "Closed"
+              SidebarViewMode.THUMBNAILS -> "Thumbnails"
+              // SidebarViewMode.OUTLINE -> "Outline (document structure)"
+              SidebarViewMode.ATTACHMENTS -> "Attachments"
+              else -> "Outline (document structure)"
+            }
           }
         }
         comboBox(DefaultComboBoxModel(SidebarViewMode.entries.toTypedArray()), renderer)

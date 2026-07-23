@@ -18,6 +18,10 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun update(event: AnActionEvent) {
+    updatePresentation(event)
+  }
+
+  fun updatePresentation(event: AnActionEvent) {
     val editor = findEditorInView(event)
     with(event.presentation) {
       isVisible = editor != null
