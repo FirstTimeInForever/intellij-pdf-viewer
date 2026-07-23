@@ -26,23 +26,22 @@ val downloadZipFile by tasks.registering(Download::class) {
 
 val downloadAndUnzipFile by tasks.registering(Copy::class) {
   dependsOn(downloadZipFile)
+  val viewerCssRegex = "(<link rel=\"stylesheet\" href=\"viewer.css\" />)".toRegex()
+  val viewerScriptRegex = "(<script src=\"viewer.m?js\"[^<>]*></script>)".toRegex()
   from(zipTree(downloadZipFile.get().dest)) {
     exclude("*/*.pdf")
     exclude("*/*.js.map")
     exclude("*/*.mjs.map")
-  }
-  into(project.layout.buildDirectory)
-  doLast {
-    val viewerHtml = layout.buildDirectory.get().asFile.resolve("web/viewer.html")
-    val modifiedContent = viewerHtml.readText()
-      .replace("(<link rel=\"stylesheet\" href=\"viewer.css\" />)".toRegex(), "$1<link rel=\"stylesheet\" href=\"../fixes.css\" />")
-      .replace("(<script src=\"viewer.m?js\"[^<>]*></script>)".toRegex(), "$1<script src=\"../viewer.js\"></script>")
-    viewerHtml.writeText(modifiedContent)
-    val tmpdir = file(layout.buildDirectory.get().asFile.resolve("tmp"))
-    if (tmpdir.exists()) {
-        tmpdir.deleteRecursively()
+    filesMatching("**/viewer.html") {
+      // Patch viewer.html while copying to keep the task declarative/config-cache friendly.
+      filter { line: String ->
+        line
+          .replace(viewerCssRegex, "$1<link rel=\"stylesheet\" href=\"../fixes.css\" />")
+          .replace(viewerScriptRegex, "$1<script src=\"../viewer.js\"></script>")
+      }
     }
   }
+  into(project.layout.buildDirectory)
 }
 
 val buildWebView by tasks.registering(Copy::class) {

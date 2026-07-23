@@ -3,6 +3,7 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -22,6 +23,16 @@ plugins {
 
 group = fromProperties("group")
 version = fromProperties("version")
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(25))
+  }
+}
+
+kotlin {
+  jvmToolchain(25)
+}
 
 val kotlinVersion: String by project
 val kotlinxSerializationJsonVersion: String by project
@@ -46,6 +57,8 @@ dependencies {
     testFramework(TestFrameworkType.Platform)
 
     intellijIdea(fromProperties("platformVersion"))
+    bundledPlugin("com.intellij.modules.jcef")
+    bundledPlugin("intellij.structureView.plugin")
 
     plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
   }
