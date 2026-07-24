@@ -14,7 +14,7 @@ abstract class PdfToggleAction(viewModeAwareness: ViewModeAwareness = ViewModeAw
 
   override fun update(event: AnActionEvent) {
     super.update(event)
-    base.update(event)
+    base.updatePresentation(event)
   }
 
   private class StubAction(viewModeAwareness: ViewModeAwareness) : PdfAction(viewModeAwareness) {
