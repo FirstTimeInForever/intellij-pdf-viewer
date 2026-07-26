@@ -1,14 +1,14 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.tex
 
-import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
-import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types.Math
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.send
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipeSupport.subscribe
-import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexPreciseLocation
-import com.firsttimeinforever.intellij.pdf.viewer.tex.SynctexViewCoordinates
+import com.firsttimeinforever.intellij.pdf.viewer.model.tex.SynctexPreciseLocation
+import com.firsttimeinforever.intellij.pdf.viewer.model.tex.SynctexViewCoordinates
 import kotlinx.browser.window
 import org.w3c.dom.*
 import org.w3c.dom.events.MouseEvent

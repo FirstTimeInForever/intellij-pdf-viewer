@@ -1,0 +1,17 @@
+<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer.common">
+    <resource-bundle>messages.PdfViewerBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.common.settings.PdfViewerSettings"/>
+
+        <fileType name="PDF"
+                  extensions="pdf"
+                  fieldName="INSTANCE"
+                  implementationClass="com.firsttimeinforever.intellij.pdf.viewer.common.lang.PdfFileType"/>
+
+        <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
+        <registryKey defaultValue="10000" key="pdf.viewer.jcefLatchTimeout" description="Sets maximum wait time for the web-view to load"/>
+        <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>
+        <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
+    </extensions>
+</idea-plugin>

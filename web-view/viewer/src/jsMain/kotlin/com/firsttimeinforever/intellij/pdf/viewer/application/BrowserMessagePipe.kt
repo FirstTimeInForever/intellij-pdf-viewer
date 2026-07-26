@@ -1,6 +1,6 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
-import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.BrowserMessages
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe.Companion.browserSendFunctionName
 import com.firsttimeinforever.intellij.pdf.viewer.mpi.MessagePipe.Companion.ideSendFunctionName

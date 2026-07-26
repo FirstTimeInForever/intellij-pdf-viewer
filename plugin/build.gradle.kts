@@ -4,6 +4,7 @@ import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.jetbrains.intellij.platform.gradle.tasks.aware.SplitModeAware
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -13,7 +14,7 @@ plugins {
   id("java")
   kotlin("jvm")
   kotlin("plugin.serialization")
-  id("org.jetbrains.intellij.platform") version "2.16.0"
+  id("org.jetbrains.intellij.platform")
   id("org.jetbrains.changelog") version "2.5.0"
   id("com.github.ben-manes.versions") version "0.54.0"
   // Plugin which can update Gradle dependencies, use the help/useLatestVersions task.
@@ -72,6 +73,11 @@ dependencies {
   // https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
   // kotlinx.serialization also should be present in the platform
+  intellijPlatform {
+    pluginModule(implementation(project(":pdf-viewer-common")))
+    pluginModule(implementation(project(":pdf-viewer-backend")))
+    pluginModule(implementation(project(":pdf-viewer-frontend")))
+  }
   implementation(project(":mpi")) {
     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
   }
@@ -162,6 +168,16 @@ intellijPlatform {
 
   // Enable hot reload
   buildSearchableOptions = false
+}
+
+val runIdeSplitMode by intellijPlatformTesting.runIde.registering {
+  splitMode = true
+  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.FRONTEND
+}
+
+val testIdeUiSplitMode by intellijPlatformTesting.testIdeUi.registering {
+  splitMode = true
+  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.BOTH
 }
 
 @Throws(GradleException::class)

@@ -1,0 +1,15 @@
+package com.firsttimeinforever.intellij.pdf.viewer.frontend.actions.view
+
+import com.firsttimeinforever.intellij.pdf.viewer.frontend.actions.PdfDumbAwareAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+
+class PdfReloadViewAction : PdfDumbAwareAction() {
+  override fun actionPerformed(event: AnActionEvent) {
+    findController(event)?.reload(tryToPreserveState = true)
+  }
+
+  override fun update(event: AnActionEvent) {
+    event.presentation.isEnabled = true
+  }
+}
+

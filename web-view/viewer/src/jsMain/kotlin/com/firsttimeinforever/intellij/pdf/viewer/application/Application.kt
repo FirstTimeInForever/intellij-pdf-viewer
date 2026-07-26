@@ -1,7 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application
 
-import com.firsttimeinforever.intellij.pdf.viewer.BrowserMessages
-import com.firsttimeinforever.intellij.pdf.viewer.IdeMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.BrowserMessages
+import com.firsttimeinforever.intellij.pdf.viewer.model.IdeMessages
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ThemeUtils
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerAdapter
 import com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.ViewerEvents

@@ -1,0 +1,30 @@
+<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer.frontend">
+    <dependencies>
+        <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
+        <plugin id="com.intellij.modules.jcef"/>
+        <plugin id="intellij.structureView.plugin"/>
+    </dependencies>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService
+                serviceInterface="com.firsttimeinforever.intellij.pdf.viewer.common.PdfHostService"
+                serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.PdfHostServiceFrontendProxy"/>
+        <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.ui.editor.PdfFileEditorProvider"/>
+        <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.jcef.PdfStaticServer"/>
+        
+        <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.frontend.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>
+        <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.report.PdfErrorReportSubmitter"/>
+        <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
+                                implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+
+        <customizableActionGroupProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.actions.PdfCustomizableActionGroupProvider"/>
+        <postStartupActivity implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.ui.widgets.PdfStatusBarProjectActivity"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.firsttimeinforever.intellij.pdf.viewer.frontend.settings.PdfViewerInvertColorsListener"
+                  topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+    </applicationListeners>
+
+    <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+</idea-plugin>

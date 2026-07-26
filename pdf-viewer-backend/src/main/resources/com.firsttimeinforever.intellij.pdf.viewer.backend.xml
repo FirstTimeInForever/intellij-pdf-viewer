@@ -1,0 +1,17 @@
+<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer.backend">
+    <dependencies>
+        <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
+        <plugin id="nl.rubensten.texifyidea"/>
+    </dependencies>
+    
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService
+                serviceInterface="com.firsttimeinforever.intellij.pdf.viewer.common.PdfHostService"
+                serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceImpl"/>
+        <remoteApiProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceRemoteApiProvider"/>
+    </extensions>
+    
+    <extensions defaultExtensionNs="nl.rubensten.texifyidea">
+        <pdfViewer implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.TexPdfViewer"/>
+    </extensions>
+</idea-plugin>

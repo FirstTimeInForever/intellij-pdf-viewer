@@ -1,4 +1,4 @@
-<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" require-restart="true">
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" package="com.firsttimeinforever.intellij.pdf.viewer" require-restart="true">
   <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
   <name>PDF Viewer</name>
   <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
@@ -6,38 +6,13 @@
   </vendor>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.jcef</depends>
-  <depends>intellij.structureView.plugin</depends>
-  <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
-  <depends optional="true" config-file="cwm.xml">com.intellij.jetbrains.client</depends>
+
+  <content>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.common" loading="required"/>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.backend" loading="required" required-if-available="intellij.platform.backend"/>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.frontend" loading="required" required-if-available="intellij.platform.frontend"/>
+  </content>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileType name="PDF"
-              extensions="pdf"
-              fieldName="INSTANCE"
-              implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
-    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
-    <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
-
-    <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
-    <registryKey defaultValue="10000" key="pdf.viewer.jcefLatchTimeout" description="Sets maximum wait time for the web-view to load"/>
-    <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>
-    <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
-
-    <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
-    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>
-    <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
-    <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
-                            implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
-
-    <customizableActionGroupProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfCustomizableActionGroupProvider"/>
-    <postStartupActivity implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfStatusBarProjectActivity"/>
   </extensions>
-
-  <applicationListeners>
-    <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
-              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
-  </applicationListeners>
-
-  <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>
