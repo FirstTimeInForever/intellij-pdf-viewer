@@ -1,4 +1,4 @@
-<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer.common">
+<idea-plugin>
     <resource-bundle>messages.PdfViewerBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">

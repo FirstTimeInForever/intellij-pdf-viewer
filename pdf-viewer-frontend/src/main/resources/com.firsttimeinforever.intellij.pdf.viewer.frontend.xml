@@ -1,4 +1,4 @@
-<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer.frontend">
+<idea-plugin>
     <dependencies>
         <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
         <plugin id="com.intellij.modules.jcef"/>
@@ -11,7 +11,7 @@
                 serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.PdfHostServiceFrontendProxy"/>
         <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.ui.editor.PdfFileEditorProvider"/>
         <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.jcef.PdfStaticServer"/>
-        
+
         <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.frontend.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>
         <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.frontend.report.PdfErrorReportSubmitter"/>
         <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"

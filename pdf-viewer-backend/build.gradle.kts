@@ -20,15 +20,11 @@ dependencies {
     intellijIdea(project.findProperty("platformVersion").toString())
     bundledModule("intellij.platform.rpc")
     bundledModule("intellij.platform.rpc.backend")
-    // Backend might need texify-idea if we move TexPdfViewer there
+    bundledModule("intellij.platform.backend")
+
+    // todo Backend might need texify-idea if we move TexPdfViewer there
     plugin("nl.rubensten.texifyidea:${project.findProperty("texifyVersion")}")
   }
   api(project(":pdf-viewer-common"))
   implementation(project(":model"))
-}
-
-intellijPlatform {
-  pluginConfiguration {
-    id = "com.firsttimeinforever.intellij.pdf.viewer.backend"
-  }
 }

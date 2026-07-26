@@ -1,18 +1,14 @@
-<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" package="com.firsttimeinforever.intellij.pdf.viewer" require-restart="true">
+<idea-plugin package="com.firsttimeinforever.intellij.pdf.viewer" require-restart="true">
   <id>com.firsttimeinforever.intellij.pdf.viewer.intellij-pdf-viewer</id>
   <name>PDF Viewer</name>
   <vendor email="ivmposti+pdf-viewer@gmail.com" url="https://github.com/FirstTimeInForever/intellij-pdf-viewer">
     FirstTimeInForever
   </vendor>
 
-  <depends>com.intellij.modules.platform</depends>
-
   <content>
-    <module name="com.firsttimeinforever.intellij.pdf.viewer.common" loading="required"/>
-    <module name="com.firsttimeinforever.intellij.pdf.viewer.backend" loading="required" required-if-available="intellij.platform.backend"/>
-    <module name="com.firsttimeinforever.intellij.pdf.viewer.frontend" loading="required" required-if-available="intellij.platform.frontend"/>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.common" />
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.backend" required-if-available="intellij.platform.backend"/>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.frontend" required-if-available="intellij.platform.frontend"/>
   </content>
 
-  <extensions defaultExtensionNs="com.intellij">
-  </extensions>
 </idea-plugin>

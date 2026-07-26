@@ -21,14 +21,9 @@ dependencies {
     bundledModule("intellij.platform.rpc")
     bundledPlugin("com.intellij.modules.jcef")
     bundledPlugin("intellij.structureView.plugin")
+    bundledModule("intellij.platform.frontend")
   }
   api(project(":pdf-viewer-common"))
   implementation(project(":model"))
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-}
-
-intellijPlatform {
-  pluginConfiguration {
-    id = "com.firsttimeinforever.intellij.pdf.viewer.frontend"
-  }
 }

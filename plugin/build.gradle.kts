@@ -72,11 +72,14 @@ dependencies {
   // Provided at runtime by the IntelliJ Platform; compileOnly per
   // https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#coroutinesLibraries
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-  // kotlinx.serialization also should be present in the platform
+  implementation(project(":pdf-viewer-common"))
+  implementation(project(":pdf-viewer-backend"))
+  implementation(project(":pdf-viewer-frontend"))
+
   intellijPlatform {
-    pluginModule(implementation(project(":pdf-viewer-common")))
-    pluginModule(implementation(project(":pdf-viewer-backend")))
-    pluginModule(implementation(project(":pdf-viewer-frontend")))
+    pluginModule(project(":pdf-viewer-common"))
+    pluginModule(project(":pdf-viewer-backend"))
+    pluginModule(project(":pdf-viewer-frontend"))
   }
   implementation(project(":mpi")) {
     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
