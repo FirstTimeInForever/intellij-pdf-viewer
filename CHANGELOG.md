@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.18.5
+
+- Remove internal api usage
+
 ## 0.18.4
 
 - Fix JCEF dependency to support 2026.2, by @janosVit
