@@ -4,8 +4,6 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.utility.CommandExecutionUtils.getCommandStdoutIfSuccessful
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.actions.OpenInRightSplitAction
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -35,28 +33,17 @@ class TexPdfViewer : ExternalPdfViewer {
    */
   override fun isAvailable(): Boolean = true
 
-  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean) {
+  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean, raiseOnError: Boolean): Pair<Boolean, String> {
     if (!SynctexUtils.isSynctexInstalled()) {
-      Notification(
-        "LaTeX",
-        "SyncTeX not installed",
-        "Forward search and inverse search need the synctex command line tool to be installed.",
-        NotificationType.WARNING
-      ).notify(project)
-      return
+      return Pair(false, "Forward search and inverse search need the synctex command line tool to be installed.")
     }
 
     if (outputPath != null) pdfFilePath = outputPath
     if (pdfFilePath == null) {
-      Notification(
-        "LaTeX",
-        "Please compile before using forward search",
-        "",
-        NotificationType.WARNING
-      ).notify(project)
+      return Pair(false, "Please compile before using forward search.")
     } else {
-      val file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pdfFilePath!!) ?: return
-      val texFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(sourceFilePath) ?: return
+      val file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pdfFilePath!!) ?: return Pair(false, "PDF file $pdfFilePath not found.")
+      val texFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(sourceFilePath) ?: return Pair(false, "LaTeX file $sourceFilePath not found.")
       val pdfEditor = OpenFileDescriptor(project, file)
       val fileEditorManager = FileEditorManager.getInstance(project)
 
@@ -102,6 +89,7 @@ class TexPdfViewer : ExternalPdfViewer {
         )
       }
     }
+    return Pair(true, "")
   }
 
   override fun toString(): String {

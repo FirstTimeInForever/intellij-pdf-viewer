@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.18.6
+
+- The LaTeX to PDF forward search now fails in case the pdf is not found (requires TeXiFy 1.1.1).
+
 ## 0.18.5
 
 - Remove internal api usage
