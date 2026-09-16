@@ -2,7 +2,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.utility.CommandExecutionUtils.getCommandStdoutIfSuccessful
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.actions.OpenInRightSplitAction
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -33,8 +32,21 @@ class TexPdfViewer : ExternalPdfViewer {
    */
   override fun isAvailable(): Boolean = true
 
-  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean, raiseOnError: Boolean): Pair<Boolean, String> {
-    if (!SynctexUtils.isSynctexInstalled()) {
+  // Keep implementing the legacy API used by older TeXiFy releases.
+  @Deprecated("Use forwardSearch to return result.")
+  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean) {
+    forwardSearch(outputPath, sourceFilePath, line, project, focusAllowed, raiseOnError = false)
+  }
+
+  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean, raiseOnError: Boolean): Pair<Boolean, String> =
+    forwardSearch(outputPath, sourceFilePath, line, project, focusAllowed, raiseOnError, runInWsl = false)
+
+  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean, raiseOnError: Boolean, runInWsl: Boolean): Pair<Boolean, String> {
+    // Older TeXiFy versions do not provide the WSL flag for manually triggered searches.
+    // Infer it from the VFS paths so those searches use the same command setup as compilation.
+    val effectiveRunInWsl = runInWsl || SynctexUtils.isWslPath(sourceFilePath) || SynctexUtils.isWslPath(outputPath ?: pdfFilePath.orEmpty())
+
+    if (!SynctexUtils.isSynctexInstalled(effectiveRunInWsl)) {
       return Pair(false, "Forward search and inverse search need the synctex command line tool to be installed.")
     }
 
@@ -44,6 +56,16 @@ class TexPdfViewer : ExternalPdfViewer {
     } else {
       val file = LocalFileSystem.getInstance().refreshAndFindFileByPath(pdfFilePath!!) ?: return Pair(false, "PDF file $pdfFilePath not found.")
       val texFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(sourceFilePath) ?: return Pair(false, "LaTeX file $sourceFilePath not found.")
+      val texPath = (if (effectiveRunInWsl) SynctexUtils.windowsPathToWsl(texFile.path) else texFile.path)
+        ?: return Pair(false, "Could not convert LaTeX file path to WSL path.")
+      val pdfPath = (if (effectiveRunInWsl) SynctexUtils.windowsPathToWsl(file.path) else file.path)
+        ?: return Pair(false, "Could not convert PDF file path to WSL path.")
+      val wslProjectPath = if (effectiveRunInWsl && SynctexUtils.isWslPath(file.parent.path)) {
+        SynctexUtils.windowsPathToWsl(file.parent.path)
+          ?: return Pair(false, "Could not convert project directory to WSL path.")
+      } else {
+        null
+      }
       val pdfEditor = OpenFileDescriptor(project, file)
       val fileEditorManager = FileEditorManager.getInstance(project)
 
@@ -65,14 +87,17 @@ class TexPdfViewer : ExternalPdfViewer {
           }
         }
 
-        val command = GeneralCommandLine(
-          "synctex",
+        val command = SynctexUtils.synctexCommand(
           "view",
           "-i",
-          "$line:0:${texFile.path}",
+          "$line:0:$texPath",
           "-o",
-          file.path
-        ).withWorkDirectory(File(file.parent.path))
+          pdfPath,
+          runInWsl = effectiveRunInWsl,
+          workingDirectory = wslProjectPath,
+        ).withWorkDirectory(
+          if (wslProjectPath == null) File(file.parent.path) else File(System.getProperty("user.home")),
+        )
         val output = getCommandStdoutIfSuccessful(command) ?: return@invokeLater
         val values: Map<String?, String?> = NUMBER_REGEX.toRegex().findAll(output)
           .associate { it.groups["id"]?.value to it.groups["value"]?.value }
