@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.18.6
+
+* Fix diff view showing files on disk instead of from the diff, by @juliabeliaeva
+- The LaTeX to PDF forward search now fails in case the pdf is not found (requires TeXiFy 1.1.1).
+- Forward search from TeXiFy now supports projects in WSL (requires TeXiFy 1.1.1).
+
+## 0.18.5
+
+- Remove internal api usage
+
 ## 0.18.4
 
 - Fix JCEF dependency to support 2026.2, by @janosVit

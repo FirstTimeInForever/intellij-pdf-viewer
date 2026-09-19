@@ -187,9 +187,11 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   private fun doActualReload(tryToPreserveState: Boolean = false) {
     try {
-      virtualFile.refresh(false, false)
-      if (!virtualFile.isValid) {
-        logger.warn("File is not valid after refresh: ${virtualFile.path}")
+      val refreshedFile = if (virtualFile.isInLocalFileSystem) {
+        LocalFileSystem.getInstance().refreshAndFindFileByPath(virtualFile.path)
+      } else virtualFile
+      if (refreshedFile == null) {
+        logger.warn("Could not refresh file before reload: ${virtualFile.path}")
         return
       }
 
