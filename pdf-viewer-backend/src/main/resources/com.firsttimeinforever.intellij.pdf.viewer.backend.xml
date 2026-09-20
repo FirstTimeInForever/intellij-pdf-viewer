@@ -10,8 +10,8 @@
     <applicationService
       serviceInterface="com.firsttimeinforever.intellij.pdf.viewer.common.PdfHostService"
       serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceImpl"/>
-<!--    <platform.rpc.backend.remoteApiProvider-->
-<!--      implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceRemoteApiProvider"/>-->
+    <platform.rpc.backend.remoteApiProvider
+      implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceRemoteApiProvider"/>
   </extensions>
 
   <extensions defaultExtensionNs="nl.rubensten.texifyidea">
