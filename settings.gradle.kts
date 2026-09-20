@@ -25,7 +25,7 @@ pluginManagement {
     kotlin("multiplatform") version kotlinVersion
     id("org.jetbrains.intellij.platform") version "2.19.0"
     id("org.jetbrains.intellij.platform.settings") version "2.19.0"
-    id("rpc") version "2.3.20-RC2-0.1"
+    id("rpc") version "2.4.0-RC-0.1"
   }
 }
 

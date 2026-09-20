@@ -110,6 +110,13 @@ tasks {
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
   }
+  // Set up the additional debug/trace log categories for split mode
+  runIdeBackend {
+    systemProperty("idea.log.debug.categories", "com.firsttimeinforever.intellij.pdf.viewer.backend")
+  }
+  runIdeFrontend {
+    systemProperty("idea.log.trace.categories", "com.firsttimeinforever.intellij.pdf.viewer.frontend")
+  }
 
 //  // https://youtrack.jetbrains.com/issue/KTIJ-782
 //  buildSearchableOptions {

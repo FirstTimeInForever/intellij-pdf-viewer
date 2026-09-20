@@ -1,19 +1,20 @@
 <idea-plugin>
-    <dependencies>
-        <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
-      <module name="intellij.platform.backend"/>
-<!--      <module name="intellij.platform.kernel.backend"/>-->
-        <plugin id="nl.rubensten.texifyidea"/>
-    </dependencies>
+  <dependencies>
+    <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
+    <module name="intellij.platform.backend"/>
+    <!--      <module name="intellij.platform.kernel.backend"/>-->
+    <plugin id="nl.rubensten.texifyidea"/>
+  </dependencies>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService
-                serviceInterface="com.firsttimeinforever.intellij.pdf.viewer.common.PdfHostService"
-                serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceImpl"/>
-<!--        <remoteApiProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceRemoteApiProvider"/>-->
-    </extensions>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService
+      serviceInterface="com.firsttimeinforever.intellij.pdf.viewer.common.PdfHostService"
+      serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceImpl"/>
+<!--    <platform.rpc.backend.remoteApiProvider-->
+<!--      implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.PdfHostServiceRemoteApiProvider"/>-->
+  </extensions>
 
-    <extensions defaultExtensionNs="nl.rubensten.texifyidea">
-        <pdfViewer implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.TexPdfViewer"/>
-    </extensions>
+  <extensions defaultExtensionNs="nl.rubensten.texifyidea">
+    <pdfViewer implementation="com.firsttimeinforever.intellij.pdf.viewer.backend.TexPdfViewer"/>
+  </extensions>
 </idea-plugin>
