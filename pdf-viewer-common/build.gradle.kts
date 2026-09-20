@@ -1,3 +1,4 @@
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 
 plugins {
@@ -29,4 +30,9 @@ dependencies {
   }
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
   api("org.jetbrains.kotlinx:kotlinx-serialization-json:${project.findProperty("kotlinxSerializationJsonVersion")}")
+}
+
+// Module JAR names must match their IDs for split-mode plugin descriptor resolution.
+tasks.named<Jar>("composedJar") {
+  archiveBaseName.set("com.firsttimeinforever.intellij.pdf.viewer.common")
 }

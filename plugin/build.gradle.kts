@@ -61,7 +61,7 @@ dependencies {
     bundledPlugin("com.intellij.modules.jcef")
     bundledPlugin("intellij.structureView.plugin")
 
-    plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
+//    plugin("nl.rubensten.texifyidea:${fromProperties("texifyVersion")}")
   }
 
   implementation("io.sentry:sentry:8.44.0") {
@@ -119,7 +119,6 @@ tasks {
 
 intellijPlatform {
   pluginConfiguration {
-    name = fromProperties("pluginName")
     description = extractPluginDescription()
     // Get the latest available change notes from the changelog file
     changeNotes = provider {
@@ -173,15 +172,15 @@ intellijPlatform {
   buildSearchableOptions = false
 }
 
-val runIdeSplitMode by intellijPlatformTesting.runIde.registering {
-  splitMode = true
-  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.FRONTEND
-}
+//val runIdeSplitMode by intellijPlatformTesting.runIde.registering {
+//  splitMode = true
+//  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.FRONTEND
+//}
 
-val testIdeUiSplitMode by intellijPlatformTesting.testIdeUi.registering {
-  splitMode = true
-  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.BOTH
-}
+//val testIdeUiSplitMode by intellijPlatformTesting.testIdeUi.registering {
+//  splitMode = true
+//  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.BOTH
+//}
 
 @Throws(GradleException::class)
 fun extractPluginDescription(): String {

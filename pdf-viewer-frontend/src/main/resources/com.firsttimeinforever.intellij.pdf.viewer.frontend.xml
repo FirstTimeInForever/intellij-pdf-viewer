@@ -1,6 +1,7 @@
 <idea-plugin>
     <dependencies>
         <module name="com.firsttimeinforever.intellij.pdf.viewer.common"/>
+      <module name="intellij.platform.frontend"/>
         <plugin id="com.intellij.modules.jcef"/>
         <plugin id="intellij.structureView.plugin"/>
     </dependencies>
@@ -26,5 +27,5 @@
                   topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
     </applicationListeners>
 
-    <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+<!--    <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>-->
 </idea-plugin>
