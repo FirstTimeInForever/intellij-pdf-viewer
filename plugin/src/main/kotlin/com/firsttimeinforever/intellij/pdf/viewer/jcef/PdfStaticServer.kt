@@ -15,6 +15,7 @@ import io.netty.handler.stream.ChunkedStream
 import org.jetbrains.ide.BuiltInServerManager
 import org.jetbrains.ide.HttpRequestHandler
 import org.jetbrains.io.*
+import java.io.OutputStream
 import java.nio.file.Paths
 import kotlin.random.Random
 
@@ -65,12 +66,24 @@ internal class PdfStaticServer : HttpRequestHandler() {
     } else {
       logger.debug("Sending external file, url: $url")
       // see org.jetbrains.builtInWebServer.StaticFileHandler
-      val response = FileResponses.prepareSend(request, channel, file.timeStamp, file.name) ?: return
+      val timestamp = file.timeStamp
+      // Remote files can have an unknown timestamp; do not reuse a cached empty PDF.
+      if (timestamp == 0L) {
+        request.headers().remove(HttpHeaderNames.IF_MODIFIED_SINCE)
+      }
+      val response = FileResponses.prepareSend(request, channel, timestamp, file.name) ?: return
+      if (timestamp == 0L) {
+        response.headers().remove(HttpHeaderNames.LAST_MODIFIED)
+        response.headers().set(HttpHeaderNames.CACHE_CONTROL, HttpHeaderValues.NO_STORE)
+      }
       val isKeepAlive = response.addKeepAliveIfNeeded(request)
       // remove accept-ranges as we don't support
       response.headers().remove(HttpHeaderNames.ACCEPT_RANGES)
       if (request.method() != HttpMethod.HEAD) {
-        HttpUtil.setContentLength(response, file.length)
+        // The remote client may report zero length even when the PDF stream is readable.
+        val length = file.length.takeIf { it != 0L }
+          ?: file.inputStream.use { it.transferTo(OutputStream.nullOutputStream()) }
+        HttpUtil.setContentLength(response, length)
       }
       channel.write(response)
       if (request.method() != HttpMethod.HEAD) {
