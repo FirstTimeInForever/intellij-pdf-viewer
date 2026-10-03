@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Fix blank PDFs in Remote Development, by GeorgeTownsendd
+- Fix blank PDFs in Remote Development, by @GeorgeTownsendd
 
 ## 0.18.6
 
