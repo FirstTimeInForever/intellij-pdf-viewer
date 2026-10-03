@@ -125,6 +125,8 @@ tasks {
 }
 
 intellijPlatform {
+  splitMode = true
+  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.BOTH
   pluginConfiguration {
     description = extractPluginDescription()
     // Get the latest available change notes from the changelog file
@@ -178,16 +180,6 @@ intellijPlatform {
   // Enable hot reload
   buildSearchableOptions = false
 }
-
-//val runIdeSplitMode by intellijPlatformTesting.runIde.registering {
-//  splitMode = true
-//  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.FRONTEND
-//}
-
-//val testIdeUiSplitMode by intellijPlatformTesting.testIdeUi.registering {
-//  splitMode = true
-//  pluginInstallationTarget = SplitModeAware.PluginInstallationTarget.BOTH
-//}
 
 @Throws(GradleException::class)
 fun extractPluginDescription(): String {
