@@ -73,7 +73,7 @@ class TexPdfViewer : ExternalPdfViewer {
         val jcefEditor = if (fileEditorManager.isFileOpen(file)) {
           val editor = fileEditorManager.getSelectedEditor(file)
           pdfEditor.navigate(false)
-          editor as PdfFileEditor
+          editor as? PdfFileEditor
         } else {
           // Only open in right split when there already is an open file, otherwise it is not possible to open a right split because there
           // is nothing to split.
@@ -83,7 +83,7 @@ class TexPdfViewer : ExternalPdfViewer {
             editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
           } else {
             pdfEditor.navigate(false)
-            fileEditorManager.getSelectedEditor(file) as PdfFileEditor
+            fileEditorManager.getSelectedEditor(file) as? PdfFileEditor
           }
         }
 
