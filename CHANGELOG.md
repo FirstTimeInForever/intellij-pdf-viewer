@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.18.7
+
 - Fix exception on first forward search after starting IDE, by @nigrape
 - Fix blank PDFs in Remote Development, by @GeorgeTownsendd
 
