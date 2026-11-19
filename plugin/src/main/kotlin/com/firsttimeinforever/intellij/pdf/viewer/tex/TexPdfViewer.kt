@@ -2,10 +2,10 @@ package com.firsttimeinforever.intellij.pdf.viewer.tex
 
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.utility.CommandExecutionUtils.getCommandStdoutIfSuccessful
-import com.intellij.ide.actions.OpenInRightSplitAction
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import nl.hannahsten.texifyidea.run.pdfviewer.ExternalPdfViewer
@@ -31,12 +31,6 @@ class TexPdfViewer : ExternalPdfViewer {
    * When this plugin is installed, the PDF viewer plugin is always available.
    */
   override fun isAvailable(): Boolean = true
-
-  // Keep implementing the legacy API used by older TeXiFy releases.
-  @Deprecated("Use forwardSearch to return result.")
-  override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean) {
-    forwardSearch(outputPath, sourceFilePath, line, project, focusAllowed, raiseOnError = false)
-  }
 
   override fun forwardSearch(outputPath: String?, sourceFilePath: String, line: Int, project: Project, focusAllowed: Boolean, raiseOnError: Boolean): Pair<Boolean, String> =
     forwardSearch(outputPath, sourceFilePath, line, project, focusAllowed, raiseOnError, runInWsl = false)
@@ -78,9 +72,10 @@ class TexPdfViewer : ExternalPdfViewer {
           // Only open in right split when there already is an open file, otherwise it is not possible to open a right split because there
           // is nothing to split.
           if (fileEditorManager.hasOpenFiles()) {
-            // There does not seem to be a public alternative
-            @Suppress("UnstableApiUsage") val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
-            editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
+            val fileEditorManagerEx = FileEditorManagerEx.getInstanceEx(project)
+            val editorWindow = fileEditorManagerEx.splitters.openInRightSplit(file, requestFocus = false)
+            editorWindow?.selectedComposite?.allEditors?.filterIsInstance<PdfFileEditor>()?.firstOrNull()
+              ?: (fileEditorManager.getSelectedEditor(file) as? PdfFileEditor)
           } else {
             pdfEditor.navigate(false)
             fileEditorManager.getSelectedEditor(file) as? PdfFileEditor

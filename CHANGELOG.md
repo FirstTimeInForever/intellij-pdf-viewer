@@ -1,6 +1,8 @@
 # Intellij PDF Viewer Plugin Changelog
 
 ## Unreleased
+- Replace deprecated internal api usages related to inverse and forward search
+- Remove support for TeXiFy versions 1.1.0 or lower for forward search
 
 ## 0.18.7
 

@@ -48,7 +48,7 @@ class TexFileInfo(val file: VirtualFile, private val line: Int, private val colu
         }
         // Note that Advanced Settings > "Open declation source called from a detached window in the main IDE window" determines
         // the window where the file is opened, see FileEditorManagerImpl#getOrCreateCurrentWindow
-        fileEditorManager.openTextEditor(openFileDescriptor, requestFocus)
+        openFileDescriptor.navigate(requestFocus)
       }
     }
   }
