@@ -40,7 +40,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 21
+          java-version: 25
           distribution: 'zulu'
 
       - name: Restore Gradle Cache
@@ -56,8 +56,8 @@ jobs:
       - name: Export Properties
         id: properties
         run: |
-          echo "::set-output name=version::$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')"
-          echo "::set-output name=name::$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')"
+          echo "version=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')" >> "$GITHUB_OUTPUT"
+          echo "name=$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')" >> "$GITHUB_OUTPUT"
 
       - name: Build Plugin
         run: ./gradlew :plugin:buildPlugin
